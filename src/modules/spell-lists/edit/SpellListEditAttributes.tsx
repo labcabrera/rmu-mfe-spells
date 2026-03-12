@@ -5,7 +5,7 @@ import { useError } from '../../../ErrorContext';
 import { CreateSpellListDto } from '../../api/spell-list.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 
-const SpellListCreationAttributes: FC<{
+const SpellListEditAttributes: FC<{
   formData: CreateSpellListDto;
   setFormData: Dispatch<SetStateAction<CreateSpellListDto>>;
 }> = ({ formData, setFormData }) => {
@@ -34,10 +34,20 @@ const SpellListCreationAttributes: FC<{
             fullWidth
           />
         </Grid>
+        <Grid size={12}>
+          <TextField
+            label={t('Description')}
+            name="description"
+            value={formData.description || ''}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            error={!formData.description}
+            fullWidth
+          />
+        </Grid>
       </Grid>
     </>
   );
 };
 
 
-export default SpellListCreationAttributes;
+export default SpellListEditAttributes;

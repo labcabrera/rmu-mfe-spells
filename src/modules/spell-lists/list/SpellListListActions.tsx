@@ -16,7 +16,7 @@ const SpellListListActions: FC = () => {
   const onRefresh = () => {};
 
   const onCreate = () => {
-    navigate('/core/skills/create');
+    navigate('/spells/spell-lists/create');
   };
 
   return (

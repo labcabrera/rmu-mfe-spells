@@ -55,7 +55,7 @@ const SpellListList: FC = () => {
                   value={t(spellList.name)}
                   subtitle={t(spellList.name)}
                   image={`${imageBaseUrl}images/generic/configuration.png`}
-                  onClick={() => navigate(`/core/spell-lists/view/${spellList.id}`, { state: { spellList } })}
+                  onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
                 />
               </Grid>
             ))}

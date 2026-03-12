@@ -1,8 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { CreateSpellListDto } from '../../api/spell-list.dto';
-import { imageBaseUrl } from '../../services/config';
-import GenericAvatar from '../../shared/avatars/GenericAvatar';
+import EditableAvatar from '../../shared/avatars/EditableAvatar';
 import SpellListCreationActions from './SpellListCreationActions';
 import SpellListCreationAttributes from './SpellListCreationAttributes';
 
@@ -28,7 +27,10 @@ const SpellListCreation: FC = () => {
       <SpellListCreationActions formData={formData} isValid={isValid} />
       <Grid container spacing={2}>
         <Grid size={2}>
-          <GenericAvatar imageUrl={`${imageBaseUrl}images/generic/configuration.png`} />
+          <EditableAvatar
+            imageUrl={formData.imageUrl || ''}
+            onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
+          />
         </Grid>
         <Grid size={7}>
           <SpellListCreationAttributes formData={formData} setFormData={setFormData} />

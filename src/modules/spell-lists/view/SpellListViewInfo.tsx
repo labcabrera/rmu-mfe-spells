@@ -37,7 +37,7 @@ const SpellListViewInfo: FC<{
     <Grid container spacing={1}>
       <Grid size={12}>
         <Typography variant="h6" gutterBottom>
-          {t(spellList.id)}
+          {t(spellList.name)}
         </Typography>
       </Grid>
       <Grid size={12}>

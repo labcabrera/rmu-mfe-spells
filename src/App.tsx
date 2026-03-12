@@ -4,7 +4,10 @@ import { Box } from '@mui/material';
 import { ErrorProvider } from './ErrorContext';
 import HomePage from './HomePage';
 import './i18n';
+import SpellListCreation from './modules/spell-lists/create/SpellListCreation';
+import SpellListEdit from './modules/spell-lists/edit/SpellListEdit';
 import SpellListList from './modules/spell-lists/list/SpellListList';
+import SpellListView from './modules/spell-lists/view/SpellListView';
 
 const NotFound: FC = () => (
   <div>
@@ -20,9 +23,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/spell-lists" element={<SpellListList />} />
-          {/* <Route path="/spell-lists/create" element={<RealmCreation />} />
-          <Route path="/spell-lists/view/:spellListId" element={<RealmView />} />
-          <Route path="/spell-lists/edit/:spellListId" element={<RealmEdit />} /> */} 
+          <Route path="/spell-lists/create" element={<SpellListCreation />} />
+          <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
+          <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Box>

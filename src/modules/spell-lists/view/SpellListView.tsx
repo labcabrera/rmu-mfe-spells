@@ -6,8 +6,8 @@ import { fetchSpellList } from '../../api/spell-list';
 import { SpellList } from '../../api/spell-list.dto';
 import { imageBaseUrl } from '../../services/config';
 import GenericAvatar from '../../shared/avatars/GenericAvatar';
-import SkillViewInfo from './SkillViewInfo';
 import SpellListViewActions from './SpellListViewActions';
+import SpellListViewInfo from './SpellListViewInfo';
 
 const SpellListView: FC = () => {
   const location = useLocation();
@@ -35,7 +35,7 @@ const SpellListView: FC = () => {
           <GenericAvatar imageUrl={`${imageBaseUrl}images/generic/configuration.png`} />
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
-          <SkillViewInfo skill={spellList} />
+          <SpellListViewInfo spellList={spellList} />
         </Grid>
       </Grid>
     </>

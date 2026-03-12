@@ -9,52 +9,16 @@ const HomePage: FC = () => {
   const navigate = useNavigate();
   const cards = [
     {
-      value: 'Realms',
-      subtitle: 'Manage realms',
-      image: `${imageBaseUrl}images/generic/realm.png`,
-      to: '/core/realms',
-    },
-    {
-      value: 'Races',
-      subtitle: 'Manage races',
-      image: `${imageBaseUrl}images/generic/races.png`,
-      to: '/core/races',
-    },
-    {
-      value: 'Professions',
-      subtitle: 'Manage professions',
+      value: 'Spell lists',
+      subtitle: 'Manage spell lists',
       image: `${imageBaseUrl}images/generic/configuration.png`,
-      to: '/core/professions',
+      to: '/spells/spell-lists',
     },
     {
-      value: 'Skill categories',
-      subtitle: 'Skill category reference',
+      value: 'Spells',
+      subtitle: 'Manage spells',
       image: `${imageBaseUrl}images/generic/configuration.png`,
-      to: '/core/skill-categories',
-    },
-    {
-      value: 'Skills',
-      subtitle: 'Skill reference',
-      image: `${imageBaseUrl}images/generic/configuration.png`,
-      to: '/core/skills',
-    },
-    {
-      value: 'Traits',
-      subtitle: 'Manage traits',
-      image: `${imageBaseUrl}images/generic/trait.png`,
-      to: '/core/traits',
-    },
-    {
-      value: 'Maneuvers',
-      subtitle: 'Maneuvers',
-      image: `${imageBaseUrl}images/generic/configuration.png`,
-      to: '/core/maneuvers',
-    },
-    {
-      value: 'Languages',
-      subtitle: 'Manage languages',
-      image: `${imageBaseUrl}images/generic/language.png`,
-      to: '/core/languages',
+      to: '/spells/spells',
     },
   ];
 
