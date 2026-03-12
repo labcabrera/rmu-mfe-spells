@@ -1,14 +1,14 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { CreateSpellDto } from '../../api/spell.dto';
+import { CreateSpellDto, UpdateSpellDto } from '../../api/spell.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import { NumericInput } from '../../shared/inputs/NumericInput';
-import SelectSpellType from '../../shared/inputs/SelectSpellType';
+import SelectSpellType from '../../shared/selects/SelectSpellType';
 
 const SpellCreationAttributes: FC<{
-  formData: CreateSpellDto;
-  setFormData: Dispatch<SetStateAction<CreateSpellDto>>;
+  formData: CreateSpellDto | UpdateSpellDto;
+  setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
 }> = ({ formData, setFormData }) => {
   if (!formData || !setFormData) return <p>Loading...</p>;
 
@@ -30,7 +30,7 @@ const SpellCreationAttributes: FC<{
           <SelectSpellType
             label={t('Type')}
             name="spellType"
-            value={formData.modifiers.type || null}
+            value={formData.modifiers?.type || null}
             onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, type: value } })}
           />
         </Grid>

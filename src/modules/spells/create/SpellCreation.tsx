@@ -13,7 +13,7 @@ const SpellCreation: FC = () => {
     spellListId: '',
     name: '',
     level: 1,
-    modifiers: { type: '', subtype: '' },
+    modifiers: { type: null, subtype: '' },
     description: '',
     imageUrl: '',
   });
