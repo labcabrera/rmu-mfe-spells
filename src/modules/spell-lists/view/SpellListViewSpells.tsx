@@ -24,7 +24,11 @@ const SpellListViewSpells: FC<{
     <Grid container spacing={1}>
       {spells.map((spell) => (
         <Grid key={spell.id} size={12}>
-          <RmuTextCard value={spell.name} subtitle={t('Spell')} onClick={() => handleSpellClick(spell)} />
+          <RmuTextCard
+            value={`${spell.level} - ${spell.name}`}
+            subtitle={t('Spell')}
+            onClick={() => handleSpellClick(spell)}
+          />
         </Grid>
       ))}
     </Grid>

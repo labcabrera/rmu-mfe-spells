@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { useError } from '../../../ErrorContext';
-import { fetchSpellList } from '../../api/spell-list';
+import { fetchSpell } from '../../api/spell';
 import { Spell, UpdateSpellDto } from '../../api/spell.dto';
 import EditableAvatar from '../../shared/avatars/EditableAvatar';
 import SpellEditActions from './SpellEditActions';
@@ -17,14 +17,21 @@ const SpellEdit: FC = () => {
   const [isValid, setIsValid] = useState(false);
 
   const bindSpell = (spellId: string) => {
-    fetchSpellList(spellId)
-      .then((data) => setFormData(data))
+    fetchSpell(spellId)
+      .then((response) => setSpell(response))
       .catch((err: Error) => showError(err.message));
   };
 
   useEffect(() => {
     setIsValid(!!formData?.name);
   }, [formData]);
+
+  useEffect(() => {
+    if (spell) {
+      const { id, ...rest } = spell;
+      setFormData(rest);
+    }
+  }, [spell]);
 
   useEffect(() => {
     if (location.state && location.state.spell) {

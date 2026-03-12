@@ -19,7 +19,7 @@ const SpellEditActions: FC<{
 
   const handleSave = async () => {
     updateSpell(spell.id, formData)
-      .then((response) => navigate(`/spells/spell-lists/view/${response.id}`))
+      .then((response) => navigate(`/spells/spells/view/${response.id}`, { state: { spell: response } }))
       .catch((err: Error) => showError(err.message));
   };
 

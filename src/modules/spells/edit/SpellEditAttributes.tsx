@@ -1,13 +1,13 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { CreateSpellDto } from '../../api/spell.dto';
+import { UpdateSpellDto } from '../../api/spell.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import { NumericInput } from '../../shared/inputs/NumericInput';
 
 const SpellEditAttributes: FC<{
-  formData: CreateSpellDto;
-  setFormData: Dispatch<SetStateAction<CreateSpellDto>>;
+  formData: UpdateSpellDto;
+  setFormData: Dispatch<SetStateAction<UpdateSpellDto | undefined>>;
 }> = ({ formData, setFormData }) => {
   if (!formData || !setFormData) return <p>Loading...</p>;
 

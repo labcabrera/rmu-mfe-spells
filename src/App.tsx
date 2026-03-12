@@ -9,6 +9,7 @@ import SpellListEdit from './modules/spell-lists/edit/SpellListEdit';
 import SpellListList from './modules/spell-lists/list/SpellListList';
 import SpellListView from './modules/spell-lists/view/SpellListView';
 import SpellCreation from './modules/spells/create/SpellCreation';
+import SpellEdit from './modules/spells/edit/SpellEdit';
 import SpellView from './modules/spells/view/SpellView';
 
 const NotFound: FC = () => (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
           <Route path="/spells/view/:spellId" element={<SpellView />} />
           <Route path="/spells/create" element={<SpellCreation />} />
+          <Route path="/spells/edit/:spellId" element={<SpellEdit />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Box>
