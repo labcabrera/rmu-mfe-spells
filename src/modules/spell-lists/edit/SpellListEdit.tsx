@@ -22,7 +22,8 @@ const SpellListEdit: FC = () => {
 
   useEffect(() => {
     if (spellList) {
-      setFormData(spellList);
+      const { id, ...rest } = spellList;
+      setFormData(rest);
     }
   }, [spellList]);
 
@@ -36,11 +37,11 @@ const SpellListEdit: FC = () => {
     }
   }, [location.state, spellListId, showError]);
 
-  if (!formData || !setFormData) return <p>Loading...</p>;
+  if (!spellList || !formData || !setFormData) return <p>Loading...</p>;
 
   return (
     <>
-      <SpellListEditActions formData={formData} isValid={isValid} />
+      <SpellListEditActions spellList={spellList} formData={formData} isValid={isValid} />
       <Grid container spacing={2}>
         <Grid size={2}>
           <EditableAvatar
