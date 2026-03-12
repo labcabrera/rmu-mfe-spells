@@ -4,6 +4,7 @@ import { t } from 'i18next';
 import { CreateSpellDto, UpdateSpellDto } from '../../api/spell.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import { NumericInput } from '../../shared/inputs/NumericInput';
+import SelectSpellDurationType from '../../shared/selects/SelectSpellDurationType';
 import SelectSpellType from '../../shared/selects/SelectSpellType';
 
 const SpellCreationAttributes: FC<{
@@ -26,12 +27,25 @@ const SpellCreationAttributes: FC<{
             fullWidth
           />
         </Grid>
-        <Grid size={12}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <SelectSpellType
             label={t('Type')}
             name="spellType"
             value={formData.modifiers?.type || null}
             onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, type: value } })}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <SelectSpellDurationType
+            label={t('Duration type')}
+            name="spellDurationType"
+            value={formData.modifiers?.duration?.type || null}
+            onChange={(value) =>
+              setFormData({
+                ...formData,
+                modifiers: { ...formData.modifiers, duration: { ...formData.modifiers?.duration, type: value } },
+              })
+            }
           />
         </Grid>
         <Grid size={12}>

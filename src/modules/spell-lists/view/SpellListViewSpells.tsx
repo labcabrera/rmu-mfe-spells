@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { t } from 'i18next';
 import { Spell } from '../../api/spell.dto';
-import RmuTextCard from '../../shared/cards/RmuTextCard';
 
 const SpellListViewSpells: FC<{
   spells: Spell[];
@@ -21,17 +20,26 @@ const SpellListViewSpells: FC<{
   }
 
   return (
-    <Grid container spacing={1}>
-      {spells.map((spell) => (
-        <Grid key={spell.id} size={12}>
-          <RmuTextCard
-            value={`${spell.level} - ${spell.name}`}
-            subtitle={t('Spell')}
-            onClick={() => handleSpellClick(spell)}
-          />
-        </Grid>
-      ))}
-    </Grid>
+    <TableContainer component={Paper}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>{t('Level')}</TableCell>
+            <TableCell>{t('Name')}</TableCell>
+            <TableCell>{t('Type')}</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {spells.map((spell) => (
+            <TableRow key={spell.id} hover onClick={() => handleSpellClick(spell)} sx={{ cursor: 'pointer' }}>
+              <TableCell>{spell.level}</TableCell>
+              <TableCell>{spell.name}</TableCell>
+              <TableCell>{spell.modifiers?.type}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
