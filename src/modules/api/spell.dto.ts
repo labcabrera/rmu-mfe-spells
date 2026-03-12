@@ -1,3 +1,5 @@
+export type SpellType = 'alchemical' | 'elemental' | 'force' | 'informational' | 'utility';
+
 export type Spell = {
   id: string;
   spellListId: string;
@@ -9,7 +11,7 @@ export type Spell = {
 };
 
 export type SpellModifiers = {
-  type: string;
+  type: SpellType;
   subtype: string;
 };
 

@@ -61,11 +61,11 @@ const SpellCreation: FC = () => {
             onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
           />
         </Grid>
-        <Grid size={7}>
+        <Grid size={8}>
           <SpellCreationAttributes formData={formData} setFormData={setFormData} />
+          <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
         </Grid>
       </Grid>
-      <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
     </>
   );
 };

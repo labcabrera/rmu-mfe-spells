@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { ProfessionArchetype } from '../../api/profession.dto';
+import { SpellType } from '../../api/spell.dto';
 
-const SelectProfessionArchetype: FC<{
+const SelectSpelltype: FC<{
   label: string;
-  value: ProfessionArchetype | null;
+  value: SpellType | null;
   name: string;
   required?: boolean;
   allowAll?: boolean;
-  onChange: (archetype: ProfessionArchetype) => void;
+  onChange: (spellType: SpellType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
-  const values: ProfessionArchetype[] = ['non-spellcaster', 'semi-spellcaster', 'pure-spellcaster', 'hybrid'];
+  const values = ['alchemical', 'elemental', 'force', 'informational', 'utility'];
 
   return (
     <TextField
@@ -20,7 +20,7 @@ const SelectProfessionArchetype: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      onChange={(event) => onChange(event.target.value as ProfessionArchetype)}
+      onChange={(event) => onChange(event.target.value as SpellType)}
       error={required && !value}
     >
       {allowAll && (
@@ -37,4 +37,4 @@ const SelectProfessionArchetype: FC<{
   );
 };
 
-export default SelectProfessionArchetype;
+export default SelectSpelltype;
