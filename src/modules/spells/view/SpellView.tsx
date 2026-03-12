@@ -46,7 +46,7 @@ const SpellView: FC = () => {
 
   useEffect(() => {
     if (location.state && location.state.spell) {
-      setSpellList(location.state.spellList);
+      setSpell(location.state.spell);
     } else if (spellId) {
       bindSpell(spellId);
     }

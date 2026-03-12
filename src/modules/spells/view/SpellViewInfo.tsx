@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useNavigate } from 'react-router';
 import { Grid, Paper, Typography } from '@mui/material';
 import { t } from 'i18next';
 import { SpellList } from '../../api/spell-list.dto';
@@ -9,7 +10,13 @@ const SpellViewInfo: FC<{
   spell: Spell;
   spellList: SpellList;
 }> = ({ spell, spellList }) => {
+  const navigate = useNavigate();
+
   if (!spell) return <p>Loading...</p>;
+
+  const onSpellListClick = () => {
+    navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } });
+  };
 
   return (
     <Grid container spacing={1}>
@@ -20,8 +27,8 @@ const SpellViewInfo: FC<{
       </Grid>
       <Grid size={12}>
         <Grid container spacing={1}>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <RmuTextCard value={spellList.name} subtitle={t('Spell list')} />
+          <Grid size={{ xs: 12, md: 3 }}>
+            <RmuTextCard value={spellList.name} subtitle={t('Spell list')} onClick={() => onSpellListClick()} />
           </Grid>
         </Grid>
       </Grid>
