@@ -1,0 +1,96 @@
+import { initReactI18next } from 'react-i18next';
+import i18n from 'i18next';
+
+const STORAGE_KEY = 'lang';
+const BASE_REMOTE = 'https://assets.labcabrera.com/locales';
+
+function getLangFromLocalStorage(): string {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return 'en';
+    const v = window.localStorage.getItem(STORAGE_KEY);
+    return v || 'en';
+  } catch (ex) {
+    console.warn('Failed to access localStorage for language preference, defaulting to English', ex);
+    return 'en';
+  }
+}
+
+async function fetchJsonOrNull(url: string) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (ex) {
+    console.warn('Failed to fetch JSON from', url, ex);
+    return null;
+  }
+}
+
+function remoteUrlsFor(lang: string) {
+  return {
+    common: `${BASE_REMOTE}/common_${lang}.json`,
+    skills: `${BASE_REMOTE}/skills_${lang}.json`,
+    skillDescriptions: `${BASE_REMOTE}/skills_desc_${lang}.json`,
+    items: `${BASE_REMOTE}/traits_${lang}.json`,
+  };
+}
+
+(async () => {
+  const lang = getLangFromLocalStorage();
+  const urls = remoteUrlsFor(lang);
+
+  const [commonRemote, skillsRemote, skillDescriptionsRemote, itemsRemote] = await Promise.all([
+    fetchJsonOrNull(urls.common),
+    fetchJsonOrNull(urls.skills),
+    fetchJsonOrNull(urls.skillDescriptions),
+    fetchJsonOrNull(urls.items),
+  ]);
+
+  const merged: Record<string, any> = {
+    ...(commonRemote || {}),
+    ...(skillsRemote || {}),
+    ...(skillDescriptionsRemote || {}),
+    ...(itemsRemote || {}),
+  };
+
+  const resources: Record<string, { translation: Record<string, any> }> = {};
+  resources[lang] = { translation: merged };
+
+  if (lang !== 'en') {
+    const enUrls = remoteUrlsFor('en');
+    const [enCommon, enSkills, enSkillDescriptions, enItems] = await Promise.all([
+      fetchJsonOrNull(enUrls.common),
+      fetchJsonOrNull(enUrls.skills),
+      fetchJsonOrNull(enUrls.skillDescriptions),
+      fetchJsonOrNull(enUrls.items),
+    ]);
+    resources['en'] = {
+      translation: { ...(enCommon || {}), ...(enSkills || {}), ...(enSkillDescriptions || {}), ...(enItems || {}) },
+    };
+  } else {
+    resources['en'] = resources['en'] || { translation: merged };
+  }
+
+  try {
+    await i18n.use(initReactI18next).init({
+      resources,
+      lng: lang,
+      fallbackLng: 'en',
+      interpolation: { escapeValue: false },
+    });
+  } catch (ex) {
+    console.warn('Failed to initialize i18n with remote resources, falling back to defaults', ex);
+    try {
+      i18n.use(initReactI18next).init({
+        resources,
+        lng: 'en',
+        fallbackLng: 'en',
+        interpolation: { escapeValue: false },
+      });
+    } catch (ignore) {
+      console.error('Failed to initialize i18n with remote resources, falling back to defaults', ignore);
+    }
+  }
+})();
+
+export default i18n;
