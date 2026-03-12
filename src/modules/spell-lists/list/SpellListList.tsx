@@ -53,7 +53,7 @@ const SpellListList: FC = () => {
               <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
                 <RmuTextCard
                   value={t(spellList.name)}
-                  subtitle={t(spellList.name)}
+                  subtitle={t('Spell list')}
                   image={`${imageBaseUrl}images/generic/configuration.png`}
                   onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
                 />

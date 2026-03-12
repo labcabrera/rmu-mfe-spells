@@ -1,27 +1,55 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
+import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
+import { fetchSpells } from '../../api/spell';
 import { fetchSpellList } from '../../api/spell-list';
 import { SpellList } from '../../api/spell-list.dto';
+import { Spell } from '../../api/spell.dto';
 import { imageBaseUrl } from '../../services/config';
 import GenericAvatar from '../../shared/avatars/GenericAvatar';
+import AddButton from '../../shared/buttons/AddButton';
+import CategorySeparator from '../../shared/display/CategorySeparator';
 import SpellListViewActions from './SpellListViewActions';
 import SpellListViewInfo from './SpellListViewInfo';
+import SpellListViewSpells from './SpellListViewSpells';
 
 const SpellListView: FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { spellListId } = useParams<{ spellListId?: string }>();
   const { showError } = useError();
   const [spellList, setSpellList] = useState<SpellList | null>(null);
+  const [spells, setSpells] = useState<Spell[]>([]);
+
+  const bindSpellList = (spellListId: string) => {
+    fetchSpellList(spellListId)
+      .then((response) => setSpellList(response))
+      .catch((err: Error) => showError(err.message));
+  };
+
+  const bindSpells = (spellListId: string) => {
+    fetchSpells(`spellListId==${spellListId}`, 0, 100)
+      .then((response) => setSpells(response.content))
+      .catch((err: Error) => showError(err.message));
+  };
+
+  const onAddSpell = () => {
+    navigate(`/spells/spells/create?spellListId=${spellList?.id}`, { state: { spellList } });
+  };
+
+  useEffect(() => {
+    if (spellList) {
+      bindSpells(spellList.id);
+    }
+  }, [spellList]);
 
   useEffect(() => {
     if (location.state && location.state.spellList) {
       setSpellList(location.state.spellList);
     } else if (spellListId) {
-      fetchSpellList(spellListId)
-        .then((response) => setSpellList(response))
-        .catch((err: Error) => showError(err.message));
+      bindSpellList(spellListId);
     }
   }, [location.state, spellListId, showError]);
 
@@ -36,6 +64,10 @@ const SpellListView: FC = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
           <SpellListViewInfo spellList={spellList} />
+          <CategorySeparator text={t('Spells')}>
+            <AddButton onClick={onAddSpell} />
+          </CategorySeparator>
+          <SpellListViewSpells spells={spells} />
         </Grid>
       </Grid>
     </>

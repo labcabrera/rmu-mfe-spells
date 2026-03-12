@@ -8,6 +8,7 @@ import SpellListCreation from './modules/spell-lists/create/SpellListCreation';
 import SpellListEdit from './modules/spell-lists/edit/SpellListEdit';
 import SpellListList from './modules/spell-lists/list/SpellListList';
 import SpellListView from './modules/spell-lists/view/SpellListView';
+import SpellCreation from './modules/spells/create/SpellCreation';
 
 const NotFound: FC = () => (
   <div>
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/spell-lists/create" element={<SpellListCreation />} />
           <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
           <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
+          <Route path="/spells/create" element={<SpellCreation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Box>
