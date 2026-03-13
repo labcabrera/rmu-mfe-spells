@@ -5,8 +5,8 @@ import { useError } from '../../../ErrorContext';
 import { fetchSpellList } from '../../api/spell-list';
 import { SpellList, UpdateSpellListDto } from '../../api/spell-list.dto';
 import EditableAvatar from '../../shared/avatars/EditableAvatar';
+import SpellListForm from '../shared/SpellListForm';
 import SpellListEditActions from './SpellListEditActions';
-import SpellListEditAttributes from './SpellListEditAttributes';
 
 const SpellListEdit: FC = () => {
   const location = useLocation();
@@ -50,10 +50,10 @@ const SpellListEdit: FC = () => {
           />
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
-          <SpellListEditAttributes formData={formData} setFormData={setFormData} />
+          <SpellListForm formData={formData} setFormData={setFormData} />
+          <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
         </Grid>
       </Grid>
-      <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
     </>
   );
 };
