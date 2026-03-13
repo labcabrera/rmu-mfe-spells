@@ -11,9 +11,9 @@ import { imageBaseUrl } from '../../services/config';
 import GenericAvatar from '../../shared/avatars/GenericAvatar';
 import AddButton from '../../shared/buttons/AddButton';
 import CategorySeparator from '../../shared/display/CategorySeparator';
+import SpellTable from '../../spells/shared/SpellTable';
 import SpellListViewActions from './SpellListViewActions';
 import SpellListViewInfo from './SpellListViewInfo';
-import SpellListViewSpells from './SpellListViewSpells';
 
 const SpellListView: FC = () => {
   const location = useLocation();
@@ -67,7 +67,7 @@ const SpellListView: FC = () => {
           <CategorySeparator text={t('Spells')}>
             <AddButton onClick={onAddSpell} />
           </CategorySeparator>
-          <SpellListViewSpells spells={spells} />
+          <SpellTable spells={spells} />
         </Grid>
       </Grid>
     </>

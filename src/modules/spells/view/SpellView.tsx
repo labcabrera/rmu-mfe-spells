@@ -8,6 +8,7 @@ import { SpellList } from '../../api/spell-list.dto';
 import { Spell } from '../../api/spell.dto';
 import { imageBaseUrl } from '../../services/config';
 import GenericAvatar from '../../shared/avatars/GenericAvatar';
+import TechnicalInfo from '../../shared/display/TechnicalInfo';
 import SpellViewActions from './SpellViewActions';
 import SpellViewInfo from './SpellViewInfo';
 
@@ -55,6 +56,9 @@ const SpellView: FC = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
           <SpellViewInfo spell={spell} spellList={spellList} />
+          <TechnicalInfo>
+            <pre>{JSON.stringify(spell, null, 2)}</pre>
+          </TechnicalInfo>
         </Grid>
       </Grid>
     </>

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { SpellDurationType, SpellType } from '../../api/spell.dto';
+import { SpellDurationType, SpeltType } from '../../api/spell.dto';
 
 const SelectSpellDurationType: FC<{
   label: string;
@@ -25,7 +25,7 @@ const SelectSpellDurationType: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('All')}</em>
+          <em>{t('None')}</em>
         </MenuItem>
       )}
       {values.map((option, index) => (

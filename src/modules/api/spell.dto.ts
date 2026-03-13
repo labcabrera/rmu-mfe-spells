@@ -8,8 +8,8 @@ export type Spell = {
   name: string;
   level: number;
   modifiers: SpellModifiers;
-  description: string | undefined;
-  imageUrl: string | undefined;
+  description: string | null;
+  imageUrl: string | null;
 };
 
 export type SpellModifiers = {

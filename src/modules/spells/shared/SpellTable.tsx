@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { t } from 'i18next';
 import { Spell } from '../../api/spell.dto';
 
-const SpellListViewSpells: FC<{
+const SpellTable: FC<{
   spells: Spell[];
 }> = ({ spells }) => {
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ const SpellListViewSpells: FC<{
             <TableCell>{t('Level')}</TableCell>
             <TableCell>{t('Name')}</TableCell>
             <TableCell>{t('Type')}</TableCell>
+            <TableCell>{t('Duration')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -35,6 +36,7 @@ const SpellListViewSpells: FC<{
               <TableCell>{spell.level}</TableCell>
               <TableCell>{spell.name}</TableCell>
               <TableCell>{spell.modifiers?.type}</TableCell>
+              <TableCell>{t(spell.modifiers?.duration?.type || '')}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -43,4 +45,4 @@ const SpellListViewSpells: FC<{
   );
 };
 
-export default SpellListViewSpells;
+export default SpellTable;
