@@ -82,8 +82,10 @@ export const getSpellDurationText = (spell: Spell) => {
       return `${t(duration.type)}${concentration}`;
     case 'lvl':
       return `${duration.duration} ${t(duration.durationScale || '')} / lvl${concentration}`;
-    case 'rr-failure':
-      return `${duration.duration} ${t(duration.durationScale || '')} / ${t(duration.failureScale || '')} failure${concentration}`;
+    case 'rr-failure': {
+      const scale: string = duration.failureScale ? `${duration.failureScale}` : '';
+      return `${duration.duration} ${t(duration.durationScale || '')} / ${scale} failure${concentration}`;
+    }
     default:
       return '-';
   }
@@ -110,10 +112,11 @@ export const getSpellTargetText = (spell: Spell) => {
   switch (spell.modifiers.target.mode) {
     case 'area':
       return `${spell.modifiers.target.modifier || ''}`;
-    case 'target':
+    case 'target': {
       const count = spell.modifiers.target.count ? `${spell.modifiers.target.count} ` : '';
       const types = spell.modifiers.target.types ? spell.modifiers.target.types.join(', ') : '';
       return `${count}${types}`;
+    }
     default:
       return '-';
   }

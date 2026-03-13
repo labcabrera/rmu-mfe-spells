@@ -22,6 +22,7 @@ const SpellListEdit: FC = () => {
 
   useEffect(() => {
     if (spellList) {
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
       const { id, ...rest } = spellList;
       setFormData(rest);
     }

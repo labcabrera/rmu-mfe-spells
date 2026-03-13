@@ -6,15 +6,11 @@ import { Profession } from './profession.dto';
 
 export async function fetchProfession(professionId: string): Promise<Profession> {
   const url = `${apiCoreUrl}/professions/${professionId}`;
-  console.debug("url", url);
   const response = await fetch(url, { method: 'GET', headers: getAuthHeaders() });
   if (response.status !== 200) {
     throw await buildErrorFromResponse(response, url);
   }
-  // return await response.json();
-  const x = await response.json();
-  console.debug("X :", x);
-  return x;
+  return await response.json();
 }
 
 export async function fetchProfessions(rsql: string, page: number, size: number): Promise<Page<Profession>> {

@@ -1,6 +1,5 @@
 import React, { FC, MouseEvent } from 'react';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
-import IconButton from '@mui/material/IconButton';
 import RmuIconButton from './RmuIconButton';
 
 const EditButton: FC<{
