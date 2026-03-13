@@ -2,7 +2,13 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { t } from 'i18next';
-import { getSpellDurationText, getSpellRangeText, getSpellTargetText, Spell } from '../../api/spell.dto';
+import {
+  getSpellDurationText,
+  getSpellNameText,
+  getSpellRangeText,
+  getSpellTargetText,
+  Spell,
+} from '../../api/spell.dto';
 
 const SpellTable: FC<{
   spells: Spell[];
@@ -36,7 +42,7 @@ const SpellTable: FC<{
           {spells.map((spell) => (
             <TableRow key={spell.id} hover onClick={() => handleSpellClick(spell)} sx={{ cursor: 'pointer' }}>
               <TableCell>{spell.level}</TableCell>
-              <TableCell>{spell.name}</TableCell>
+              <TableCell>{getSpellNameText(spell)}</TableCell>
               <TableCell>{spell.modifiers?.type}</TableCell>
               <TableCell>{getSpellRangeText(spell)}</TableCell>
               <TableCell>{getSpellDurationText(spell)}</TableCell>

@@ -1,5 +1,5 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { Grid, TextField } from '@mui/material';
+import { Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { t } from 'i18next';
 import {
   CreateSpellDto,
@@ -72,6 +72,18 @@ const SpellForm: FC<{
             value={formData.level || null}
             onChange={(value) => setFormData({ ...formData, level: value || 1 })}
           />
+        </Grid>
+        <Grid size={12}>
+          <ToggleButtonGroup
+            color="primary"
+            value={formData.modifiers.instant || false}
+            exclusive
+            onChange={(e, value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, instant: value } })}
+            aria-label="cast-type"
+          >
+            <ToggleButton value={true}>{t('Instant')}</ToggleButton>
+            <ToggleButton value={false}>{t('Casted')}</ToggleButton>
+          </ToggleButtonGroup>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <SelectSpellType

@@ -23,7 +23,7 @@ export type SpellModifiers = {
   range: SpellRange | null;
   duration: SpellDuration | null;
   target: SpellTarget | null;
-  area: string | null;
+  instant: boolean | null;
 };
 
 export type SpellRange = {
@@ -47,6 +47,10 @@ export type SpellTarget = {
 export type CreateSpellDto = Omit<Spell, 'id'>;
 
 export type UpdateSpellDto = Partial<Omit<Spell, 'id'>>;
+
+export const getSpellNameText = (spell: Spell) => {
+  return spell.modifiers.instant ? `${t(spell.name)} *` : t(spell.name);
+};
 
 export const getSpellDurationText = (spell: Spell) => {
   if (!spell.modifiers?.duration) return '-';
@@ -84,8 +88,8 @@ export const getSpellTargetText = (spell: Spell) => {
     case 'area':
       return `${spell.modifiers.target.modifier || ''}`;
     case 'target':
-      const types = spell.modifiers.target.types ? spell.modifiers.target.types.join(', ') : '';
       const count = spell.modifiers.target.count ? `${spell.modifiers.target.count} ` : '';
+      const types = spell.modifiers.target.types ? spell.modifiers.target.types.join(', ') : '';
       return `${count}${types}`;
     default:
       return '-';
