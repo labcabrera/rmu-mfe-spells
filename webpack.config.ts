@@ -22,7 +22,7 @@ interface Configuration extends WebpackConfiguration {
 export default (_env: unknown, argv: { mode?: string }): Configuration => {
   const mode = argv.mode || 'development';
   dotenv.config({ path: path.resolve(__dirname, `.env.${mode}`) });
-  const publicPath = process.env.RMU_MFE_CORE_PUBLIC_PATH;
+  const publicPath = process.env.RMU_MFE_SPELLS_PUBLIC_PATH;
   return {
     output: {
       publicPath,
