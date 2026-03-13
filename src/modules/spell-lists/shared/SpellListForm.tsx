@@ -1,16 +1,33 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { CreateSpellListDto, UpdateSpellListDto } from '../../api/spell-list.dto';
+import { useError } from '../../../ErrorContext';
+import { fetchProfessions } from '../../api/profession';
+import { CreateSpellListDto, ListType, UpdateSpellListDto } from '../../api/spell-list.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import SelectListType from '../../shared/selects/SelectListType';
+import SelectProfession from '../../shared/selects/SelectProfession';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
 
 const SpellListForm: FC<{
   formData: CreateSpellListDto | UpdateSpellListDto;
   setFormData: Dispatch<SetStateAction<CreateSpellListDto | UpdateSpellListDto>>;
 }> = ({ formData, setFormData }) => {
-  if (!formData || !setFormData) return <p>Loading...</p>;
+  const { showError } = useError();
+  const [professionIds, setProfessionIds] = useState<string[]>();
+
+  const onTypeChange = (value: ListType | null) => {
+    const professionId = value === 'base' ? formData.professionId : null;
+    setFormData({ ...formData, type: value!, professionId });
+  };
+
+  useEffect(() => {
+    fetchProfessions('', 0, 100)
+      .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
+      .catch((err: Error) => showError(err.message));
+  }, []);
+
+  if (!formData || !setFormData || !professionIds) return <p>Loading...</p>;
 
   return (
     <>
@@ -31,7 +48,7 @@ const SpellListForm: FC<{
             label={t('Realm')}
             value={formData.realm || null}
             name="realm"
-            onChange={(value) => setFormData({ ...formData, realm: value })}
+            onChange={(value) => setFormData({ ...formData, realm: value! })}
           />
         </Grid>
         <Grid size={12}>
@@ -39,15 +56,26 @@ const SpellListForm: FC<{
             label={t('List Type')}
             value={formData.type || null}
             name="type"
-            onChange={(value) => setFormData({ ...formData, type: value })}
+            onChange={(value) => onTypeChange(value)}
           />
         </Grid>
+        {formData.type === 'base' && (
+          <Grid size={12}>
+            <SelectProfession
+              label={t('Profession')}
+              value={formData.professionId || null}
+              name="profession"
+              professionIds={professionIds}
+              onChange={(value) => setFormData({ ...formData, professionId: value })}
+            />
+          </Grid>
+        )}
         <Grid size={12}>
           <TextField
             label={t('Description')}
             name="description"
-            value={formData.name || ''}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            value={formData.description || ''}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             fullWidth
             multiline
             rows={5}

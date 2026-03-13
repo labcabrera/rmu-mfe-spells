@@ -1,16 +1,19 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { LIST_TYPES, ListType } from '../../api/spell-list.dto';
 
 const SelectListType: FC<{
   label: string;
-  value: ListType | null;
+  value: string | null;
   name: string;
+  professionIds: string[];
   required?: boolean;
   allowAll?: boolean;
-  onChange: (listType: ListType) => void;
-}> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
+  onChange: (professionId: string) => void;
+}> = ({ label, value, name, professionIds, required = true, allowAll = false, onChange }) => {
+
+  if(!professionIds || professionIds.length === 0) return <p>Loading...</p>;
+
   return (
     <TextField
       select
@@ -18,7 +21,7 @@ const SelectListType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      onChange={(event) => onChange(event.target.value as ListType)}
+      onChange={(event) => onChange(event.target.value as string)}
       error={required && !value}
     >
       {allowAll && (
@@ -26,7 +29,7 @@ const SelectListType: FC<{
           <em>{t('All')}</em>
         </MenuItem>
       )}
-      {LIST_TYPES.map((option, index) => (
+      {professionIds.map((option, index) => (
         <MenuItem key={index} value={option}>
           {t(option)}
         </MenuItem>

@@ -8,6 +8,7 @@ export type SpellList = {
   id: string;
   type: ListType;
   realm: RealmType;
+  professionId: string | null;
   name: string;
   description: string | null;
   imageUrl: string | null;

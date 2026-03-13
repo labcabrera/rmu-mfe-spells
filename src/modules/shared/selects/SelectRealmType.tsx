@@ -23,7 +23,7 @@ const SelectRealmType: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('None')}</em>
+          <em>{t('All')}</em>
         </MenuItem>
       )}
       {REALM_TYPES.map((option, index) => (

@@ -9,6 +9,7 @@ import { imageBaseUrl } from '../../services/config';
 import RmuTextCard from '../../shared/cards/RmuTextCard';
 import SpellListListActions from './SpellListListActions';
 import SpellListListSearch from './SpellListListSearch';
+import { fetchProfessions } from '../../api/profession';
 
 const PAGE_SIZE = 24;
 
@@ -19,6 +20,13 @@ const SpellListList: FC = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [queryString, setQueryString] = useState<string>('');
+  const [professionIds, setProfessionIds] = useState<string[]>();
+
+  const bindProfessions = () => {
+    fetchProfessions("",0,100).then((response) => {
+      setProfessionIds(response.content.map((profession) => profession.id));
+    }).catch((err: Error) => showError(err.message));
+  };
 
   const bindSpellLists = (queryString: string, pageNumber: number = 0) => {
     fetchSpellLists(queryString, pageNumber, PAGE_SIZE)
@@ -37,7 +45,11 @@ const SpellListList: FC = () => {
     bindSpellLists(queryString, page);
   }, [queryString, page]);
 
-  if (!skills) return <p>Loading...</p>;
+  useEffect(() => {
+    bindProfessions();
+  }, []);
+
+  if (!skills || !professionIds) return <p>Loading...</p>;
 
   return (
     <>
@@ -47,7 +59,7 @@ const SpellListList: FC = () => {
         <Grid size={{ xs: 12, md: 8 }}>
           <Grid container spacing={1}>
             <Grid size={12}>
-              <SpellListListSearch setQueryString={setQueryString} />
+              <SpellListListSearch setQueryString={setQueryString} professionIds={professionIds} />
             </Grid>
             {skills.map((spellList) => (
               <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
