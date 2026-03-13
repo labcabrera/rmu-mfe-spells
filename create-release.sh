@@ -38,7 +38,7 @@ validate_version() {
 
 # Function to verify that git flow is initialized
 check_git_flow() {
-    if ! git config --get gitflow.branch.main &> /dev/null; then
+    if ! git config --get gitflow.branch.master &> /dev/null; then
         echo "❌ Error: git flow is not initialized in this repository"
         echo "Run: git flow init"
         exit 1
