@@ -27,6 +27,10 @@ const SpellListListSearch: FC<{
       if(query) query += ';';
       query += `realm==${realmType}`;
     }
+    if(professionId) {
+      if(query) query += ';';
+      query += `professionId==${professionId}`;
+    }
     return query;
   };
 

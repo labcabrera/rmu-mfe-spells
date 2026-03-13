@@ -23,7 +23,7 @@ const SpellListList: FC = () => {
   const [professionIds, setProfessionIds] = useState<string[]>();
 
   const bindProfessions = () => {
-    fetchProfessions("",0,100).then((response) => {
+    fetchProfessions("archetype!=non-spellcaster",0,100).then((response) => {
       setProfessionIds(response.content.map((profession) => profession.id));
     }).catch((err: Error) => showError(err.message));
   };

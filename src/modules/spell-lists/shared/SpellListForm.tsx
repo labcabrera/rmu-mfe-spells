@@ -22,7 +22,7 @@ const SpellListForm: FC<{
   };
 
   useEffect(() => {
-    fetchProfessions('', 0, 100)
+    fetchProfessions('archetype!=non-spellcaster', 0, 100)
       .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
       .catch((err: Error) => showError(err.message));
   }, []);

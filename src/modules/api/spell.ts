@@ -55,3 +55,14 @@ export async function deleteSpell(spellId: string): Promise<void> {
     throw await buildErrorFromResponse(response, url);
   }
 }
+
+export async function fetchSpellTargetTypes(): Promise<string[]> {
+  const url = `${apiSpellsUrl}/target-types`;
+  const response = await fetch(url, { method: 'GET', headers: getAuthHeaders() });
+  if (response.status !== 200) {
+    throw await buildErrorFromResponse(response, url);
+  }
+  return await response.json();
+}
+
+
