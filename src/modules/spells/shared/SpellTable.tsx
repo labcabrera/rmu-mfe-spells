@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { t } from 'i18next';
-import { Spell } from '../../api/spell.dto';
+import { getSpellDurationText, getSpellRangeText, Spell } from '../../api/spell.dto';
 
 const SpellTable: FC<{
   spells: Spell[];
@@ -27,7 +27,9 @@ const SpellTable: FC<{
             <TableCell>{t('Level')}</TableCell>
             <TableCell>{t('Name')}</TableCell>
             <TableCell>{t('Type')}</TableCell>
+            <TableCell>{t('Range')}</TableCell>
             <TableCell>{t('Duration')}</TableCell>
+            <TableCell>{t('AoE')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -36,7 +38,9 @@ const SpellTable: FC<{
               <TableCell>{spell.level}</TableCell>
               <TableCell>{spell.name}</TableCell>
               <TableCell>{spell.modifiers?.type}</TableCell>
-              <TableCell>{t(spell.modifiers?.duration?.type || '')}</TableCell>
+              <TableCell>{getSpellRangeText(spell)}</TableCell>
+              <TableCell>{getSpellDurationText(spell)}</TableCell>
+              <TableCell>{spell.modifiers?.area || '-'}</TableCell>
             </TableRow>
           ))}
         </TableBody>

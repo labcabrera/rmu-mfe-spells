@@ -5,8 +5,8 @@ import { fetchSpellList } from '../../api/spell-list';
 import { SpellList } from '../../api/spell-list.dto';
 import { CreateSpellDto } from '../../api/spell.dto';
 import EditableAvatar from '../../shared/avatars/EditableAvatar';
+import SpellForm from '../shared/SpellForm';
 import SpellCreationActions from './SpellCreationActions';
-import SpellCreationAttributes from './SpellCreationAttributes';
 
 const SpellCreation: FC = () => {
   const [formData, setFormData] = useState<CreateSpellDto>({
@@ -62,7 +62,7 @@ const SpellCreation: FC = () => {
           />
         </Grid>
         <Grid size={8}>
-          <SpellCreationAttributes formData={formData} setFormData={setFormData} />
+          <SpellForm formData={formData} setFormData={setFormData} />
           <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
         </Grid>
       </Grid>

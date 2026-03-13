@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import { t } from 'i18next';
-import { SpellDurationType } from '../../api/spell.dto';
+import { SpellRangeType } from '../../api/spell.dto';
 
-const SelectSpellDurationType: FC<{
+const SelectSpellRangeType: FC<{
   label: string;
-  value: SpellDurationType | null;
+  value: SpellRangeType | null;
   name: string;
   required?: boolean;
   allowAll?: boolean;
-  onChange: (spellType: SpellDurationType) => void;
+  onChange: (spellType: SpellRangeType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
-  const values = ['concentration', 'permanent', 'lvl'];
+  const values = ['self', 'touch', 'distance', 'distance-level'];
 
   return (
     <TextField
@@ -20,7 +20,7 @@ const SelectSpellDurationType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      onChange={(event) => onChange(event.target.value as SpellDurationType)}
+      onChange={(event) => onChange(event.target.value as SpellRangeType)}
       error={required && !value}
     >
       {allowAll && (
@@ -37,4 +37,4 @@ const SelectSpellDurationType: FC<{
   );
 };
 
-export default SelectSpellDurationType;
+export default SelectSpellRangeType;

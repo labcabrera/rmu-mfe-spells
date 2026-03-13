@@ -24,7 +24,7 @@ const HomePage: FC = () => {
 
   return (
     <>
-      <RmuBreadcrumbs items={[{ name: 'Core' }]} />
+      <RmuBreadcrumbs items={[{ name: 'Spells' }]} />
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 2 }}></Grid>
         <Grid size={{ xs: 12, md: 8 }}>
