@@ -1,9 +1,11 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { Grid, TextField } from '@mui/material';
+import { Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { t } from 'i18next';
-import { CreateSpellDto, SpellTargetMode, UpdateSpellDto } from '../../api/spell.dto';
+import { CreateSpellDto, SpellTargetMode, SpellTargetType, UpdateSpellDto } from '../../api/spell.dto';
 import { NumericInput } from '../../shared/inputs/NumericInput';
 import SelectSpellTargetMode from '../../shared/selects/SelectSpellTargetMode';
+
+const SPELL_TARGET_TYPES: SpellTargetType[] = ['person', 'item', 'spell', 'gateway', 'lock'];
 
 const SpellFormTarget: FC<{
   formData: CreateSpellDto | UpdateSpellDto;
@@ -28,8 +30,8 @@ const SpellFormTarget: FC<{
           allowAll={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
-        {formData.modifiers?.target?.mode !== 'target' && (
+      {formData.modifiers?.target?.mode !== 'target' && (
+        <Grid size={{ xs: 12, md: 4 }}>
           <TextField
             label={t('Modifier')}
             name="modifier"
@@ -45,8 +47,8 @@ const SpellFormTarget: FC<{
             }
             fullWidth
           />
-        )}
-      </Grid>
+        </Grid>
+      )}
       <Grid size={{ xs: 12, md: 4 }}>
         {formData.modifiers?.target?.mode === 'target' && (
           <NumericInput
@@ -65,7 +67,44 @@ const SpellFormTarget: FC<{
           />
         )}
       </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        {formData.modifiers?.target?.mode === 'target' && (
+          <SpellTargetTypesSelector formData={formData} setFormData={setFormData} />
+        )}
+      </Grid>
     </>
+  );
+};
+
+const SpellTargetTypesSelector: FC<{
+  formData: CreateSpellDto | UpdateSpellDto;
+  setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
+}> = ({ formData, setFormData }) => {
+  if (!formData || !setFormData) return <p>Loading...</p>;
+
+  const handleChange = (_: React.MouseEvent<HTMLElement>, newValue: SpellTargetType[] | null) => {
+    setFormData({
+      ...formData,
+      modifiers: {
+        ...formData.modifiers,
+        target: { ...formData.modifiers!.target, types: newValue && newValue.length ? newValue : null },
+      },
+    });
+  };
+
+  return (
+    <ToggleButtonGroup
+      value={formData.modifiers?.target?.types || []}
+      onChange={handleChange}
+      aria-label="spell-target-types"
+      size="small"
+    >
+      {SPELL_TARGET_TYPES.map((t) => (
+        <ToggleButton key={t} value={t} aria-label={t}>
+          {t}
+        </ToggleButton>
+      ))}
+    </ToggleButtonGroup>
   );
 };
 

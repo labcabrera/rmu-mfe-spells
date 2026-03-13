@@ -43,13 +43,13 @@ const SpellListEdit: FC = () => {
     <>
       <SpellListEditActions spellList={spellList} formData={formData} isValid={isValid} />
       <Grid container spacing={2}>
-        <Grid size={2}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <EditableAvatar
             imageUrl={formData.imageUrl || ''}
             onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
           />
         </Grid>
-        <Grid size={7}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <SpellListEditAttributes formData={formData} setFormData={setFormData} />
         </Grid>
       </Grid>

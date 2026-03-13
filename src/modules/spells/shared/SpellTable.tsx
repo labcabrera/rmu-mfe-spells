@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { t } from 'i18next';
-import { getSpellDurationText, getSpellRangeText, Spell } from '../../api/spell.dto';
+import { getSpellDurationText, getSpellRangeText, getSpellTargetText, Spell } from '../../api/spell.dto';
 
 const SpellTable: FC<{
   spells: Spell[];
@@ -29,7 +29,7 @@ const SpellTable: FC<{
             <TableCell>{t('Type')}</TableCell>
             <TableCell>{t('Range')}</TableCell>
             <TableCell>{t('Duration')}</TableCell>
-            <TableCell>{t('AoE')}</TableCell>
+            <TableCell>{t('Target')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -40,7 +40,7 @@ const SpellTable: FC<{
               <TableCell>{spell.modifiers?.type}</TableCell>
               <TableCell>{getSpellRangeText(spell)}</TableCell>
               <TableCell>{getSpellDurationText(spell)}</TableCell>
-              <TableCell>{spell.modifiers?.area || '-'}</TableCell>
+              <TableCell>{getSpellTargetText(spell)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

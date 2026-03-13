@@ -77,3 +77,17 @@ export const getSpellRangeText = (spell: Spell) => {
       return '-';
   }
 };
+
+export const getSpellTargetText = (spell: Spell) => {
+  if (!spell.modifiers?.target) return '-';
+  switch (spell.modifiers.target.mode) {
+    case 'area':
+      return `${spell.modifiers.target.modifier || ''}`;
+    case 'target':
+      const types = spell.modifiers.target.types ? spell.modifiers.target.types.join(', ') : '';
+      const count = spell.modifiers.target.count ? `${spell.modifiers.target.count} ` : '';
+      return `${count}${types}`;
+    default:
+      return '-';
+  }
+};

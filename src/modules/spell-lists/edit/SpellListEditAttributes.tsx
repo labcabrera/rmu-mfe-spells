@@ -11,7 +11,6 @@ const SpellListEditAttributes: FC<{
 }> = ({ formData, setFormData }) => {
   const { showError } = useError();
 
-
   useEffect(() => {
     // fetchSkillCategories()
     //   .then((data) => setCategories(data))
@@ -42,12 +41,13 @@ const SpellListEditAttributes: FC<{
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             error={!formData.description}
             fullWidth
+            multiline
+            rows={5}
           />
         </Grid>
       </Grid>
     </>
   );
 };
-
 
 export default SpellListEditAttributes;

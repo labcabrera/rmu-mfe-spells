@@ -159,15 +159,6 @@ const SpellForm: FC<{
             </>
           )}
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <TextField
-            label={t('Area')}
-            name="area"
-            value={formData.modifiers?.area || ''}
-            onChange={(e) => setFormData({ ...formData, modifiers: { ...formData.modifiers, area: e.target.value } })}
-            fullWidth
-          />
-        </Grid>
         <SpellFormTarget formData={formData} setFormData={setFormData} />
         <Grid size={12}>
           <TextField
