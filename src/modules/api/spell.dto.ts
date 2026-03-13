@@ -39,6 +39,7 @@ export type SpellDuration = {
   type: SpellDurationType;
   duration: number | null;
   durationScale: SpellDurationScale | null;
+  requiredConcentration: boolean | null;
 };
 
 export type SpellTarget = {
@@ -67,13 +68,17 @@ export const getSpellTypeText = (spell: Spell) => {
 
 export const getSpellDurationText = (spell: Spell) => {
   if (!spell.modifiers?.duration) return '-';
+  if (!spell.modifiers.duration.type) {
+    return spell.modifiers?.duration?.requiredConcentration === true ? 'C' : '-';
+  }
+  const concentration = spell.modifiers?.duration?.requiredConcentration ? ` (C)` : '';
   const duration = spell.modifiers.duration;
   switch (duration.type) {
     case 'concentration':
     case 'permanent':
-      return t(duration.type);
+      return `${t(duration.type)}${concentration}`;
     case 'lvl':
-      return `${duration.duration} ${t(duration.durationScale || '')} / level`;
+      return `${duration.duration} ${t(duration.durationScale || '')} / lvl${concentration}`;
     default:
       return '-';
   }
@@ -86,7 +91,7 @@ export const getSpellRangeText = (spell: Spell) => {
     case 'distance':
       return `${range.value}'`;
     case 'distance-level':
-      return `${range.value}' / level`;
+      return `${range.value}' / lvl`;
     case 'touch':
     case 'self':
       return t(range.type);

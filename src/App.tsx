@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, ThemeProvider } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { ErrorProvider } from './ErrorContext';
 import HomePage from './HomePage';
 import './i18n';
@@ -21,21 +22,23 @@ const NotFound: FC = () => (
 
 const App = () => {
   return (
-    <ErrorProvider>
-      <Box padding={2}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/spell-lists" element={<SpellListList />} />
-          <Route path="/spell-lists/create" element={<SpellListCreation />} />
-          <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
-          <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
-          <Route path="/spells/view/:spellId" element={<SpellView />} />
-          <Route path="/spells/create" element={<SpellCreation />} />
-          <Route path="/spells/edit/:spellId" element={<SpellEdit />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Box>
-    </ErrorProvider>
+    <ThemeProvider theme={useTheme()}>
+      <ErrorProvider>
+        <Box padding={2}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/spell-lists" element={<SpellListList />} />
+            <Route path="/spell-lists/create" element={<SpellListCreation />} />
+            <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
+            <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
+            <Route path="/spells/view/:spellId" element={<SpellView />} />
+            <Route path="/spells/create" element={<SpellCreation />} />
+            <Route path="/spells/edit/:spellId" element={<SpellEdit />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Box>
+      </ErrorProvider>
+    </ThemeProvider>
   );
 };
 
