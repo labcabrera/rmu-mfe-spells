@@ -7,6 +7,7 @@ import {
   getSpellNameText,
   getSpellRangeText,
   getSpellTargetText,
+  getSpellTypeText,
   Spell,
 } from '../../api/spell.dto';
 
@@ -43,7 +44,7 @@ const SpellTable: FC<{
             <TableRow key={spell.id} hover onClick={() => handleSpellClick(spell)} sx={{ cursor: 'pointer' }}>
               <TableCell>{spell.level}</TableCell>
               <TableCell>{getSpellNameText(spell)}</TableCell>
-              <TableCell>{spell.modifiers?.type}</TableCell>
+              <TableCell>{getSpellTypeText(spell)}</TableCell>
               <TableCell>{getSpellRangeText(spell)}</TableCell>
               <TableCell>{getSpellDurationText(spell)}</TableCell>
               <TableCell>{getSpellTargetText(spell)}</TableCell>

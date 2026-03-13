@@ -1,20 +1,14 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { t } from 'i18next';
-import {
-  CreateSpellDto,
-  SpellDuration,
-  SpellDurationType,
-  SpellRange,
-  SpellRangeType,
-  UpdateSpellDto,
-} from '../../api/spell.dto';
+import { CreateSpellDto, SpellDuration, SpellDurationType, UpdateSpellDto } from '../../api/spell.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import { NumericInput } from '../../shared/inputs/NumericInput';
 import SelectSpellDurationScale from '../../shared/selects/SelectSpellDurationScale';
 import SelectSpellDurationType from '../../shared/selects/SelectSpellDurationType';
-import SelectSpellRangeType from '../../shared/selects/SelectSpellRangeType';
+import SelectSpellSubtype from '../../shared/selects/SelectSpellSubtype';
 import SelectSpellType from '../../shared/selects/SelectSpellType';
+import SpellFormRange from './SpellFormRange';
 import SpellFormTarget from './SpellFormTarget';
 
 const SpellForm: FC<{
@@ -31,16 +25,6 @@ const SpellForm: FC<{
       duration = { type: value, duration: null, durationScale: null };
     }
     setFormData({ ...formData, modifiers: { ...formData.modifiers, duration: duration } });
-  };
-
-  const onSpellRangeTypeChange = (value: SpellRangeType | null) => {
-    let range: SpellRange | null = value ? formData.modifiers!.range : null;
-    if (value && range) {
-      range.type = value;
-    } else if (value) {
-      range = { type: value, value: null };
-    }
-    setFormData({ ...formData, modifiers: { ...formData.modifiers, range: range } });
   };
 
   const requiresDurationScale = (): boolean => {
@@ -65,7 +49,7 @@ const SpellForm: FC<{
             fullWidth
           />
         </Grid>
-        <Grid size={12}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <NumericInput
             label={t('Level')}
             name="level"
@@ -73,18 +57,20 @@ const SpellForm: FC<{
             onChange={(value) => setFormData({ ...formData, level: value || 1 })}
           />
         </Grid>
-        <Grid size={12}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <ToggleButtonGroup
             color="primary"
-            value={formData.modifiers.instant || false}
+            value={formData.modifiers!.instant || false}
             exclusive
             onChange={(e, value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, instant: value } })}
             aria-label="cast-type"
+            size="small"
           >
             <ToggleButton value={true}>{t('Instant')}</ToggleButton>
             <ToggleButton value={false}>{t('Casted')}</ToggleButton>
           </ToggleButtonGroup>
         </Grid>
+        <Grid size={{ xs: 12, md: 4 }}></Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <SelectSpellType
             label={t('Type')}
@@ -93,34 +79,21 @@ const SpellForm: FC<{
             onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, type: value } })}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <SelectSpellRangeType
-            label={t('Range type')}
-            name="spellRangeType"
-            value={formData.modifiers?.range?.type || null}
-            required={false}
-            allowAll={true}
-            onChange={(value) => onSpellRangeTypeChange(value)}
+        <Grid size={{ xs: 12, md: 8 }}>
+          <SelectSpellSubtype
+            label={t('Subtype')}
+            name="spellSubtype"
+            value={formData.modifiers?.subtype || null}
+            onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, subtype: value } })}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          {formData.modifiers?.range?.type && (
-            <NumericInput
-              label={t('Range')}
-              name="spellRange"
-              value={formData.modifiers?.range?.value || null}
-              onChange={(value) =>
-                setFormData({
-                  ...formData,
-                  modifiers: {
-                    ...formData.modifiers,
-                    range: { ...formData.modifiers?.range, value: value },
-                  },
-                })
-              }
-            />
-          )}
-        </Grid>
+      </Grid>
+      <CategorySeparator text={t('Range')} />
+      <Grid container spacing={1}>
+        <SpellFormRange formData={formData} setFormData={setFormData} />
+      </Grid>
+      <CategorySeparator text={t('Duration')} />
+      <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 4 }}>
           <SelectSpellDurationType
             label={t('Duration type')}
@@ -171,6 +144,9 @@ const SpellForm: FC<{
             </>
           )}
         </Grid>
+      </Grid>
+      <CategorySeparator text={t('Target')} />
+      <Grid container spacing={1}>
         <SpellFormTarget formData={formData} setFormData={setFormData} />
         <Grid size={12}>
           <TextField

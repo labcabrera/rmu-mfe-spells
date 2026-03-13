@@ -1,11 +1,15 @@
 import { t } from 'i18next';
 
 export type SpellType = 'alchemical' | 'elemental' | 'force' | 'informational' | 'utility';
+export type SpellSubtype = 'ball' | 'directed' | 'mental-attack' | 'subconscious';
 export type SpellDurationType = 'concentration' | 'permanent' | 'lvl';
 export type SpellDurationScale = 'round' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 export type SpellRangeType = 'self' | 'touch' | 'distance' | 'distance-level';
 export type SpellTargetMode = 'target' | 'area';
 export type SpellTargetType = 'person' | 'item' | 'spell' | 'gateway' | 'lock';
+
+export const SPELL_TYPES: SpellType[] = ['alchemical', 'elemental', 'force', 'informational', 'utility'];
+export const SPELL_SUBTYPES: SpellSubtype[] = ['ball', 'directed', 'mental-attack', 'subconscious'];
 
 export type Spell = {
   id: string;
@@ -19,7 +23,7 @@ export type Spell = {
 
 export type SpellModifiers = {
   type: SpellType;
-  subtype: string;
+  subtype: SpellSubtype | null;
   range: SpellRange | null;
   duration: SpellDuration | null;
   target: SpellTarget | null;
@@ -50,6 +54,15 @@ export type UpdateSpellDto = Partial<Omit<Spell, 'id'>>;
 
 export const getSpellNameText = (spell: Spell) => {
   return spell.modifiers.instant ? `${t(spell.name)} *` : t(spell.name);
+};
+
+export const getSpellTypeText = (spell: Spell) => {
+  const type = spell.modifiers.type.charAt(0).toUpperCase();
+  let subtype = '';
+  if (spell.modifiers.subtype) {
+    subtype = spell.modifiers.subtype.charAt(0);
+  }
+  return `${t(type)}${t(subtype)}`;
 };
 
 export const getSpellDurationText = (spell: Spell) => {
