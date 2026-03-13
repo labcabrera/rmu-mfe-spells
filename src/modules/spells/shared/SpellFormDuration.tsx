@@ -11,11 +11,15 @@ const SpellFormDuration: FC<{
   setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
 }> = ({ formData, setFormData }) => {
   const requiresDurationScale = (): boolean => {
-    return formData.modifiers?.duration?.type === 'lvl';
+    return formData.modifiers?.duration?.type === 'lvl' || formData.modifiers?.duration?.type === 'rr-failure';
   };
 
   const requiresDurationValue = (): boolean => {
-    return formData.modifiers?.duration?.type === 'lvl';
+    return formData.modifiers?.duration?.type === 'lvl' || formData.modifiers?.duration?.type === 'rr-failure';
+  };
+
+  const requiresFailureRange = (): boolean => {
+    return formData.modifiers?.duration?.type === 'rr-failure';
   };
 
   const onSpellDurationTypeChange = (value: SpellDurationType | null) => {
@@ -82,6 +86,26 @@ const SpellFormDuration: FC<{
           </>
         )}
       </Grid>
+      {requiresFailureRange() && (
+        <Grid size={{ xs: 12, md: 4 }}>
+          <>
+            <NumericInput
+              label={t('Failure scale')}
+              name="failureScale"
+              value={formData.modifiers?.duration?.failureScale || null}
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  modifiers: {
+                    ...formData.modifiers,
+                    duration: { ...formData.modifiers?.duration, failureScale: value },
+                  },
+                })
+              }
+            />
+          </>
+        </Grid>
+      )}
       <Grid size={{ xs: 12, md: 4 }}>
         <ToggleButtonGroup
           color="primary"

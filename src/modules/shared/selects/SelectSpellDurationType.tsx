@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import { t } from 'i18next';
 import { SpellDurationType } from '../../api/spell.dto';
+import { SPELL_DURATION_TYPES } from '../../api/spell.dto';
 
 const SelectSpellDurationType: FC<{
   label: string;
@@ -11,8 +12,6 @@ const SelectSpellDurationType: FC<{
   allowAll?: boolean;
   onChange: (spellType: SpellDurationType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
-  const values = ['concentration', 'permanent', 'lvl'];
-
   return (
     <TextField
       select
@@ -28,7 +27,7 @@ const SelectSpellDurationType: FC<{
           <em>{t('None')}</em>
         </MenuItem>
       )}
-      {values.map((option, index) => (
+      {SPELL_DURATION_TYPES.map((option, index) => (
         <MenuItem key={index} value={option}>
           {t(option)}
         </MenuItem>

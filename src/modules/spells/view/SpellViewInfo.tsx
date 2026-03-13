@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { SpellList } from '../../api/spell-list.dto';
 import { getSpellDurationText, Spell } from '../../api/spell.dto';
 import RmuTextCard from '../../shared/cards/RmuTextCard';
+import CategorySeparator from '../../shared/display/CategorySeparator';
 
 const SpellViewInfo: FC<{
   spell: Spell;
@@ -19,44 +20,56 @@ const SpellViewInfo: FC<{
   };
 
   return (
-    <Grid container spacing={1}>
-      <Grid size={12}>
-        <Typography variant="h6" gutterBottom>
-          {t(spell.name)}
-        </Typography>
+    <>
+      <Grid container spacing={1}>
+        <Grid size={12}>
+          <Typography variant="h6" gutterBottom>
+            {t(spell.name)}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid size={12}>
-        <Grid container spacing={1}>
-          <Grid size={{ xs: 12, md: 3 }}>
-            <RmuTextCard value={spellList.name} subtitle={t('Spell list')} onClick={() => onSpellListClick()} />
+
+      <CategorySeparator text={t('Spell list')} />
+
+      <Grid container spacing={1}>
+        <Grid size={12}>
+          <Grid container spacing={1}>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <RmuTextCard value={spellList.name} subtitle={t('Spell list')} onClick={() => onSpellListClick()} />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <Grid size={12}>
-        <Grid container spacing={1}>
-          <Grid size={{ xs: 12, md: 3 }}>
-            <RmuTextCard value={spell.level} subtitle={t('Level')} />
+
+      <CategorySeparator text={t('Spell information')} />
+
+      <Grid container spacing={1}>
+        <Grid size={12}>
+          <Grid container spacing={1}>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <RmuTextCard value={spell.level} subtitle={t('Level')} />
+            </Grid>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} />
+            </Grid>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} />
+            </Grid>
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
-            <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
-            <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} />
+        </Grid>
+        <Grid size={12}>
+          <Grid container spacing={1}>
+            <Grid size={{ xs: 12, md: 12 }}>
+              <Paper sx={{ padding: 2 }}>
+                <Typography variant="body1" color="primary" gutterBottom>
+                  {t(spell.description || '')}
+                </Typography>
+              </Paper>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <Grid size={12}>
-        <Grid container spacing={1}>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <Paper sx={{ padding: 2 }}>
-              <Typography variant="body2" color="secondary" gutterBottom>
-                {t(spell.description || '')}
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+    </>
   );
 };
 

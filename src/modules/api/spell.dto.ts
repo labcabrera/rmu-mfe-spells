@@ -2,7 +2,7 @@ import { t } from 'i18next';
 
 export type SpellType = 'alchemical' | 'elemental' | 'force' | 'informational' | 'utility';
 export type SpellSubtype = 'ball' | 'directed' | 'mental-attack' | 'subconscious';
-export type SpellDurationType = 'concentration' | 'permanent' | 'lvl';
+export type SpellDurationType = 'concentration' | 'permanent' | 'lvl' | 'rr-failure';
 export type SpellDurationScale = 'round' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 export type SpellRangeType = 'self' | 'touch' | 'distance' | 'distance-level';
 export type SpellTargetMode = 'target' | 'area';
@@ -10,6 +10,7 @@ export type SpellTargetType = 'person' | 'item' | 'spell' | 'gateway' | 'lock';
 
 export const SPELL_TYPES: SpellType[] = ['alchemical', 'elemental', 'force', 'informational', 'utility'];
 export const SPELL_SUBTYPES: SpellSubtype[] = ['ball', 'directed', 'mental-attack', 'subconscious'];
+export const SPELL_DURATION_TYPES: SpellDurationType[] = ['concentration', 'permanent', 'lvl', 'rr-failure'];
 
 export type Spell = {
   id: string;
@@ -40,6 +41,7 @@ export type SpellDuration = {
   duration: number | null;
   durationScale: SpellDurationScale | null;
   requiredConcentration: boolean | null;
+  failureScale: number | null;
 };
 
 export type SpellTarget = {
@@ -58,6 +60,7 @@ export const getSpellNameText = (spell: Spell) => {
 };
 
 export const getSpellTypeText = (spell: Spell) => {
+  if (!spell.modifiers?.type) return '-';
   const type = spell.modifiers.type.charAt(0).toUpperCase();
   let subtype = '';
   if (spell.modifiers.subtype) {
@@ -79,6 +82,8 @@ export const getSpellDurationText = (spell: Spell) => {
       return `${t(duration.type)}${concentration}`;
     case 'lvl':
       return `${duration.duration} ${t(duration.durationScale || '')} / lvl${concentration}`;
+    case 'rr-failure':
+      return `${duration.duration} ${t(duration.durationScale || '')} / ${t(duration.failureScale || '')} failure${concentration}`;
     default:
       return '-';
   }
