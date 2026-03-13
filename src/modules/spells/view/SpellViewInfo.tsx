@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Grid, Paper, Typography } from '@mui/material';
 import { t } from 'i18next';
 import { SpellList } from '../../api/spell-list.dto';
-import { getSpellDurationText, Spell } from '../../api/spell.dto';
+import { getSpellDurationText, getSpellRangeText, getSpellTargetText, Spell } from '../../api/spell.dto';
 import RmuTextCard from '../../shared/cards/RmuTextCard';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 
@@ -49,11 +49,28 @@ const SpellViewInfo: FC<{
             <Grid size={{ xs: 12, md: 3 }}>
               <RmuTextCard value={spell.level} subtitle={t('Level')} />
             </Grid>
+            {spell.modifiers.instant && (
+              <Grid size={{ xs: 12, md: 3 }}>
+                <RmuTextCard value={t('Instant')} subtitle={t('Cast')} />
+              </Grid>
+            )}
+            {spell.modifiers.duration && (
+              <Grid size={{ xs: 12, md: 3 }}>
+                <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} />
+              </Grid>
+            )}
+            {spell.modifiers.range && (
+              <Grid size={{ xs: 12, md: 3 }}>
+                <RmuTextCard value={getSpellRangeText(spell)} subtitle={t('Range')} />
+              </Grid>
+            )}
+            {spell.modifiers.target && (
+              <Grid size={{ xs: 12, md: 3 }}>
+                <RmuTextCard value={getSpellTargetText(spell)} subtitle={t('Target')} />
+              </Grid>
+            )}
             <Grid size={{ xs: 12, md: 3 }}>
               <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} />
-            </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} />
             </Grid>
           </Grid>
         </Grid>

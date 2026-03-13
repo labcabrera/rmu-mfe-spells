@@ -10,12 +10,12 @@ import SpellCreationActions from './SpellCreationActions';
 
 const SpellCreation: FC = () => {
   const [formData, setFormData] = useState<CreateSpellDto>({
-    spellListId: '',
-    name: '',
-    level: 1,
-    modifiers: { type: null, subtype: '' },
-    description: '',
-    imageUrl: '',
+    spellListId: null,
+    name: null,
+    level: null,
+    modifiers: { type: null, subtype: null },
+    description: null,
+    imageUrl: null,
   });
   const location = useLocation();
   const { spellListId } = useParams<{ spellListId?: string }>();

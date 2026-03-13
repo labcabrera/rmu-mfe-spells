@@ -4,8 +4,8 @@ import TextField from '@mui/material/TextField';
 export type NumericInputProps = {
   value: number | null;
   onChange: (value: number | null) => void;
-  onRefresh?: () => void;
   integer?: boolean;
+  required?: boolean;
   allowNegatives?: boolean;
   maxFractionDigits?: number;
   min?: number;
@@ -17,7 +17,6 @@ export type NumericInputProps = {
   placeholder?: string;
   disabled?: boolean;
   autoFocus?: boolean;
-  className?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
@@ -26,9 +25,9 @@ export type NumericInputProps = {
 export function NumericInput({
   value,
   onChange,
-  onRefresh,
   integer = false,
   allowNegatives = true,
+  required=true,
   maxFractionDigits = 2,
   min,
   max,
@@ -134,6 +133,7 @@ export function NumericInput({
           textAlign: 'right',
         },
       }}
+      error={required && (value === null || Number.isNaN(value))}
     />
   );
 }
