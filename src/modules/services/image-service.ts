@@ -1,5 +1,8 @@
 import { imageBaseUrl } from '../services/config';
 
+export const DEFAULT_SPELL_LIST_IMAGE = `${imageBaseUrl}images/generic/configuration.png`
+export const DEFAULT_SPELL_IMAGE = `${imageBaseUrl}images/generic/configuration.png`
+
 // Note: generate options using the following command in the images/items folder:
 // for f in *; do [ -f "$f" ] || continue; echo "\`\${imageBaseUrl}images/items/$f\`,"; done
 

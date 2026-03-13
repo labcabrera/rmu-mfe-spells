@@ -7,13 +7,14 @@ import { fetchSpells } from '../../api/spell';
 import { fetchSpellList } from '../../api/spell-list';
 import { SpellList } from '../../api/spell-list.dto';
 import { Spell } from '../../api/spell.dto';
-import { imageBaseUrl } from '../../services/config';
+import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
 import GenericAvatar from '../../shared/avatars/GenericAvatar';
 import AddButton from '../../shared/buttons/AddButton';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import SpellTable from '../../spells/shared/SpellTable';
 import SpellListViewActions from './SpellListViewActions';
 import SpellListViewInfo from './SpellListViewInfo';
+import TechnicalInfo from '../../shared/display/TechnicalInfo';
 
 const SpellListView: FC = () => {
   const location = useLocation();
@@ -60,7 +61,7 @@ const SpellListView: FC = () => {
       <SpellListViewActions spellList={spellList} />
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 2 }}>
-          <GenericAvatar imageUrl={`${imageBaseUrl}images/generic/configuration.png`} />
+          <GenericAvatar imageUrl={spellList.imageUrl || DEFAULT_SPELL_LIST_IMAGE} />
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
           <SpellListViewInfo spellList={spellList} />
@@ -68,6 +69,9 @@ const SpellListView: FC = () => {
             <AddButton onClick={onAddSpell} />
           </CategorySeparator>
           <SpellTable spells={spells} />
+          <TechnicalInfo>
+            <pre>{JSON.stringify(spellList, null, 2)}</pre>
+          </TechnicalInfo>
         </Grid>
       </Grid>
     </>

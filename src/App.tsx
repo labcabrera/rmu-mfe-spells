@@ -8,10 +8,11 @@ import './i18n';
 import SpellListCreation from './modules/spell-lists/create/SpellListCreation';
 import SpellListEdit from './modules/spell-lists/edit/SpellListEdit';
 import SpellListList from './modules/spell-lists/list/SpellListList';
-import SpellListView from './modules/spell-lists/view/SpellListView';
 import SpellCreation from './modules/spells/create/SpellCreation';
 import SpellEdit from './modules/spells/edit/SpellEdit';
 import SpellView from './modules/spells/view/SpellView';
+import SpellsView from './modules/spells/list/SpellsView';
+import SpellListView from './modules/spell-lists/view/SpellListView';
 
 const NotFound: FC = () => (
   <div>
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
             <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
             <Route path="/spells/view/:spellId" element={<SpellView />} />
+            <Route path="/spells" element={<SpellsView />} />
             <Route path="/spells/create" element={<SpellCreation />} />
             <Route path="/spells/edit/:spellId" element={<SpellEdit />} />
             <Route path="*" element={<NotFound />} />

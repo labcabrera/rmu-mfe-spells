@@ -14,7 +14,8 @@ const SpellListViewActions: FC<{
   const navigate = useNavigate();
   const breadcrumbs = [
     { name: t('Spells'), link: '/spells' },
-    { name: t('Spells Lists'), link: '/spells/spell-lists' },
+    { name: t('Lists'), link: '/spells/spell-lists' },
+    { name: t('View') },
   ];
 
   const onRefresh = () => {};

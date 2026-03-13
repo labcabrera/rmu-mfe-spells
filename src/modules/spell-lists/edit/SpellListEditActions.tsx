@@ -15,7 +15,10 @@ const SpellListEditActions: FC<{
 }> = ({ spellList, formData, isValid = false }) => {
   const navigate = useNavigate();
   const { showError } = useError();
-  const breadcrumbs = [{ name: t('Spells'), link: '/spells' }, { name: t('Edit') }];
+  const breadcrumbs = [
+      { name: t('Spells'), link: '/spells' },
+      { name: t('Spells lists'), link: '/spells/spell-lists' },
+      { name: t('Edit') }];
 
   const handleSave = async () => {
     updateSpellList(spellList.id, formData)

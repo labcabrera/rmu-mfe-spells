@@ -7,7 +7,7 @@ import RefreshButton from '../../shared/buttons/RefreshButton';
 
 const SpellListListActions: FC = () => {
   const navigate = useNavigate();
-  const breadcrumbs = [{ name: t('Spells'), link: '/spells' }, { name: t('Spell lists') }];
+  const breadcrumbs = [{ name: t('Spells'), link: '/spells' }, { name: t('Lists') }];
 
   const onRefresh = () => {};
 

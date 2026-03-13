@@ -15,10 +15,9 @@ const SpellListCreationActions: FC<{
   const navigate = useNavigate();
   const { showError } = useError();
   const breadcrumbs = [
-    { name: t('core'), link: '/core' },
-    { name: t('spell-list-categories'), link: '/core/spell-list-categories' },
-    { name: t('spell-lists'), link: '/core/spell-lists' },
-    { name: t('create') },
+    { name: t('Spells'), link: '/spells' },
+    { name: t('Spells lists'), link: '/spells/spell-lists' },
+    { name: t('Create') },
   ];
 
   const handleSave = async () => {

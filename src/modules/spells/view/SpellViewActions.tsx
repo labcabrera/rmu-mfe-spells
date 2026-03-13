@@ -14,7 +14,10 @@ const SpellViewActions: FC<{
   spell: Spell;
 }> = ({ spellList, spell }) => {
   const navigate = useNavigate();
-  const breadcrumbs = [{ name: t('Spells'), link: '/spells' }];
+  const breadcrumbs = [
+    { name: t('Spells'), link: '/spells' },
+    { name: t('View') },
+  ];
 
   const onRefresh = () => {};
 
