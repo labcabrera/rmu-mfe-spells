@@ -5,6 +5,7 @@ import { useError } from '../../../ErrorContext';
 import { fetchSpellList } from '../../api/spell-list';
 import { SpellList, UpdateSpellListDto } from '../../api/spell-list.dto';
 import EditableAvatar from '../../shared/avatars/EditableAvatar';
+import TechnicalInfo from '../../shared/display/TechnicalInfo';
 import SpellListForm from '../shared/SpellListForm';
 import SpellListEditActions from './SpellListEditActions';
 
@@ -52,7 +53,9 @@ const SpellListEdit: FC = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
           <SpellListForm formData={formData} setFormData={setFormData} />
-          <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+          <TechnicalInfo>
+            <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+          </TechnicalInfo>
         </Grid>
       </Grid>
     </>

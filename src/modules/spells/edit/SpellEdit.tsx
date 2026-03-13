@@ -5,6 +5,7 @@ import { useError } from '../../../ErrorContext';
 import { fetchSpell } from '../../api/spell';
 import { Spell, UpdateSpellDto } from '../../api/spell.dto';
 import EditableAvatar from '../../shared/avatars/EditableAvatar';
+import TechnicalInfo from '../../shared/display/TechnicalInfo';
 import SpellForm from '../shared/SpellForm';
 import SpellEditActions from './SpellEditActions';
 
@@ -56,7 +57,9 @@ const SpellEdit: FC = () => {
         </Grid>
         <Grid size={8}>
           <SpellForm formData={formData} setFormData={setFormData} />
-          <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+          <TechnicalInfo>
+            <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+          </TechnicalInfo>
         </Grid>
       </Grid>
     </>
