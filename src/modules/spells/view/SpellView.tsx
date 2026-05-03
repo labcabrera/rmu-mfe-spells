@@ -7,12 +7,15 @@ import { fetchSpellList } from '../../api/spell-list.api';
 import { SpellList } from '../../api/spell-list.dto';
 import { Spell } from '../../api/spell.dto';
 import { imageBaseUrl } from '../../services/config';
-import GenericAvatar from '../../shared/avatars/GenericAvatar';
-import TechnicalInfo from '../../shared/display/TechnicalInfo';
 import SpellViewActions from './SpellViewActions';
 import SpellViewInfo from './SpellViewInfo';
+import { GenericAvatar, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
 
 const SpellView: FC = () => {
+  const auth = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
   const { spellId } = useParams<{ spellId?: string }>();
   const { showError } = useError();
@@ -20,15 +23,15 @@ const SpellView: FC = () => {
   const [spellList, setSpellList] = useState<SpellList>();
 
   const bindSpell = (spellId: string) => {
-    fetchSpell(spellId)
+    fetchSpell(spellId, auth)
       .then((response) => setSpell(response))
-      .catch((err: Error) => showError(err.message));
+      .catch((err) => showError(err.message));
   };
 
   const bindSpellList = (spellListId: string) => {
-    fetchSpellList(spellListId)
+    fetchSpellList(spellListId, auth)
       .then((response) => setSpellList(response))
-      .catch((err: Error) => showError(err.message));
+      .catch((err) => showError(err.message));
   };
 
   useEffect(() => {

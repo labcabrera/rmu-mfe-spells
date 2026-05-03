@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
-import ClearableTextField from '../../shared/inputs/ClearableTextField';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
 import { ListType, RealmType } from '../../api/spell-list.dto';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import { useTranslation } from 'react-i18next';
+import { ClearableTextField } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellListListSearch: FC<{
   setQueryString: Dispatch<SetStateAction<string>>;
@@ -47,7 +47,7 @@ const SpellListListSearch: FC<{
           name={'name'}
           label={t('name')}
           value={searchId || ''}
-          onChange={(e) => setSearchId(e.target.value)}
+          onChange={(e) => setSearchId(e || "")}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 3 }}>

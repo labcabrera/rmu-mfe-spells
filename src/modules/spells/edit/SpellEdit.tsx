@@ -4,12 +4,14 @@ import { Grid } from '@mui/material';
 import { useError } from '../../../ErrorContext';
 import { fetchSpell } from '../../api/spell.api';
 import { Spell, UpdateSpellDto } from '../../api/spell.dto';
-import EditableAvatar from '../../shared/avatars/EditableAvatar';
-import TechnicalInfo from '../../shared/display/TechnicalInfo';
 import SpellForm from '../shared/SpellForm';
 import SpellEditActions from './SpellEditActions';
+import { useTranslation } from 'react-i18next';
+import { EditableAvatar, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellEdit: FC = () => {
+  const auth = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
   const { showError } = useError();
   const [spell, setSpell] = useState<Spell>();
@@ -18,9 +20,9 @@ const SpellEdit: FC = () => {
   const [isValid, setIsValid] = useState(false);
 
   const bindSpell = (spellId: string) => {
-    fetchSpell(spellId)
+    fetchSpell(spellId, auth)
       .then((response) => setSpell(response))
-      .catch((err: Error) => showError(err.message));
+      .catch((err) => showError(err.message));
   };
 
   useEffect(() => {
@@ -52,8 +54,7 @@ const SpellEdit: FC = () => {
         <Grid size={2}>
           <EditableAvatar
             imageUrl={formData.imageUrl || ''}
-            onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
-          />
+            onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })} images={[]}          />
         </Grid>
         <Grid size={8}>
           <SpellForm formData={formData} setFormData={setFormData} />

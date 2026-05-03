@@ -3,11 +3,10 @@ import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { Grid, TextField } from '@mui/material';
 import { useError } from '../../../ErrorContext';
 import { CreateSpellListDto, ListType, UpdateSpellListDto } from '../../api/spell-list.dto';
-import CategorySeparator from '../../shared/display/CategorySeparator';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
-import { fetchProfessions } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { CategorySeparator, fetchProfessions } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useAuth } from 'react-oidc-context';
 import { useTranslation } from 'react-i18next';
 

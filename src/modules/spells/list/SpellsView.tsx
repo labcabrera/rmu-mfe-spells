@@ -1,18 +1,21 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Pagination, Box, Grid } from '@mui/material';
-import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
-import RmuTextCard from '../../shared/cards/RmuTextCard';
 import SpellListActions from './SpellListActions';
 import SpellListSearch from './SpellListSearch';
 import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
 import { fetchSpells } from '../../api/spell.api';
 import { Spell } from '../../api/spell.dto';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
+import { RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const PAGE_SIZE = 24;
 
 const SpellsView: FC = () => {
+  const auth = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { showError } = useError();
   const [skills, setSkills] = useState<Spell[]>([]);
@@ -21,7 +24,7 @@ const SpellsView: FC = () => {
   const [queryString, setQueryString] = useState<string>('');
 
   const bindSpells = (queryString: string, pageNumber: number = 0) => {
-    fetchSpells(queryString, pageNumber, PAGE_SIZE)
+    fetchSpells(queryString, pageNumber, PAGE_SIZE, auth)
       .then((response) => {
         setSkills(response.content);
         setTotalPages(response.pagination.totalPages || 1);

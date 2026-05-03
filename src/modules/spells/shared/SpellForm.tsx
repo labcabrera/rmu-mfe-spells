@@ -1,19 +1,19 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { t } from 'i18next';
 import { CreateSpellDto, UpdateSpellDto } from '../../api/spell.dto';
-import CategorySeparator from '../../shared/display/CategorySeparator';
-import { NumericInput } from '../../shared/inputs/NumericInput';
 import SelectSpellSubtype from '../../shared/selects/SelectSpellSubtype';
 import SelectSpellType from '../../shared/selects/SelectSpellType';
 import SpellFormDuration from './SpellFormDuration';
 import SpellFormRange from './SpellFormRange';
 import SpellFormTarget from './SpellFormTarget';
+import { CategorySeparator, NumericInput } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SpellForm: FC<{
   formData: CreateSpellDto | UpdateSpellDto;
   setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
 }> = ({ formData, setFormData }) => {
+  const { t } = useTranslation();
   if (!formData || !setFormData) return <p>Loading...</p>;
 
   return (

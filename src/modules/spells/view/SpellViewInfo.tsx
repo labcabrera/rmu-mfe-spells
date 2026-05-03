@@ -4,8 +4,7 @@ import { Grid, Paper, Typography } from '@mui/material';
 import { t } from 'i18next';
 import { SpellList } from '../../api/spell-list.dto';
 import { getSpellDurationText, getSpellRangeText, getSpellTargetText, Spell } from '../../api/spell.dto';
-import RmuTextCard from '../../shared/cards/RmuTextCard';
-import CategorySeparator from '../../shared/display/CategorySeparator';
+import { CategorySeparator, RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellViewInfo: FC<{
   spell: Spell;

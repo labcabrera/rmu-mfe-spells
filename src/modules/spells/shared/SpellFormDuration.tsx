@@ -1,15 +1,18 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { t } from 'i18next';
 import { CreateSpellDto, SpellDuration, SpellDurationType, UpdateSpellDto } from '../../api/spell.dto';
-import { NumericInput } from '../../shared/inputs/NumericInput';
 import SelectSpellDurationScale from '../../shared/selects/SelectSpellDurationScale';
 import SelectSpellDurationType from '../../shared/selects/SelectSpellDurationType';
+import { useTranslation } from 'react-i18next';
+import { NumericInput } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellFormDuration: FC<{
   formData: CreateSpellDto | UpdateSpellDto;
   setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
 }> = ({ formData, setFormData }) => {
+  const { t} = useTranslation();
+
+  
   const requiresDurationScale = (): boolean => {
     return formData.modifiers?.duration?.type === 'lvl' || formData.modifiers?.duration?.type === 'rr-failure';
   };

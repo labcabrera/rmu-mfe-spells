@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { t } from 'i18next';
 import {
   getSpellDurationText,
   getSpellNameText,
@@ -10,10 +9,12 @@ import {
   getSpellTypeText,
   Spell,
 } from '../../api/spell.dto';
+import { useTranslation } from 'react-i18next';
 
 const SpellTable: FC<{
   spells: Spell[];
 }> = ({ spells }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleSpellClick = (spell: Spell) => {

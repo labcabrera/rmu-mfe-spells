@@ -1,21 +1,26 @@
 import React, { FC, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
+import {
+  AddButton,
+  CategorySeparator,
+  DeleteButton,
+  EditableAvatar,
+  EditButton,
+  LayoutBase,
+  RefreshButton,
+  TechnicalInfo,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { fetchSpells } from '../../api/spell.api';
-import { fetchSpellList } from '../../api/spell-list.api';
+import { deleteSpellList, fetchSpellList } from '../../api/spell-list.api';
 import { SpellList } from '../../api/spell-list.dto';
+import { fetchSpells } from '../../api/spell.api';
 import { Spell } from '../../api/spell.dto';
-import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
-import GenericAvatar from '../../shared/avatars/GenericAvatar';
-import AddButton from '../../shared/buttons/AddButton';
-import CategorySeparator from '../../shared/display/CategorySeparator';
+import { getAvatarImages } from '../../services/image-service';
 import SpellTable from '../../spells/shared/SpellTable';
-import SpellListViewActions from './SpellListViewActions';
 import SpellListViewInfo from './SpellListViewInfo';
-import TechnicalInfo from '../../shared/display/TechnicalInfo';
-import { useAuth } from 'react-oidc-context';
-import { useTranslation } from 'react-i18next';
 
 const SpellListView: FC = () => {
   const auth = useAuth();
@@ -43,6 +48,10 @@ const SpellListView: FC = () => {
     navigate(`/spells/spells/create?spellListId=${spellList?.id}`, { state: { spellList } });
   };
 
+  const onDelete = () => {
+    deleteSpellList(spellList!.id, auth).then(() => navigate('/spells/spell-lists'));
+  };
+
   useEffect(() => {
     if (spellList) {
       bindSpells(spellList.id);
@@ -60,24 +69,40 @@ const SpellListView: FC = () => {
   if (!spellList) return <p>Loading...</p>;
 
   return (
-    <>
-      <SpellListViewActions spellList={spellList} />
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 12, md: 2 }}>
-          <GenericAvatar imageUrl={spellList.imageUrl || DEFAULT_SPELL_LIST_IMAGE} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <SpellListViewInfo spellList={spellList} />
-          <CategorySeparator text={t('Spells')}>
-            <AddButton onClick={onAddSpell} />
-          </CategorySeparator>
-          <SpellTable spells={spells} />
-          <TechnicalInfo>
-            <pre>{JSON.stringify(spellList, null, 2)}</pre>
-          </TechnicalInfo>
-        </Grid>
-      </Grid>
-    </>
+      <LayoutBase
+        breadcrumbs={[
+          { name: t('home'), link: '/' },
+          { name: t('spell-lists'), link: '/spells/spell-lists' },
+          { name: t('view') },
+        ]}
+        actions={[
+          <RefreshButton
+            onClick={() => {
+              bindSpellList(spellList.id);
+            }}
+          />,
+          <EditButton onClick={() => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: spellList })} />,
+          <DeleteButton onClick={() => alert('todo')} />,
+        ]}
+        leftPanel={
+          <EditableAvatar
+            imageUrl={spellList.imageUrl || ''}
+            images={getAvatarImages()}
+            onImageChange={function (newImageUrl: string): void {
+              throw new Error('Function not implemented.');
+            }}
+          />
+        }
+      >
+        <SpellListViewInfo spellList={spellList} />
+        <CategorySeparator text={t('spells')}>
+          <AddButton onClick={onAddSpell} />
+        </CategorySeparator>
+        <SpellTable spells={spells} />
+        <TechnicalInfo>
+          <pre>{JSON.stringify(spellList, null, 2)}</pre>
+        </TechnicalInfo>
+      </LayoutBase>
   );
 };
 

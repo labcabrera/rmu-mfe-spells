@@ -1,11 +1,12 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
-import { t } from 'i18next';
-import ClearableTextField from '../../shared/inputs/ClearableTextField';
+import { ClearableTextField } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SpellListSearch: FC<{
   setQueryString: Dispatch<SetStateAction<string>>;
 }> = ({ setQueryString }) => {
+  const { t } = useTranslation();
   const [searchName, setSearchName] = useState<string | null>(null);
 
   const buildQueryString = () => {
@@ -25,7 +26,7 @@ const SpellListSearch: FC<{
           name={'name'}
           label={t('Name')}
           value={searchName || ''}
-          onChange={(e) => setSearchName(e.target.value)}
+          onChange={(e) => setSearchName(e || "")}
         />
       </Grid>      
     </Grid>

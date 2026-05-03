@@ -4,9 +4,6 @@ import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
 import { createSpellList } from '../../api/spell-list.api';
 import { CreateSpellListDto } from '../../api/spell-list.dto';
-import RmuBreadcrumbs from '../../shared/breadcrumbs/RmuBreadcrumbs';
-import CancelButton from '../../shared/buttons/CancelButton';
-import SaveButton from '../../shared/buttons/SaveButton';
 
 const SpellListCreationActions: FC<{
   formData: CreateSpellListDto;

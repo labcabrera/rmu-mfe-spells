@@ -2,10 +2,11 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { imageBaseUrl } from './modules/services/config';
-import RmuBreadcrumbs from './modules/shared/breadcrumbs/RmuBreadcrumbs';
-import RmuTextCard from './modules/shared/cards/RmuTextCard';
+import { LayoutBase, RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const HomePage: FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const cards = [
     {
@@ -23,11 +24,8 @@ const HomePage: FC = () => {
   ];
 
   return (
-    <>
-      <RmuBreadcrumbs items={[{ name: 'Spells' }]} />
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 12, md: 2 }}></Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
+
+      <LayoutBase breadcrumbs={[{ name: t('home'), link: "/" },{ name: t('spells') }]}>
           <Grid container spacing={1}>
             {cards.map((c) => (
               <Grid size={{ xs: 12, md: 3 }} key={c.value}>
@@ -35,9 +33,8 @@ const HomePage: FC = () => {
               </Grid>
             ))}
           </Grid>
-        </Grid>
-      </Grid>
-    </>
+      </LayoutBase>
+
   );
 };
 

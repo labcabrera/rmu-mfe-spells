@@ -4,9 +4,7 @@ import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
 import { updateSpell } from '../../api/spell.api';
 import { Spell, UpdateSpellDto } from '../../api/spell.dto';
-import RmuBreadcrumbs from '../../shared/breadcrumbs/RmuBreadcrumbs';
-import CancelButton from '../../shared/buttons/CancelButton';
-import SaveButton from '../../shared/buttons/SaveButton';
+import { RmuBreadcrumbs, CancelButton, SaveButton } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellEditActions: FC<{
   spell: Spell;
@@ -18,7 +16,7 @@ const SpellEditActions: FC<{
   const breadcrumbs = [{ name: t('Spells'), link: '/spells' }, { name: t('Edit') }];
 
   const handleSave = async () => {
-    updateSpell(spell.id, formData)
+    updateSpell(spell.id, formData, null)
       .then((response) => navigate(`/spells/spells/view/${response.id}`, { state: { spell: response } }))
       .catch((err: Error) => showError(err.message));
   };

@@ -1,14 +1,28 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  CancelButton,
+  EditableAvatar,
+  LayoutBase,
+  SaveButton,
+  TechnicalInfo,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useError } from '../../../ErrorContext';
 import { fetchSpellList } from '../../api/spell-list.api';
 import { SpellList } from '../../api/spell-list.dto';
+import { createSpell } from '../../api/spell.api';
 import { CreateSpellDto } from '../../api/spell.dto';
-import EditableAvatar from '../../shared/avatars/EditableAvatar';
 import SpellForm from '../shared/SpellForm';
-import SpellCreationActions from './SpellCreationActions';
 
 const SpellCreation: FC = () => {
+  const auth = useAuth();
+  const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { showError } = useError();
+
   const [formData, setFormData] = useState<CreateSpellDto>({
     spellListId: null,
     name: null,
@@ -17,7 +31,6 @@ const SpellCreation: FC = () => {
     description: null,
     imageUrl: null,
   });
-  const location = useLocation();
   const { spellListId } = useParams<{ spellListId?: string }>();
   const [spellList, setSpellList] = useState<SpellList | null>(null);
   const [isValid, setIsValid] = useState(false);
@@ -28,9 +41,15 @@ const SpellCreation: FC = () => {
   };
 
   const bindSpellList = (spellListId: string) => {
-    fetchSpellList(spellListId)
+    fetchSpellList(spellListId, auth)
       .then((response) => setSpellList(response))
-      .catch((err: Error) => console.error(err.message));
+      .catch((err) => console.error(err.message));
+  };
+
+  const onSave = async () => {
+    createSpell(formData, auth)
+      .then((response) => navigate(`/spells/spells/view/${response.id}`, { state: { spell: response } }))
+      .catch((err) => showError(err.message));
   };
 
   useEffect(() => {
@@ -52,21 +71,23 @@ const SpellCreation: FC = () => {
   }, [location.state, spellListId]);
 
   return (
-    <>
-      <SpellCreationActions formData={formData} isValid={isValid} />
-      <Grid container spacing={2}>
-        <Grid size={2}>
-          <EditableAvatar
-            imageUrl={formData.imageUrl || ''}
-            onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
-          />
-        </Grid>
-        <Grid size={8}>
-          <SpellForm formData={formData} setFormData={setFormData} />
-          <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
-        </Grid>
-      </Grid>
-    </>
+    <LayoutBase
+      breadcrumbs={[{name:t('home'), link: "/"},{name:t('spells'), link: "/spells"},{name:t('create')}]}
+      actions={[
+        <CancelButton onClick={() => navigate('/spells/spells')} />,
+        <SaveButton onClick={() => onSave()} disabled={!isValid} />,
+      ]}
+      leftPanel={
+        <EditableAvatar imageUrl={''} images={[]} onImageChange={function (newImageUrl: string): void {
+          throw new Error('Function not implemented.');
+        } } />
+      }
+    >
+      <SpellForm formData={formData} setFormData={setFormData} />
+      <TechnicalInfo>
+        <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+      </TechnicalInfo>
+    </LayoutBase>
   );
 };
 

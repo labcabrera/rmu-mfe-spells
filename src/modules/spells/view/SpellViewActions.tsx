@@ -4,10 +4,7 @@ import { t } from 'i18next';
 import { deleteSpellList } from '../../api/spell-list.api';
 import { SpellList } from '../../api/spell-list.dto';
 import { Spell } from '../../api/spell.dto';
-import RmuBreadcrumbs from '../../shared/breadcrumbs/RmuBreadcrumbs';
-import DeleteButton from '../../shared/buttons/DeleteButton';
-import EditButton from '../../shared/buttons/EditButton';
-import RefreshButton from '../../shared/buttons/RefreshButton';
+import { RmuBreadcrumbs, RefreshButton, EditButton, DeleteButton } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellViewActions: FC<{
   spellList: SpellList;

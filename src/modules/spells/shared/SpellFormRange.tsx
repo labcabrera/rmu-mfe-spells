@@ -1,14 +1,16 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid } from '@mui/material';
-import { t } from 'i18next';
 import { CreateSpellDto, SpellRange, SpellRangeType, UpdateSpellDto } from '../../api/spell.dto';
-import { NumericInput } from '../../shared/inputs/NumericInput';
 import SelectSpellRangeType from '../../shared/selects/SelectSpellRangeType';
+import { useTranslation } from 'react-i18next';
+import { NumericInput } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellFormRange: FC<{
   formData: CreateSpellDto | UpdateSpellDto;
   setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
 }> = ({ formData, setFormData }) => {
+  const { t} = useTranslation();
+
   const displayRangeValue = () => {
     const type = formData.modifiers?.range?.type;
     return type! && (type === 'distance' || type === 'distance-level');
