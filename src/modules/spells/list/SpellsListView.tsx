@@ -1,17 +1,17 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Pagination, Box, Grid } from '@mui/material';
-import { useError } from '../../../ErrorContext';
-import SpellListActions from './SpellListActions';
-import SpellListSearch from './SpellListSearch';
-import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
-import { fetchSpells, RmuTextCard, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useNavigate } from 'react-router-dom';
+import { Pagination, Box, Grid } from '@mui/material';
+import { fetchSpells, LayoutBase, RmuTextCard, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useError } from '../../../ErrorContext';
+import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
+import SpellListActions from './SpellListActions';
+import SpellListSearch from './SpellListSearch';
 
 const PAGE_SIZE = 24;
 
-const SpellsView: FC = () => {
+const SpellsListView: FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -38,30 +38,34 @@ const SpellsView: FC = () => {
     bindSpells(queryString, page);
   }, [queryString, page]);
 
-
   if (!skills) return <p>Loading...</p>;
 
   return (
     <>
+      <LayoutBase breadcrumbs={[
+          { name: t('home'), link: '/' },
+          { name: t('spells') },
+        ]}>
+        <Grid container spacing={1}>
+          <Grid size={12}>
+            <SpellListSearch setQueryString={setQueryString} />
+          </Grid>
+          {skills.map((spellList) => (
+            <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
+              <RmuTextCard
+                value={t(spellList.name)}
+                subtitle={t('Spell')}
+                image={spellList.imageUrl || DEFAULT_SPELL_LIST_IMAGE}
+                onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </LayoutBase>
       <SpellListActions />
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 2 }}></Grid>
         <Grid size={{ xs: 12, md: 8 }}>
-          <Grid container spacing={1}>
-            <Grid size={12}>
-              <SpellListSearch setQueryString={setQueryString}  />
-            </Grid>
-            {skills.map((spellList) => (
-              <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
-                <RmuTextCard
-                  value={t(spellList.name)}
-                  subtitle={t('Spell')}
-                  image={spellList.imageUrl || DEFAULT_SPELL_LIST_IMAGE}
-                  onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
-                />
-              </Grid>
-            ))}
-          </Grid>
           {skills.length === 0 ? <p>No skills found.</p> : null}
           <Box mt={2} display="flex" justifyContent="center">
             <Pagination count={totalPages} page={page + 1} onChange={handlePageChange} color="primary" />
@@ -72,4 +76,4 @@ const SpellsView: FC = () => {
   );
 };
 
-export default SpellsView;
+export default SpellsListView;

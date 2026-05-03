@@ -8,7 +8,7 @@ import SpellListList from './modules/spell-lists/list/SpellListList';
 import SpellCreation from './modules/spells/create/SpellCreation';
 import SpellEdit from './modules/spells/edit/SpellEdit';
 import SpellView from './modules/spells/view/SpellView';
-import SpellsView from './modules/spells/list/SpellsView';
+import SpellsListView from './modules/spells/list/SpellsListView';
 import SpellListView from './modules/spell-lists/view/SpellListView';
 import { Box, ThemeProvider } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
@@ -32,7 +32,7 @@ const App = () => {
             <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
             <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
             <Route path="/spells/view/:spellId" element={<SpellView />} />
-            <Route path="/spells" element={<SpellsView />} />
+            <Route path="/spells" element={<SpellsListView />} />
             <Route path="/spells/create" element={<SpellCreation />} />
             <Route path="/spells/edit/:spellId" element={<SpellEdit />} />
             <Route path="*" element={<NotFound />} />

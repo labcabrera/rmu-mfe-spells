@@ -1,18 +1,29 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { Grid } from '@mui/material';
-import { useError } from '../../../ErrorContext';
-import { imageBaseUrl } from '../../services/config';
-import SpellViewActions from './SpellViewActions';
-import SpellViewInfo from './SpellViewInfo';
-import { fetchSpell, fetchSpellList, GenericAvatar, Spell, SpellList, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  DeleteButton,
+  EditableAvatar,
+  EditButton,
+  fetchSpell,
+  fetchSpellList,
+  LayoutBase,
+  RefreshButton,
+  Spell,
+  SpellList,
+  TechnicalInfo,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useError } from '../../../ErrorContext';
+import { getAvatarImages } from '../../services/image-service';
+import SpellViewInfo from './SpellViewInfo';
+import { CircularProgress } from '@mui/material';
 
-const SpellView: FC = () => {
+export default function SpellView() {
   const auth = useAuth();
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const { spellId } = useParams<{ spellId?: string }>();
   const { showError } = useError();
   const [spell, setSpell] = useState<Spell>();
@@ -30,6 +41,14 @@ const SpellView: FC = () => {
       .catch((err) => showError(err.message));
   };
 
+  const updateImage = (imageUrl: string) => {};
+
+  const onEdit = () => {
+    navigate(`/spells/spells/edit/${spell!.id}`);
+  };
+
+  const onDelete = () => {};
+
   useEffect(() => {
     if (spell) {
       bindSpellList(spell.spellListId);
@@ -42,26 +61,30 @@ const SpellView: FC = () => {
     } else if (spellId) {
       bindSpell(spellId);
     }
-  }, [location.state, spellId, showError]);
+  }, [location.state, spellId]);
 
-  if (!spell || !spellList) return <p>Loading...</p>;
+  if (!spell || !spellList) return <CircularProgress />;
 
   return (
-    <>
-      <SpellViewActions spellList={spellList} spell={spell} />
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 12, md: 2 }}>
-          <GenericAvatar imageUrl={`${imageBaseUrl}images/generic/configuration.png`} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <SpellViewInfo spell={spell} spellList={spellList} />
-          <TechnicalInfo>
-            <pre>{JSON.stringify(spell, null, 2)}</pre>
-          </TechnicalInfo>
-        </Grid>
-      </Grid>
-    </>
+    <LayoutBase
+      breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells'), link: '/spells/spells' }, { name: t('view') }]}
+      actions={[
+        <RefreshButton onClick={() => bindSpell(spell.id)} />,
+        <EditButton onClick={() => navigate(`/spells/spells/edit/${spell!.id}`, { state: spell! })} />,
+        <DeleteButton onClick={onDelete} />,
+      ]}
+      leftPanel={
+        <EditableAvatar
+          imageUrl={spell.imageUrl || ''}
+          images={getAvatarImages()}
+          onImageChange={(e) => updateImage(e)}
+        />
+      }
+    >
+      <SpellViewInfo spell={spell} spellList={spellList} />
+      <TechnicalInfo>
+        <pre>{JSON.stringify(spell, null, 2)}</pre>
+      </TechnicalInfo>
+    </LayoutBase>
   );
-};
-
-export default SpellView;
+}
