@@ -21,7 +21,7 @@ import {
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import { getAvatarImages } from '../../services/image-service';
-import SpellTable from '../../spells/shared/SpellTable';
+import SpellTable from '../../spells/form/SpellTable';
 import SpellListViewInfo from './SpellListViewInfo';
 
 export default function SpellListView() {

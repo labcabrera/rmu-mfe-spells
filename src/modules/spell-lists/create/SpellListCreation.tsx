@@ -13,7 +13,7 @@ import {
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import { getAvatarImages } from '../../services/image-service';
-import SpellListForm from '../shared/SpellListForm';
+import SpellListForm from '../form/SpellListForm';
 
 export default function SpellListCreation() {
   const auth = useAuth();
@@ -42,30 +42,28 @@ export default function SpellListCreation() {
   }, [formData]);
 
   return (
-    <>
-      <LayoutBase
-        breadcrumbs={[
-          { name: t('home'), link: '/' },
-          { name: t('spell-lists'), link: '/spells/spell-lists' },
-          { name: t('create') },
-        ]}
-        actions={[
-          <CancelButton onClick={() => navigate('/spells/spell-lists')} />,
-          <SaveButton onClick={() => onSave} disabled={!isValid} />,
-        ]}
-        leftPanel={
-          <EditableAvatar
-            imageUrl={formData.imageUrl || ''}
-            images={getAvatarImages()}
-            onImageChange={(e) => setFormData({ ...formData, imageUrl: e })}
-          />
-        }
-      >
-        <SpellListForm formData={formData} setFormData={setFormData} />
-        <TechnicalInfo>
-          <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
-        </TechnicalInfo>
-      </LayoutBase>
-    </>
+    <LayoutBase
+      breadcrumbs={[
+        { name: t('home'), link: '/' },
+        { name: t('spell-lists'), link: '/spells/spell-lists' },
+        { name: t('create') },
+      ]}
+      actions={[
+        <CancelButton onClick={() => navigate('/spells/spell-lists')} />,
+        <SaveButton onClick={() => onSave()} disabled={!isValid} />,
+      ]}
+      leftPanel={
+        <EditableAvatar
+          imageUrl={formData.imageUrl || ''}
+          images={getAvatarImages()}
+          onImageChange={(e) => setFormData({ ...formData, imageUrl: e })}
+        />
+      }
+    >
+      <SpellListForm formData={formData} setFormData={setFormData} />
+      <TechnicalInfo>
+        <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+      </TechnicalInfo>
+    </LayoutBase>
   );
 }

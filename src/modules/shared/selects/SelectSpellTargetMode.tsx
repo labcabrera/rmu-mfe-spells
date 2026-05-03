@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
-import { t } from 'i18next';
-import { SpellTargetMode } from '../../api/spell.dto';
+import { SpellTargetMode } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SelectSpellTargetMode: FC<{
   label: string;
@@ -11,6 +11,7 @@ const SelectSpellTargetMode: FC<{
   allowAll?: boolean;
   onChange: (spellType: SpellTargetMode) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
+  const { t } = useTranslation();
   const values: SpellTargetMode[] = ['target', 'area'];
 
   return (

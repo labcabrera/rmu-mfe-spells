@@ -32,12 +32,13 @@ const SpellListForm: FC<{
 
   return (
     <>
-      <CategorySeparator text={t('Skill list information')} />
+      <CategorySeparator text={t('spell-list')} />
       <Grid container spacing={1}>
         <Grid size={12}>
           <TextField
-            label={t('Name')}
+            label={t('name')}
             name="name"
+            placeholder={t('name')}
             value={formData.name || ''}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             error={!formData.name}
@@ -46,7 +47,7 @@ const SpellListForm: FC<{
         </Grid>
         <Grid size={12}>
           <SelectRealmType
-            label={t('Realm')}
+            label={t('spell-realm')}
             value={formData.realm || null}
             name="realm"
             onChange={(value) => setFormData({ ...formData, realm: value! })}
@@ -54,7 +55,7 @@ const SpellListForm: FC<{
         </Grid>
         <Grid size={12}>
           <SelectListType
-            label={t('List Type')}
+            label={t('list-type')}
             value={formData.type || null}
             name="type"
             onChange={(value) => onTypeChange(value)}

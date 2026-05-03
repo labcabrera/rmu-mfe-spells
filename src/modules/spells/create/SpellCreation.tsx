@@ -15,7 +15,9 @@ import {
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import { getAvatarImages } from '../../services/image-service';
-import SpellForm from '../shared/SpellForm';
+import SpellForm from '../form/SpellForm';
+
+const EMPTY_FORM = { modifiers: {} } as Spell;
 
 export default function SpellCreation() {
   const auth = useAuth();
@@ -24,7 +26,7 @@ export default function SpellCreation() {
   const navigate = useNavigate();
   const { showError } = useError();
 
-  const [formData, setFormData] = useState<Spell>({} as Spell);
+  const [formData, setFormData] = useState<Spell>(EMPTY_FORM);
   const { spellListId } = useParams<{ spellListId?: string }>();
   const [spellList, setSpellList] = useState<SpellList | null>(null);
   const [isValid, setIsValid] = useState(false);
@@ -73,9 +75,9 @@ export default function SpellCreation() {
       ]}
       leftPanel={
         <EditableAvatar
-          imageUrl={formData.imageUrl || ""}
+          imageUrl={formData.imageUrl || ''}
           images={getAvatarImages()}
-          onImageChange={(e) => setFormData({...formData, imageUrl: e})}
+          onImageChange={(e) => setFormData({ ...formData, imageUrl: e })}
         />
       }
     >

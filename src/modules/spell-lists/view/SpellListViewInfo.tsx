@@ -1,20 +1,25 @@
-import React, { FC } from 'react';
-import { Grid, Paper, Typography } from '@mui/material';
-import { SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Chip, CircularProgress, Grid, Paper, Stack, Typography } from '@mui/material';
+import { SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 
-const SpellListViewInfo: FC<{
-  spellList: SpellList;
-}> = ({ spellList }) => {
+export default function SpellListViewInfo({ spellList }: { spellList?: SpellList }) {
   const { t } = useTranslation();
-  if (!spellList) return <p>Loading...</p>;
+
+  if (!spellList) return <CircularProgress />;
 
   return (
     <Grid container spacing={1}>
       <Grid size={12}>
-        <Typography variant="h6" gutterBottom>
-          {t(spellList.name)}
-        </Typography>
+        <Stack>
+          <Typography variant="h6" gutterBottom>
+            {t(spellList.name)}
+          </Typography>
+          <Stack direction="row" spacing={1}>
+            <Chip label={t(spellList.realm)} size='small' color='primary' />
+            <Chip label={t(spellList.type)} size='small' color='primary'/>
+          </Stack>
+        </Stack>
       </Grid>
       {spellList.description && (
         <Grid size={12}>
@@ -31,6 +36,4 @@ const SpellListViewInfo: FC<{
       )}
     </Grid>
   );
-};
-
-export default SpellListViewInfo;
+}

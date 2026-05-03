@@ -8,6 +8,8 @@ import SpellFormTarget from './SpellFormTarget';
 import { CategorySeparator, NumericInput, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useTranslation } from 'react-i18next';
 
+const inputSize = {xs:12, md: 4}
+
 const SpellForm: FC<{
   formData: Spell;
   setFormData: Dispatch<SetStateAction<Spell>>;
@@ -17,11 +19,11 @@ const SpellForm: FC<{
 
   return (
     <>
-      <CategorySeparator text={t('Spell list information')} />
+      <CategorySeparator text={t('spell')} />
       <Grid container spacing={1}>
-        <Grid size={12}>
+        <Grid size={inputSize}>
           <TextField
-            label={t('Name')}
+            label={t('name')}
             name="name"
             value={formData.name || ''}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -29,15 +31,18 @@ const SpellForm: FC<{
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={inputSize}>
           <NumericInput
-            label={t('Level')}
+            label={t('level')}
             name="level"
+            min={1}
+            max={50}
+            integer
             value={formData.level || null}
             onChange={(value) => setFormData({ ...formData, level: value || 1 })}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={inputSize}>
           <ToggleButtonGroup
             color="primary"
             value={formData.modifiers!.instant || false}
@@ -46,46 +51,44 @@ const SpellForm: FC<{
             aria-label="cast-type"
             size="small"
           >
-            <ToggleButton value={true}>{t('Instant')}</ToggleButton>
-            <ToggleButton value={false}>{t('Casted')}</ToggleButton>
+            <ToggleButton value={true}>{t('instant')}</ToggleButton>
+            <ToggleButton value={false}>{t('casted')}</ToggleButton>
           </ToggleButtonGroup>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}></Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={inputSize}>
           <SelectSpellType
-            label={t('Type')}
+            label={t('type')}
             name="spellType"
             value={formData.modifiers?.type || null}
             onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, type: value } })}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid size={inputSize}>
           <SelectSpellSubtype
-            label={t('Subtype')}
+            label={t('subtype')}
             name="spellSubtype"
             value={formData.modifiers?.subtype || null}
             onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, subtype: value } })}
           />
         </Grid>
       </Grid>
-      <CategorySeparator text={t('Range')} />
+      <CategorySeparator text={t('range')} />
       <Grid container spacing={1}>
         <SpellFormRange formData={formData} setFormData={setFormData} />
       </Grid>
-      <CategorySeparator text={t('Duration')} />
+      <CategorySeparator text={t('duration')} />
       <Grid container spacing={1}>
         <SpellFormDuration formData={formData} setFormData={setFormData} />
       </Grid>
-      <CategorySeparator text={t('Target')} />
+      <CategorySeparator text={t('target')} />
       <Grid container spacing={1}>
         <SpellFormTarget formData={formData} setFormData={setFormData} />
         <Grid size={12}>
           <TextField
-            label={t('Description')}
+            label={t('description')}
             name="description"
             value={formData.description || ''}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            error={!formData.description}
             fullWidth
             multiline
             rows={10}

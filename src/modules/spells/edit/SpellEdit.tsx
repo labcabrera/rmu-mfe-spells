@@ -13,7 +13,7 @@ import {
   updateSpell,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import SpellForm from '../shared/SpellForm';
+import SpellForm from '../form/SpellForm';
 
 export default function SpellEdit(){
   const auth = useAuth();

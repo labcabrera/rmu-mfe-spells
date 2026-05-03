@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { SpellSubtype } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { SPELL_SUBTYPES, SpellSubtype } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useTranslation } from 'react-i18next';
 
 const SelectSpellSubtype: FC<{

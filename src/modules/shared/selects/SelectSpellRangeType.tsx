@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
-import { t } from 'i18next';
-import { SpellRangeType } from '../../api/spell.dto';
+import { SpellRangeType } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SelectSpellRangeType: FC<{
   label: string;
@@ -11,6 +11,7 @@ const SelectSpellRangeType: FC<{
   allowAll?: boolean;
   onChange: (spellType: SpellRangeType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
+  const { t } = useTranslation();
   const values = ['self', 'touch', 'distance', 'distance-level'];
 
   return (

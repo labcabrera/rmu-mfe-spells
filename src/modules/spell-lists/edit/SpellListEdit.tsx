@@ -14,7 +14,7 @@ import {
   UpdateSpellListDto,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import SpellListForm from '../shared/SpellListForm';
+import SpellListForm from '../form/SpellListForm';
 import { getAvatarImages } from '../../services/image-service';
 
 const SpellListEdit: FC = () => {

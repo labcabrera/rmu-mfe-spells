@@ -17,6 +17,7 @@ const SelectListType: FC<{
     <TextField
       select
       label={label}
+      placeholder={label}
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth

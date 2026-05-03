@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ErrorProvider } from './ErrorContext';
 import HomePage from './HomePage';
@@ -10,15 +10,9 @@ import SpellEdit from './modules/spells/edit/SpellEdit';
 import SpellView from './modules/spells/view/SpellView';
 import SpellsListView from './modules/spells/list/SpellListView';
 import SpellListView from './modules/spell-lists/view/SpellListView';
-import { Box, ThemeProvider } from '@mui/system';
+import { Box, ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-
-const NotFound: FC = () => (
-  <div>
-    <h2>Not found</h2>
-    <p>The requested route does not exist.</p>
-  </div>
-);
+import { NotFound } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const App = () => {
   return (
