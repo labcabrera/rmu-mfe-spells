@@ -20,6 +20,7 @@ const SelectListType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
+      size='small'
       onChange={(event) => onChange(event.target.value as ListType)}
       error={required && !value}
     >

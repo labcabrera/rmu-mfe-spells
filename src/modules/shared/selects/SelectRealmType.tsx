@@ -20,6 +20,7 @@ const SelectRealmType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
+      size='small'
       onChange={(event) => onChange(event.target.value as RealmType)}
       error={required && !value}
     >

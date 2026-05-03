@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import {
   AddButton,
   CategorySeparator,
   DeleteButton,
+  DeleteDialog,
   deleteSpellList,
   EditableAvatar,
   EditButton,
@@ -16,13 +17,14 @@ import {
   Spell,
   SpellList,
   TechnicalInfo,
+  updateSpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import { getAvatarImages } from '../../services/image-service';
 import SpellTable from '../../spells/shared/SpellTable';
 import SpellListViewInfo from './SpellListViewInfo';
 
-const SpellListView: FC = () => {
+export default function SpellListView() {
   const auth = useAuth();
   const location = useLocation();
   const { t } = useTranslation();
@@ -31,6 +33,7 @@ const SpellListView: FC = () => {
   const { showError } = useError();
   const [spellList, setSpellList] = useState<SpellList | null>(null);
   const [spells, setSpells] = useState<Spell[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   const bindSpellList = (spellListId: string) => {
     fetchSpellList(spellListId, auth)
@@ -52,6 +55,12 @@ const SpellListView: FC = () => {
     deleteSpellList(spellList!.id, auth).then(() => navigate('/spells/spell-lists'));
   };
 
+  const onImageUpdate = (imageUrl: string) => {
+    updateSpellList(spellList!.id, {imageUrl}, auth)
+      .then((response) => setSpellList(response))
+      .catch((err: Error) => showError(err.message));
+  }
+
   useEffect(() => {
     if (spellList) {
       bindSpells(spellList.id);
@@ -69,41 +78,43 @@ const SpellListView: FC = () => {
   if (!spellList) return <p>Loading...</p>;
 
   return (
-      <LayoutBase
-        breadcrumbs={[
-          { name: t('home'), link: '/' },
-          { name: t('spell-lists'), link: '/spells/spell-lists' },
-          { name: t('view') },
-        ]}
-        actions={[
-          <RefreshButton
-            onClick={() => {
-              bindSpellList(spellList.id);
-            }}
-          />,
-          <EditButton onClick={() => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: spellList })} />,
-          <DeleteButton onClick={() => alert('todo')} />,
-        ]}
-        leftPanel={
-          <EditableAvatar
-            imageUrl={spellList.imageUrl || ''}
-            images={getAvatarImages()}
-            onImageChange={function (newImageUrl: string): void {
-              throw new Error('Function not implemented.');
-            }}
-          />
-        }
-      >
-        <SpellListViewInfo spellList={spellList} />
-        <CategorySeparator text={t('spells')}>
-          <AddButton onClick={onAddSpell} />
-        </CategorySeparator>
-        <SpellTable spells={spells} />
-        <TechnicalInfo>
-          <pre>{JSON.stringify(spellList, null, 2)}</pre>
-        </TechnicalInfo>
-      </LayoutBase>
+    <LayoutBase
+      breadcrumbs={[
+        { name: t('home'), link: '/' },
+        { name: t('spell-lists'), link: '/spells/spell-lists' },
+        { name: t('view') },
+      ]}
+      actions={[
+        <RefreshButton
+          onClick={() => {
+            bindSpellList(spellList.id);
+          }}
+        />,
+        <EditButton onClick={() => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: spellList })} />,
+        <DeleteButton onClick={() => setDeleteDialogOpen(true)} />,
+      ]}
+      leftPanel={
+        <EditableAvatar
+          imageUrl={spellList.imageUrl || ''}
+          images={getAvatarImages()}
+          onImageChange={onImageUpdate}
+        />
+      }
+    >
+      <SpellListViewInfo spellList={spellList} />
+      <CategorySeparator text={t('spells')}>
+        <AddButton onClick={onAddSpell} />
+      </CategorySeparator>
+      <SpellTable spells={spells} />
+      <TechnicalInfo>
+        <pre>{JSON.stringify(spellList, null, 2)}</pre>
+      </TechnicalInfo>
+      <DeleteDialog
+        message={'Delete confirmation'}
+        open={deleteDialogOpen}
+        onDelete={onDelete}
+        onClose={() => setDeleteDialogOpen(false)}
+      />
+    </LayoutBase>
   );
-};
-
-export default SpellListView;
+}

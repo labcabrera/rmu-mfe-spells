@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -14,9 +14,10 @@ import {
   TechnicalInfo,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
+import { getAvatarImages } from '../../services/image-service';
 import SpellForm from '../shared/SpellForm';
 
-const SpellCreation: FC = () => {
+export default function SpellCreation() {
   const auth = useAuth();
   const { t } = useTranslation();
   const location = useLocation();
@@ -39,7 +40,7 @@ const SpellCreation: FC = () => {
       .catch((err) => console.error(err.message));
   };
 
-  const onSave = async () => {
+  const onSave = () => {
     createSpell(formData, auth)
       .then((response) => navigate(`/spells/spells/view/${response.id}`, { state: { spell: response } }))
       .catch((err) => showError(err.message));
@@ -65,15 +66,17 @@ const SpellCreation: FC = () => {
 
   return (
     <LayoutBase
-      breadcrumbs={[{name:t('home'), link: "/"},{name:t('spells'), link: "/spells"},{name:t('create')}]}
+      breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells'), link: '/spells' }, { name: t('create') }]}
       actions={[
         <CancelButton onClick={() => navigate('/spells/spells')} />,
         <SaveButton onClick={() => onSave()} disabled={!isValid} />,
       ]}
       leftPanel={
-        <EditableAvatar imageUrl={''} images={[]} onImageChange={function (newImageUrl: string): void {
-          throw new Error('Function not implemented.');
-        } } />
+        <EditableAvatar
+          imageUrl={formData.imageUrl || ""}
+          images={getAvatarImages()}
+          onImageChange={(e) => setFormData({...formData, imageUrl: e})}
+        />
       }
     >
       <SpellForm formData={formData} setFormData={setFormData} />
@@ -82,6 +85,4 @@ const SpellCreation: FC = () => {
       </TechnicalInfo>
     </LayoutBase>
   );
-};
-
-export default SpellCreation;
+}

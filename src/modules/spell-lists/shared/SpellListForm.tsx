@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { useError } from '../../../ErrorContext';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
-import { CategorySeparator, fetchProfessions, ListType, Spell, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { CategorySeparator, fetchProfessions, ListType, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useAuth } from 'react-oidc-context';
 import { useTranslation } from 'react-i18next';
 

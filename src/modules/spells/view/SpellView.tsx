@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -13,6 +13,7 @@ import {
   Spell,
   SpellList,
   TechnicalInfo,
+  updateSpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import { getAvatarImages } from '../../services/image-service';
@@ -41,10 +42,11 @@ export default function SpellView() {
       .catch((err) => showError(err.message));
   };
 
-  const updateImage = (imageUrl: string) => {};
-
-  const onEdit = () => {
-    navigate(`/spells/spells/edit/${spell!.id}`);
+  const updateImage = (imageUrl: string) => {
+    const dto = { imageUrl};
+    updateSpellList(spellList!.id, dto, auth)
+      .then((response) => setSpellList(response))
+      .catch((err) => showError(err.message));
   };
 
   const onDelete = () => {};

@@ -8,7 +8,7 @@ import SpellListList from './modules/spell-lists/list/SpellListList';
 import SpellCreation from './modules/spells/create/SpellCreation';
 import SpellEdit from './modules/spells/edit/SpellEdit';
 import SpellView from './modules/spells/view/SpellView';
-import SpellsListView from './modules/spells/list/SpellsListView';
+import SpellsListView from './modules/spells/list/SpellListView';
 import SpellListView from './modules/spell-lists/view/SpellListView';
 import { Box, ThemeProvider } from '@mui/system';
 import { useTheme } from '@mui/material/styles';

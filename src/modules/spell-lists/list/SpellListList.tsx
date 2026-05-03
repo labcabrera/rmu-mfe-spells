@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
@@ -65,7 +64,7 @@ const SpellListList: FC = () => {
       ) : (
         <>
           <SpellListListSearch setQueryString={setQueryString} professionIds={professionIds} />
-          <Grid container spacing={1}>
+          <Grid container spacing={1} sx={{ mt: 2 }}>
             {pageData.content.map((spellList) => (
               <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
                 <RmuTextCard
