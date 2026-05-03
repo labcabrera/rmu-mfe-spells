@@ -30,7 +30,7 @@ const SpellsListView: FC = () => {
 
   return (
       <LayoutBase
-        breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells') }]}
+        breadcrumbs={[{ name: t('home'), link: '/' },{ name: t('spells'), link: '/spells' }, { name: t('spells') }]}
         actions={<RefreshButton onClick={bindSpells} />}
       >
         {!pageData ? (

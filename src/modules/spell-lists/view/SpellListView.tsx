@@ -81,7 +81,8 @@ export default function SpellListView() {
     <LayoutBase
       breadcrumbs={[
         { name: t('home'), link: '/' },
-        { name: t('spell-lists'), link: '/spells/spell-lists' },
+        { name: t('spells'), link: '/spells' },
+        { name: t('lists'), link: '/spells/spell-lists' },
         { name: t('view') },
       ]}
       actions={[

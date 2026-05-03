@@ -11,7 +11,6 @@ import {
   SpellList,
   TechnicalInfo,
   updateSpellList,
-  UpdateSpellListDto,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import SpellListForm from '../form/SpellListForm';
@@ -24,8 +23,8 @@ const SpellListEdit: FC = () => {
   const navigate = useNavigate();
   const { showError } = useError();
   const { spellListId } = useParams<{ spellListId: string }>();
-  const [spellList, setSpellList] = useState<SpellList | null>(null);
-  const [formData, setFormData] = useState<UpdateSpellListDto>();
+  const [spellList, setSpellList] = useState<SpellList>();
+  const [formData, setFormData] = useState<SpellList>({} as SpellList);
   const [isValid, setIsValid] = useState(false);
 
   const onSave = () => {
@@ -42,7 +41,7 @@ const SpellListEdit: FC = () => {
     if (spellList) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...rest } = spellList;
-      setFormData(rest);
+      setFormData(rest as SpellList);
     }
   }, [spellList]);
 
@@ -63,7 +62,8 @@ const SpellListEdit: FC = () => {
       <LayoutBase
         breadcrumbs={[
           { name: t('home'), link: '/' },
-          { name: t('spells-lists'), link: '/spells/spell-lists' },
+          { name: t('spells'), link: '/spells' },
+          { name: t('lists'), link: '/spells/spell-lists' },
           { name: t('edit') },
         ]}
         actions={[
