@@ -1,16 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
-import { t } from 'i18next';
 import ClearableTextField from '../../shared/inputs/ClearableTextField';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
 import { ListType, RealmType } from '../../api/spell-list.dto';
 import SelectProfession from '../../shared/selects/SelectProfession';
+import { useTranslation } from 'react-i18next';
 
 const SpellListListSearch: FC<{
   setQueryString: Dispatch<SetStateAction<string>>;
-  professionIds: string[];
+  professionIds: string[] | undefined;
 }> = ({ setQueryString, professionIds }) => {
+  const { t } = useTranslation();
   const [searchId, setSearchId] = useState<string | null>(null);
   const [realmType, setRealmType] = useState<RealmType | null>(null);
   const [listType, setListType] = useState<ListType | null>(null);
@@ -43,7 +45,7 @@ const SpellListListSearch: FC<{
       <Grid size={{ xs: 12, md: 3 }}>
         <ClearableTextField
           name={'name'}
-          label={t('Name')}
+          label={t('name')}
           value={searchId || ''}
           onChange={(e) => setSearchId(e.target.value)}
         />
@@ -51,7 +53,7 @@ const SpellListListSearch: FC<{
       <Grid size={{ xs: 12, md: 3 }}>
         <SelectRealmType
           name={'realm'}
-          label={t('Realm')}
+          label={t('realm')}
           value={realmType}
           onChange={(value) => setRealmType(value)}
           required={false}
@@ -61,7 +63,7 @@ const SpellListListSearch: FC<{
       <Grid size={{ xs: 12, md: 3 }}>
         <SelectListType
           name={'type'}
-          label={t('Type')}
+          label={t('type')}
           value={listType}
           onChange={(value) => setListType(value)}
           required={false}
@@ -69,15 +71,17 @@ const SpellListListSearch: FC<{
         />
       </Grid>
       <Grid size={{ xs: 12, md: 3 }}>
+        {professionIds && (
         <SelectProfession
           name='professionId'
-          label={t('Profession')}
+          label={t('profession')}
           value={professionId}
           professionIds={professionIds}
           onChange={(value) => setProfessionId(value)}
           required={false}
           allowAll={true}
         />
+        )}
       </Grid>
     </Grid>
   );

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
-import { t } from 'i18next';
 import { LIST_TYPES, ListType } from '../../api/spell-list.dto';
+import { useTranslation } from 'react-i18next';
 
 const SelectListType: FC<{
   label: string;
@@ -11,6 +11,8 @@ const SelectListType: FC<{
   allowAll?: boolean;
   onChange: (listType: ListType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
+  const { t } = useTranslation();
+  
   return (
     <TextField
       select

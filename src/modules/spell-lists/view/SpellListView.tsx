@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
-import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
-import { fetchSpells } from '../../api/spell';
-import { fetchSpellList } from '../../api/spell-list';
+import { fetchSpells } from '../../api/spell.api';
+import { fetchSpellList } from '../../api/spell-list.api';
 import { SpellList } from '../../api/spell-list.dto';
 import { Spell } from '../../api/spell.dto';
 import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
@@ -15,9 +14,13 @@ import SpellTable from '../../spells/shared/SpellTable';
 import SpellListViewActions from './SpellListViewActions';
 import SpellListViewInfo from './SpellListViewInfo';
 import TechnicalInfo from '../../shared/display/TechnicalInfo';
+import { useAuth } from 'react-oidc-context';
+import { useTranslation } from 'react-i18next';
 
 const SpellListView: FC = () => {
+  const auth = useAuth();
   const location = useLocation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { spellListId } = useParams<{ spellListId?: string }>();
   const { showError } = useError();
@@ -25,13 +28,13 @@ const SpellListView: FC = () => {
   const [spells, setSpells] = useState<Spell[]>([]);
 
   const bindSpellList = (spellListId: string) => {
-    fetchSpellList(spellListId)
+    fetchSpellList(spellListId, auth)
       .then((response) => setSpellList(response))
       .catch((err: Error) => showError(err.message));
   };
 
   const bindSpells = (spellListId: string) => {
-    fetchSpells(`spellListId==${spellListId}`, 0, 100)
+    fetchSpells(`spellListId==${spellListId}`, 0, 100, auth)
       .then((response) => setSpells(response.content))
       .catch((err: Error) => showError(err.message));
   };

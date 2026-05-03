@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
-import { updateSpell } from '../../api/spell';
+import { updateSpell } from '../../api/spell.api';
 import { Spell, UpdateSpellDto } from '../../api/spell.dto';
 import RmuBreadcrumbs from '../../shared/breadcrumbs/RmuBreadcrumbs';
 import CancelButton from '../../shared/buttons/CancelButton';

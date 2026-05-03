@@ -7,7 +7,7 @@ import RmuTextCard from '../../shared/cards/RmuTextCard';
 import SpellListActions from './SpellListActions';
 import SpellListSearch from './SpellListSearch';
 import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
-import { fetchSpells } from '../../api/spell';
+import { fetchSpells } from '../../api/spell.api';
 import { Spell } from '../../api/spell.dto';
 
 const PAGE_SIZE = 24;

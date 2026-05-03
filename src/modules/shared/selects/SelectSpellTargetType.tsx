@@ -1,6 +1,6 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { fetchSpellTargetTypes } from '../../api/spell';
+import { fetchSpellTargetTypes } from '../../api/spell.api';
 import { CreateSpellDto, SpellTargetType, UpdateSpellDto } from '../../api/spell.dto';
 import { useError } from '../../../ErrorContext';
 

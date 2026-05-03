@@ -1,18 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
-import { t } from 'i18next';
 import { useError } from '../../../ErrorContext';
-import { fetchProfessions } from '../../api/profession';
 import { CreateSpellListDto, ListType, UpdateSpellListDto } from '../../api/spell-list.dto';
 import CategorySeparator from '../../shared/display/CategorySeparator';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
+import { fetchProfessions } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useAuth } from 'react-oidc-context';
+import { useTranslation } from 'react-i18next';
 
 const SpellListForm: FC<{
   formData: CreateSpellListDto | UpdateSpellListDto;
   setFormData: Dispatch<SetStateAction<CreateSpellListDto | UpdateSpellListDto>>;
 }> = ({ formData, setFormData }) => {
+  const auth = useAuth();
+  const { t } = useTranslation();
   const { showError } = useError();
   const [professionIds, setProfessionIds] = useState<string[]>();
 
@@ -22,7 +26,7 @@ const SpellListForm: FC<{
   };
 
   useEffect(() => {
-    fetchProfessions('archetype!=non-spellcaster', 0, 100)
+    fetchProfessions('archetype!=non-spellcaster', 0, 100, auth)
       .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
       .catch((err: Error) => showError(err.message));
   }, []);

@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { useError } from '../../../ErrorContext';
-import { fetchSpell } from '../../api/spell';
+import { fetchSpell } from '../../api/spell.api';
 import { Spell, UpdateSpellDto } from '../../api/spell.dto';
 import EditableAvatar from '../../shared/avatars/EditableAvatar';
 import TechnicalInfo from '../../shared/display/TechnicalInfo';
