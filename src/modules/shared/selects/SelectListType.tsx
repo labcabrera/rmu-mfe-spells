@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { MenuItem, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { MenuItem, TextField } from '@mui/material';
 import { ListType, SPELL_LIST_TYPES } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SelectListType: FC<{
@@ -12,7 +12,7 @@ const SelectListType: FC<{
   onChange: (listType: ListType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
   const { t } = useTranslation();
-  
+
   return (
     <TextField
       select
@@ -21,7 +21,7 @@ const SelectListType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      size='small'
+      size="small"
       onChange={(event) => onChange(event.target.value as ListType)}
       error={required && !value}
     >
