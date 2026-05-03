@@ -1,14 +1,13 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid, TextField } from '@mui/material';
-import { CreateSpellDto, SpellTargetMode, UpdateSpellDto } from '../../api/spell.dto';
 import SelectSpellTargetMode from '../../shared/selects/SelectSpellTargetMode';
 import SelectSpellTargetType from '../../shared/selects/SelectSpellTargetType';
 import { useTranslation } from 'react-i18next';
-import { NumericInput } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { NumericInput, Spell, SpellTargetMode } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellFormTarget: FC<{
-  formData: CreateSpellDto | UpdateSpellDto;
-  setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
+  formData: Spell;
+  setFormData: Dispatch<SetStateAction<Spell>>;
 }> = ({ formData, setFormData }) => {
   const { t } = useTranslation();
 

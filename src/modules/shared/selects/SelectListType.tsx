@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
-import { LIST_TYPES, ListType } from '../../api/spell-list.dto';
 import { useTranslation } from 'react-i18next';
+import { ListType, SPELL_LIST_TYPES } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SelectListType: FC<{
   label: string;
@@ -28,7 +28,7 @@ const SelectListType: FC<{
           <em>{t('All')}</em>
         </MenuItem>
       )}
-      {LIST_TYPES.map((option, index) => (
+      {SPELL_LIST_TYPES.map((option, index) => (
         <MenuItem key={index} value={option}>
           {t(option)}
         </MenuItem>

@@ -3,10 +3,9 @@ import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { Grid } from '@mui/material';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
-import { ListType, RealmType } from '../../api/spell-list.dto';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import { useTranslation } from 'react-i18next';
-import { ClearableTextField } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { ClearableTextField, ListType, RealmType } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellListListSearch: FC<{
   setQueryString: Dispatch<SetStateAction<string>>;

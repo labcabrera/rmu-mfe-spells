@@ -1,10 +1,8 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
-import { deleteSpellList } from '../../api/spell-list.api';
-import { SpellList } from '../../api/spell-list.dto';
-import { Spell } from '../../api/spell.dto';
-import { RmuBreadcrumbs, RefreshButton, EditButton, DeleteButton } from '@labcabrera-rmu/rmu-react-shared-lib';
+
+import { RmuBreadcrumbs, RefreshButton, EditButton, DeleteButton, deleteSpellList, Spell, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellViewActions: FC<{
   spellList: SpellList;

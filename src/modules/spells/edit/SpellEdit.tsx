@@ -2,12 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { useError } from '../../../ErrorContext';
-import { fetchSpell } from '../../api/spell.api';
-import { Spell, UpdateSpellDto } from '../../api/spell.dto';
 import SpellForm from '../shared/SpellForm';
-import SpellEditActions from './SpellEditActions';
 import { useTranslation } from 'react-i18next';
-import { EditableAvatar, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { EditableAvatar, fetchSpell, LayoutBase, Spell, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useAuth } from 'react-oidc-context';
 
 const SpellEdit: FC = () => {
   const auth = useAuth();
@@ -16,7 +14,7 @@ const SpellEdit: FC = () => {
   const { showError } = useError();
   const [spell, setSpell] = useState<Spell>();
   const { spellId } = useParams<{ spellId: string }>();
-  const [formData, setFormData] = useState<UpdateSpellDto>();
+  const [formData, setFormData] = useState<Spell>({} as Spell);
   const [isValid, setIsValid] = useState(false);
 
   const bindSpell = (spellId: string) => {
@@ -49,7 +47,14 @@ const SpellEdit: FC = () => {
 
   return (
     <>
-      <SpellEditActions spell={spell} formData={formData} isValid={isValid} />
+      <LayoutBase breadcrumbs={[{ name: t('home'), link: '/' },{ name: t('spells'), link: '/spells/spells' }, { name: t('edit') }]}>
+          <SpellForm formData={formData} setFormData={setFormData} />
+          <TechnicalInfo>
+            <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
+          </TechnicalInfo>
+
+      </LayoutBase>
+      {/* <SpellEditActions spell={spell} formData={formData} isValid={isValid} /> */}
       <Grid container spacing={2}>
         <Grid size={2}>
           <EditableAvatar
@@ -57,10 +62,6 @@ const SpellEdit: FC = () => {
             onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })} images={[]}          />
         </Grid>
         <Grid size={8}>
-          <SpellForm formData={formData} setFormData={setFormData} />
-          <TechnicalInfo>
-            <pre>Form: {JSON.stringify(formData, null, 2)}</pre>
-          </TechnicalInfo>
         </Grid>
       </Grid>
     </>

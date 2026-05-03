@@ -1,18 +1,19 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { fetchSpellTargetTypes } from '../../api/spell.api';
-import { CreateSpellDto, SpellTargetType, UpdateSpellDto } from '../../api/spell.dto';
 import { useError } from '../../../ErrorContext';
+import { fetchSpellTargetTypes, Spell, SpellTargetType } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useAuth } from 'react-oidc-context';
 
 const SelectSpellTargetType: FC<{
-  formData: CreateSpellDto | UpdateSpellDto;
-  setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
+  formData: Spell;
+  setFormData: Dispatch<SetStateAction<Spell>>;
 }> = ({ formData, setFormData }) => {
+  const auth = useAuth();
   const { showError } = useError();
   const [targetTypes, setTargetTypes] = useState<string[]>([]);
 
   useEffect(() => {
-    fetchSpellTargetTypes()
+    fetchSpellTargetTypes(auth)
       .then(setTargetTypes)
       .catch((err: Error) => showError(err.message));
   }, []);

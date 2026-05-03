@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
-import { RealmType, REALM_TYPES } from '../../api/spell-list.dto';
 import { useTranslation } from 'react-i18next';
+import { REALM_TYPES, RealmType } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SelectRealmType: FC<{
   label: string;

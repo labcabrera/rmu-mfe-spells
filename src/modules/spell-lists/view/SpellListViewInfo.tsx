@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import { Grid, Paper, Typography } from '@mui/material';
-import { t } from 'i18next';
-import { SpellList } from '../../api/spell-list.dto';
+import { SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SpellListViewInfo: FC<{
   spellList: SpellList;
 }> = ({ spellList }) => {
+  const { t } = useTranslation();
   if (!spellList) return <p>Loading...</p>;
 
   return (

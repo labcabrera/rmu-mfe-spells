@@ -1,15 +1,8 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import {
-  getSpellDurationText,
-  getSpellNameText,
-  getSpellRangeText,
-  getSpellTargetText,
-  getSpellTypeText,
-  Spell,
-} from '../../api/spell.dto';
-import { useTranslation } from 'react-i18next';
+import { Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellTable: FC<{
   spells: Spell[];
@@ -19,6 +12,73 @@ const SpellTable: FC<{
 
   const handleSpellClick = (spell: Spell) => {
     navigate(`/spells/spells/view/${spell.id}`, { state: { spell } });
+  };
+
+  const getSpellNameText = (spell: Spell) => {
+    return spell.modifiers.instant ? `${t(spell.name)} *` : t(spell.name);
+  };
+
+  const getSpellTypeText = (spell: Spell) => {
+    if (!spell.modifiers?.type) return '-';
+    const type = spell.modifiers.type.charAt(0).toUpperCase();
+    let subtype = '';
+    if (spell.modifiers.subtype) {
+      subtype = spell.modifiers.subtype.charAt(0);
+    }
+    return `${t(type)}${t(subtype)}`;
+  };
+
+  const getSpellDurationText = (spell: Spell) => {
+    if (!spell.modifiers?.duration) return '-';
+    if (!spell.modifiers.duration.type) {
+      return spell.modifiers?.duration?.requiredConcentration === true ? 'C' : '-';
+    }
+    const concentration = spell.modifiers?.duration?.requiredConcentration ? ` (C)` : '';
+    const duration = spell.modifiers.duration;
+    switch (duration.type) {
+      case 'concentration':
+      case 'permanent':
+        return `${t(duration.type)}${concentration}`;
+      case 'lvl':
+        return `${duration.duration} ${t(duration.durationScale || '')} / lvl${concentration}`;
+      case 'rr-failure': {
+        const scale: string = duration.failureScale ? `${duration.failureScale}` : '';
+        return `${duration.duration} ${t(duration.durationScale || '')} / ${scale} failure${concentration}`;
+      }
+      default:
+        return '-';
+    }
+  };
+
+  const getSpellRangeText = (spell: Spell) => {
+    if (!spell.modifiers?.range) return '-';
+    const range = spell.modifiers.range;
+    switch (range.type) {
+      case 'distance':
+        return `${range.value}'`;
+      case 'distance-level':
+        return `${range.value}' / lvl`;
+      case 'touch':
+      case 'self':
+        return t(range.type);
+      default:
+        return '-';
+    }
+  };
+
+  const getSpellTargetText = (spell: Spell) => {
+    if (!spell.modifiers?.target) return '-';
+    switch (spell.modifiers.target.mode) {
+      case 'area':
+        return `${spell.modifiers.target.modifier || ''}`;
+      case 'target': {
+        const count = spell.modifiers.target.count ? `${spell.modifiers.target.count} ` : '';
+        const types = spell.modifiers.target.types ? spell.modifiers.target.types.join(', ') : '';
+        return `${count}${types}`;
+      }
+      default:
+        return '-';
+    }
   };
 
   if (!spells) return <p>Loading...</p>;

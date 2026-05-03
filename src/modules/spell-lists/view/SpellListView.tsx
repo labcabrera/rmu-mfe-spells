@@ -2,22 +2,22 @@ import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Grid } from '@mui/material';
 import {
   AddButton,
   CategorySeparator,
   DeleteButton,
+  deleteSpellList,
   EditableAvatar,
   EditButton,
+  fetchSpellList,
+  fetchSpells,
   LayoutBase,
   RefreshButton,
+  Spell,
+  SpellList,
   TechnicalInfo,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { deleteSpellList, fetchSpellList } from '../../api/spell-list.api';
-import { SpellList } from '../../api/spell-list.dto';
-import { fetchSpells } from '../../api/spell.api';
-import { Spell } from '../../api/spell.dto';
 import { getAvatarImages } from '../../services/image-service';
 import SpellTable from '../../spells/shared/SpellTable';
 import SpellListViewInfo from './SpellListViewInfo';

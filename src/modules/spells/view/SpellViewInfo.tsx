@@ -1,15 +1,14 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router';
 import { Grid, Paper, Typography } from '@mui/material';
-import { t } from 'i18next';
-import { SpellList } from '../../api/spell-list.dto';
-import { getSpellDurationText, getSpellRangeText, getSpellTargetText, Spell } from '../../api/spell.dto';
-import { CategorySeparator, RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { CategorySeparator, RmuTextCard, Spell, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SpellViewInfo: FC<{
   spell: Spell;
   spellList: SpellList;
 }> = ({ spell, spellList }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   if (!spell) return <p>Loading...</p>;
@@ -34,7 +33,7 @@ const SpellViewInfo: FC<{
         <Grid size={12}>
           <Grid container spacing={1}>
             <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={spellList.name} subtitle={t('Spell list')} onClick={() => onSpellListClick()} />
+              <RmuTextCard value={spellList.name} subtitle={t('Spell list')} onClick={() => onSpellListClick()} image={''} />
             </Grid>
           </Grid>
         </Grid>
@@ -46,30 +45,30 @@ const SpellViewInfo: FC<{
         <Grid size={12}>
           <Grid container spacing={1}>
             <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={spell.level} subtitle={t('Level')} />
+              <RmuTextCard value={spell.level} subtitle={t('Level')} image={''} />
             </Grid>
             {spell.modifiers.instant && (
               <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={t('Instant')} subtitle={t('Cast')} />
+                <RmuTextCard value={t('Instant')} subtitle={t('Cast')} image={''} />
               </Grid>
             )}
             {spell.modifiers.duration && (
               <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} />
+                <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} image={''} />
               </Grid>
             )}
             {spell.modifiers.range && (
               <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellRangeText(spell)} subtitle={t('Range')} />
+                <RmuTextCard value={getSpellRangeText(spell)} subtitle={t('Range')} image={''} />
               </Grid>
             )}
             {spell.modifiers.target && (
               <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellTargetText(spell)} subtitle={t('Target')} />
+                <RmuTextCard value={getSpellTargetText(spell)} subtitle={t('Target')} image={''} />
               </Grid>
             )}
             <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} />
+              <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} image={''} />
             </Grid>
           </Grid>
         </Grid>

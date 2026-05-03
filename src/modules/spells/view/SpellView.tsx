@@ -2,14 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { useError } from '../../../ErrorContext';
-import { fetchSpell } from '../../api/spell.api';
-import { fetchSpellList } from '../../api/spell-list.api';
-import { SpellList } from '../../api/spell-list.dto';
-import { Spell } from '../../api/spell.dto';
 import { imageBaseUrl } from '../../services/config';
 import SpellViewActions from './SpellViewActions';
 import SpellViewInfo from './SpellViewInfo';
-import { GenericAvatar, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { fetchSpell, fetchSpellList, GenericAvatar, Spell, SpellList, TechnicalInfo } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 

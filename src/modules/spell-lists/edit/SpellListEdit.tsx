@@ -2,19 +2,19 @@ import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Grid } from '@mui/material';
 import {
   CancelButton,
   EditableAvatar,
+  fetchSpellList,
   LayoutBase,
   SaveButton,
+  SpellList,
   TechnicalInfo,
+  updateSpellList,
+  UpdateSpellListDto,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { fetchSpellList, updateSpellList } from '../../api/spell-list.api';
-import { SpellList, UpdateSpellListDto } from '../../api/spell-list.dto';
 import SpellListForm from '../shared/SpellListForm';
-import SpellListEditActions from './SpellListEditActions';
 import { getAvatarImages } from '../../services/image-service';
 
 const SpellListEdit: FC = () => {

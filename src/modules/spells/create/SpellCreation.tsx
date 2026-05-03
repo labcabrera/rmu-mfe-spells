@@ -4,16 +4,16 @@ import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   CancelButton,
+  createSpell,
   EditableAvatar,
+  fetchSpellList,
   LayoutBase,
   SaveButton,
+  Spell,
+  SpellList,
   TechnicalInfo,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { fetchSpellList } from '../../api/spell-list.api';
-import { SpellList } from '../../api/spell-list.dto';
-import { createSpell } from '../../api/spell.api';
-import { CreateSpellDto } from '../../api/spell.dto';
 import SpellForm from '../shared/SpellForm';
 
 const SpellCreation: FC = () => {
@@ -23,14 +23,7 @@ const SpellCreation: FC = () => {
   const navigate = useNavigate();
   const { showError } = useError();
 
-  const [formData, setFormData] = useState<CreateSpellDto>({
-    spellListId: null,
-    name: null,
-    level: null,
-    modifiers: { type: null, subtype: null },
-    description: null,
-    imageUrl: null,
-  });
+  const [formData, setFormData] = useState<Spell>({} as Spell);
   const { spellListId } = useParams<{ spellListId?: string }>();
   const [spellList, setSpellList] = useState<SpellList | null>(null);
   const [isValid, setIsValid] = useState(false);

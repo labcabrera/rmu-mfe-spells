@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { t } from 'i18next';
-import { SpellSubtype, SPELL_SUBTYPES } from '../../api/spell.dto';
+import { SpellSubtype } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useTranslation } from 'react-i18next';
 
 const SelectSpellSubtype: FC<{
   label?: string;
@@ -9,6 +9,8 @@ const SelectSpellSubtype: FC<{
   name: string;
   onChange: (value: SpellSubtype) => void;
 }> = ({ label, value, name, onChange }) => {
+  const { t } = useTranslation();
+  
   const handleChange = (_: React.MouseEvent<HTMLElement>, newValue: string | null) => {
     if (newValue === null || newValue === '') return onChange('' as SpellSubtype);
     onChange(newValue as SpellSubtype);

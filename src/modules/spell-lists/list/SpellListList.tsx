@@ -7,15 +7,15 @@ import { Grid, CircularProgress } from '@mui/material';
 import {
   AddButton,
   fetchProfessions,
+  fetchSpellLists,
   LayoutBase,
   Page,
   RefreshButton,
   RmuPagination,
   RmuTextCard,
+  SpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { fetchSpellLists } from '../../api/spell-list.api';
-import { SpellList } from '../../api/spell-list.dto';
 import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
 import SpellListListSearch from './SpellListListSearch';
 

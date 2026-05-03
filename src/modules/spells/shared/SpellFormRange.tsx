@@ -1,13 +1,12 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Grid } from '@mui/material';
-import { CreateSpellDto, SpellRange, SpellRangeType, UpdateSpellDto } from '../../api/spell.dto';
 import SelectSpellRangeType from '../../shared/selects/SelectSpellRangeType';
 import { useTranslation } from 'react-i18next';
-import { NumericInput } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { NumericInput, Spell, SpellRange, SpellRangeType } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellFormRange: FC<{
-  formData: CreateSpellDto | UpdateSpellDto;
-  setFormData: Dispatch<SetStateAction<CreateSpellDto | UpdateSpellDto>>;
+  formData: Spell;
+  setFormData: Dispatch<SetStateAction<Spell>>;
 }> = ({ formData, setFormData }) => {
   const { t} = useTranslation();
 

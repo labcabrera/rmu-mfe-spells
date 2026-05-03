@@ -5,11 +5,9 @@ import { useError } from '../../../ErrorContext';
 import SpellListActions from './SpellListActions';
 import SpellListSearch from './SpellListSearch';
 import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
-import { fetchSpells } from '../../api/spell.api';
-import { Spell } from '../../api/spell.dto';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
-import { RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { fetchSpells, RmuTextCard, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const PAGE_SIZE = 24;
 

@@ -4,30 +4,24 @@ import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
 import {
   CancelButton,
+  createSpellList,
   EditableAvatar,
   LayoutBase,
   SaveButton,
+  SpellList,
   TechnicalInfo,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { createSpellList } from '../../api/spell-list.api';
-import { CreateSpellListDto } from '../../api/spell-list.dto';
-import SpellListForm from '../shared/SpellListForm';
 import { getAvatarImages } from '../../services/image-service';
+import SpellListForm from '../shared/SpellListForm';
 
-const SpellListCreation: FC = () => {
+export default function SpellListCreation() {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { showError } = useError();
 
-  const [formData, setFormData] = useState<CreateSpellListDto>({
-    name: null,
-    realm: null,
-    type: null,
-    description: null,
-    imageUrl: null,
-  });
+  const [formData, setFormData] = useState<SpellList>({} as SpellList);
   const [isValid, setIsValid] = useState(false);
 
   const validateForm = () => {
@@ -37,10 +31,10 @@ const SpellListCreation: FC = () => {
     return true;
   };
 
-  const onSave = async () => {
+  const onSave = () => {
     createSpellList(formData, auth)
-      .then((spellList) => navigate(`/spells/spell-lists/view/${spellList.id}`))
-      .catch((err: Error) => showError(err.message));
+      .then((response) => navigate(`/spells/spell-lists/view/${response.id}`))
+      .catch((err) => showError(err.message));
   };
 
   useEffect(() => {
@@ -61,9 +55,10 @@ const SpellListCreation: FC = () => {
         ]}
         leftPanel={
           <EditableAvatar
-            imageUrl={formData.imageUrl || ""}
+            imageUrl={formData.imageUrl || ''}
             images={getAvatarImages()}
-            onImageChange={(e) => setFormData({...formData, imageUrl: e}) } />
+            onImageChange={(e) => setFormData({ ...formData, imageUrl: e })}
+          />
         }
       >
         <SpellListForm formData={formData} setFormData={setFormData} />
@@ -73,6 +68,4 @@ const SpellListCreation: FC = () => {
       </LayoutBase>
     </>
   );
-};
-
-export default SpellListCreation;
+}
