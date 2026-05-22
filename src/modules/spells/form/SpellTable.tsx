@@ -1,14 +1,50 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TableSortLabel,
+  Typography,
+} from '@mui/material';
 import { Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
+
+type SortField = 'level' | 'name';
+type SortOrder = 'asc' | 'desc';
 
 const SpellTable: FC<{
   spells: Spell[];
 }> = ({ spells }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [sortField, setSortField] = useState<SortField>('level');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedSpells = useMemo(() => {
+    return [...spells].sort((a, b) => {
+      let cmp = 0;
+      if (sortField === 'level') {
+        cmp = (a.level ?? 0) - (b.level ?? 0);
+      } else {
+        cmp = (a.name ?? '').localeCompare(b.name ?? '');
+      }
+      return sortOrder === 'asc' ? cmp : -cmp;
+    });
+  }, [spells, sortField, sortOrder]);
 
   const handleSpellClick = (spell: Spell) => {
     navigate(`/spells/spells/view/${spell.id}`, { state: { spell } });
@@ -89,26 +125,76 @@ const SpellTable: FC<{
 
   return (
     <TableContainer component={Paper}>
-      <Table size="small">
+      <Table>
         <TableHead>
           <TableRow>
-            <TableCell>{t('Level')}</TableCell>
-            <TableCell>{t('Name')}</TableCell>
-            <TableCell>{t('Type')}</TableCell>
-            <TableCell>{t('Range')}</TableCell>
-            <TableCell>{t('Duration')}</TableCell>
-            <TableCell>{t('Target')}</TableCell>
+            <TableCell sortDirection={sortField === 'level' ? sortOrder : false}>
+              <TableSortLabel
+                active={sortField === 'level'}
+                direction={sortField === 'level' ? sortOrder : 'asc'}
+                onClick={() => handleSort('level')}
+                sx={{ '& .MuiTableSortLabel-icon': { opacity: 1 } }}
+              >
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                  {t('level')}
+                </Typography>
+              </TableSortLabel>
+            </TableCell>
+            <TableCell sortDirection={sortField === 'name' ? sortOrder : false}>
+              <TableSortLabel
+                active={sortField === 'name'}
+                direction={sortField === 'name' ? sortOrder : 'asc'}
+                onClick={() => handleSort('name')}
+                sx={{ '& .MuiTableSortLabel-icon': { opacity: 1 } }}
+              >
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                  {t('name')}
+                </Typography>
+              </TableSortLabel>
+            </TableCell>
+            <TableCell>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                {t('type')}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                {t('range')}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                {t('duration')}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                {t('target')}
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {spells.map((spell) => (
+          {sortedSpells.map((spell) => (
             <TableRow key={spell.id} hover onClick={() => handleSpellClick(spell)} sx={{ cursor: 'pointer' }}>
-              <TableCell>{spell.level}</TableCell>
-              <TableCell>{getSpellNameText(spell)}</TableCell>
-              <TableCell>{getSpellTypeText(spell)}</TableCell>
-              <TableCell>{getSpellRangeText(spell)}</TableCell>
-              <TableCell>{getSpellDurationText(spell)}</TableCell>
-              <TableCell>{getSpellTargetText(spell)}</TableCell>
+              <TableCell>
+                <Typography variant="body1">{spell.level}</Typography>{' '}
+              </TableCell>
+              <TableCell>
+                <Typography variant="body1">{getSpellNameText(spell)}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body1">{getSpellTypeText(spell)}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body1">{getSpellRangeText(spell)}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body1">{getSpellDurationText(spell)}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body1">{getSpellTargetText(spell)}</Typography>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
