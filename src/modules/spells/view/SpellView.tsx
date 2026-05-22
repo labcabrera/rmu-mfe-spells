@@ -76,7 +76,12 @@ export default function SpellView() {
 
   return (
     <LayoutBase
-      breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells'), link: '/spells/spells' }, { name: t('view') }]}
+      breadcrumbs={[
+        { name: t('home'), link: '/' },
+        { name: t('spell-module'), link: '/spells' },
+        { name: t('spells'), link: '/spells/spells' },
+        { name: t('view') },
+      ]}
       actions={[
         <RefreshButton onClick={() => bindSpell(spell.id)} />,
         <EditButton onClick={() => navigate(`/spells/spells/edit/${spell!.id}`, { state: spell! })} />,

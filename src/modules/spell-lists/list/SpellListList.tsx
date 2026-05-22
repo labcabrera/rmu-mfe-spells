@@ -53,7 +53,11 @@ const SpellListList: FC = () => {
 
   return (
     <LayoutBase
-      breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells'), link: '/spells' }, { name: t('lists') }]}
+      breadcrumbs={[
+        { name: t('home'), link: '/' },
+        { name: t('spell-module'), link: '/spells' },
+        { name: t('spell-lists') },
+      ]}
       actions={[
         <RefreshButton onClick={() => bindSpellLists()} />,
         <AddButton onClick={() => navigate('/spells/spell-lists/create')} />,

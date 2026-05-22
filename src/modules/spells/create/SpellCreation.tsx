@@ -68,7 +68,12 @@ export default function SpellCreation() {
 
   return (
     <LayoutBase
-      breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells'), link: '/spells' }, { name: t('create') }]}
+      breadcrumbs={[
+        { name: t('home'), link: '/' },
+        { name: t('spell-module'), link: '/spells' },
+        { name: t('spells'), link: '/spells/spells' },
+        { name: t('create') },
+      ]}
       actions={[
         <CancelButton onClick={() => navigate('/spells/spells')} />,
         <SaveButton onClick={() => onSave()} disabled={!isValid} />,

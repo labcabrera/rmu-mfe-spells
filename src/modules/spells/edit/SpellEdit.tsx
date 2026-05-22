@@ -15,7 +15,7 @@ import {
 import { useError } from '../../../ErrorContext';
 import SpellForm from '../form/SpellForm';
 
-export default function SpellEdit(){
+export default function SpellEdit() {
   const auth = useAuth();
   const { t } = useTranslation();
   const location = useLocation();
@@ -62,7 +62,12 @@ export default function SpellEdit(){
 
   return (
     <LayoutBase
-      breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spells'), link: '/spells/spells' }, { name: t('edit') }]}
+      breadcrumbs={[
+        { name: t('home'), link: '/' },
+        { name: t('spell-module'), link: '/spells' },
+        { name: t('spells'), link: '/spells/spells' },
+        { name: t('edit') },
+      ]}
       actions={[
         <CancelButton onClick={() => navigate(`/spells/spell-lists`)} />,
         <SaveButton onClick={onSave} disabled={!isValid} />,
@@ -81,4 +86,4 @@ export default function SpellEdit(){
       </TechnicalInfo>
     </LayoutBase>
   );
-};
+}

@@ -45,8 +45,8 @@ export default function SpellListCreation() {
     <LayoutBase
       breadcrumbs={[
         { name: t('home'), link: '/' },
-        { name: t('spells'), link: '/spells' },
-        { name: t('lists'), link: '/spells/spell-lists' },
+        { name: t('spell-module'), link: '/spells' },
+        { name: t('spell-lists'), link: '/spells/spell-lists' },
         { name: t('create') },
       ]}
       actions={[

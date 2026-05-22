@@ -13,8 +13,8 @@ import {
   updateSpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import SpellListForm from '../form/SpellListForm';
 import { getAvatarImages } from '../../services/image-service';
+import SpellListForm from '../form/SpellListForm';
 
 const SpellListEdit: FC = () => {
   const auth = useAuth();
@@ -62,8 +62,8 @@ const SpellListEdit: FC = () => {
       <LayoutBase
         breadcrumbs={[
           { name: t('home'), link: '/' },
-          { name: t('spells'), link: '/spells' },
-          { name: t('lists'), link: '/spells/spell-lists' },
+          { name: t('spell-module'), link: '/spells' },
+          { name: t('spell-lists'), link: '/spells/spell-lists' },
           { name: t('edit') },
         ]}
         actions={[

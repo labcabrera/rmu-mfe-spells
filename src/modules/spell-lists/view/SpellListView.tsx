@@ -56,10 +56,10 @@ export default function SpellListView() {
   };
 
   const onImageUpdate = (imageUrl: string) => {
-    updateSpellList(spellList!.id, {imageUrl}, auth)
+    updateSpellList(spellList!.id, { imageUrl }, auth)
       .then((response) => setSpellList(response))
       .catch((err: Error) => showError(err.message));
-  }
+  };
 
   useEffect(() => {
     if (spellList) {
@@ -81,8 +81,8 @@ export default function SpellListView() {
     <LayoutBase
       breadcrumbs={[
         { name: t('home'), link: '/' },
-        { name: t('spells'), link: '/spells' },
-        { name: t('lists'), link: '/spells/spell-lists' },
+        { name: t('spell-module'), link: '/spells' },
+        { name: t('spell-lists'), link: '/spells/spell-lists' },
         { name: t('view') },
       ]}
       actions={[
@@ -95,11 +95,7 @@ export default function SpellListView() {
         <DeleteButton onClick={() => setDeleteDialogOpen(true)} />,
       ]}
       leftPanel={
-        <EditableAvatar
-          imageUrl={spellList.imageUrl || ''}
-          images={getAvatarImages()}
-          onImageChange={onImageUpdate}
-        />
+        <EditableAvatar imageUrl={spellList.imageUrl || ''} images={getAvatarImages()} onImageChange={onImageUpdate} />
       }
     >
       <SpellListViewInfo spellList={spellList} />
