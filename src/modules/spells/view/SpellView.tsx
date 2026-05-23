@@ -19,7 +19,6 @@ import {
   updateSpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { getAvatarImages } from '../../services/image-service';
 import SpellViewInfo from './SpellViewInfo';
 
 export default function SpellView() {
@@ -59,9 +58,8 @@ export default function SpellView() {
   };
 
   useEffect(() => {
-    if (spell) {
-      bindSpellList(spell.spellListId);
-    }
+    if (!spell) return;
+    bindSpellList(spell.spellListId);
   }, [spell]);
 
   useEffect(() => {
@@ -87,13 +85,7 @@ export default function SpellView() {
         <EditButton onClick={() => navigate(`/spells/spells/edit/${spell!.id}`, { state: spell! })} />,
         <DeleteButton onClick={() => setDeleteDialogOpen(true)} />,
       ]}
-      leftPanel={
-        <EditableAvatar
-          imageUrl={spell.imageUrl || ''}
-          images={getAvatarImages()}
-          onImageChange={(e) => updateImage(e)}
-        />
-      }
+      leftPanel={<EditableAvatar imageUrl={spell.imageUrl || ''} onImageChange={(e) => updateImage(e)} />}
     >
       <SpellViewInfo spell={spell} spellList={spellList} />
       <DeleteDialog

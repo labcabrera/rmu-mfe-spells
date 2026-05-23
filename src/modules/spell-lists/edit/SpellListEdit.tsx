@@ -13,7 +13,6 @@ import {
   updateSpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { getAvatarImages } from '../../services/image-service';
 import SpellListForm from '../form/SpellListForm';
 
 const SpellListEdit: FC = () => {
@@ -74,7 +73,6 @@ const SpellListEdit: FC = () => {
           <EditableAvatar
             imageUrl={formData.imageUrl || ''}
             onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
-            images={getAvatarImages()}
           />
         }
       >

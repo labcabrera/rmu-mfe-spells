@@ -56,7 +56,7 @@ export default function SpellEdit() {
     } else if (spellId) {
       bindSpell(spellId);
     }
-  }, [location.state, spellId, showError]);
+  }, [location.state, spellId]);
 
   if (!spell || !formData || !setFormData) return <p>Loading...</p>;
 
@@ -74,9 +74,8 @@ export default function SpellEdit() {
       ]}
       leftPanel={
         <EditableAvatar
-          imageUrl={formData.imageUrl || ''}
+          imageUrl={formData.imageUrl}
           onImageChange={(newImageUrl) => setFormData({ ...formData, imageUrl: newImageUrl })}
-          images={[]}
         />
       }
     >

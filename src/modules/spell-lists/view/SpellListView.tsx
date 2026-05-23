@@ -20,7 +20,6 @@ import {
   updateSpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { getAvatarImages } from '../../services/image-service';
 import SpellTable from '../../spells/form/SpellTable';
 import SpellListViewInfo from './SpellListViewInfo';
 
@@ -94,9 +93,7 @@ export default function SpellListView() {
         <EditButton onClick={() => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: spellList })} />,
         <DeleteButton onClick={() => setDeleteDialogOpen(true)} />,
       ]}
-      leftPanel={
-        <EditableAvatar imageUrl={spellList.imageUrl || ''} images={getAvatarImages()} onImageChange={onImageUpdate} />
-      }
+      leftPanel={<EditableAvatar imageUrl={spellList.imageUrl || ''} onImageChange={onImageUpdate} />}
     >
       <SpellListViewInfo spellList={spellList} />
       <CategorySeparator text={t('spells')}>

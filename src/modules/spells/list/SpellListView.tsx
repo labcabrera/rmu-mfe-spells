@@ -13,7 +13,6 @@ import {
   Spell,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
 import SpellListSearch from './SpellListSearch';
 
 const SpellsListView: FC = () => {
@@ -56,9 +55,9 @@ const SpellsListView: FC = () => {
             {pageData.content.map((spellList) => (
               <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
                 <RmuTextCard
-                  value={t(spellList.name)}
-                  subtitle={t('Spell')}
-                  image={spellList.imageUrl || DEFAULT_SPELL_LIST_IMAGE}
+                  value={t(spellList.name, spellList.name)}
+                  subtitle={t('spell')}
+                  image={spellList.imageUrl || ''}
                   onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
                 />
               </Grid>

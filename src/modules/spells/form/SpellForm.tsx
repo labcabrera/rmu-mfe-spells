@@ -1,20 +1,24 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { CategorySeparator, NumericInput, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectSpellSubtype from '../../shared/selects/SelectSpellSubtype';
 import SelectSpellType from '../../shared/selects/SelectSpellType';
 import SpellFormDuration from './SpellFormDuration';
 import SpellFormRange from './SpellFormRange';
 import SpellFormTarget from './SpellFormTarget';
-import { CategorySeparator, NumericInput, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
-import { useTranslation } from 'react-i18next';
 
-const inputSize = {xs:12, md: 4}
+const inputSize = { xs: 12, md: 4 };
 
-const SpellForm: FC<{
+export default function SpellForm({
+  formData,
+  setFormData,
+}: {
   formData: Spell;
   setFormData: Dispatch<SetStateAction<Spell>>;
-}> = ({ formData, setFormData }) => {
+}) {
   const { t } = useTranslation();
+
   if (!formData || !setFormData) return <p>Loading...</p>;
 
   return (
@@ -97,6 +101,4 @@ const SpellForm: FC<{
       </Grid>
     </>
   );
-};
-
-export default SpellForm;
+}

@@ -12,7 +12,6 @@ import {
   TechnicalInfo,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { getAvatarImages } from '../../services/image-service';
 import SpellListForm from '../form/SpellListForm';
 
 export default function SpellListCreation() {
@@ -56,7 +55,6 @@ export default function SpellListCreation() {
       leftPanel={
         <EditableAvatar
           imageUrl={formData.imageUrl || ''}
-          images={getAvatarImages()}
           onImageChange={(e) => setFormData({ ...formData, imageUrl: e })}
         />
       }

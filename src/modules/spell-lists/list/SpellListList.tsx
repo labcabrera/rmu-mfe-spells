@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
@@ -15,10 +15,9 @@ import {
   SpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
-import { DEFAULT_SPELL_LIST_IMAGE } from '../../services/image-service';
 import SpellListListSearch from './SpellListListSearch';
 
-const SpellListList: FC = () => {
+export default function SpellListList() {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -72,9 +71,9 @@ const SpellListList: FC = () => {
             {pageData.content.map((spellList) => (
               <Grid size={{ xs: 12, md: 3 }} key={spellList.id}>
                 <RmuTextCard
-                  value={t(spellList.name)}
+                  value={t(spellList.name, spellList.name)}
                   subtitle={t(spellList.type)}
-                  image={spellList.imageUrl || DEFAULT_SPELL_LIST_IMAGE}
+                  image={spellList.imageUrl || ''}
                   onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
                 />
               </Grid>
@@ -91,6 +90,4 @@ const SpellListList: FC = () => {
       )}
     </LayoutBase>
   );
-};
-
-export default SpellListList;
+}
