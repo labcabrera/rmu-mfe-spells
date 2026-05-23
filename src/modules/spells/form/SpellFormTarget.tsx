@@ -1,9 +1,9 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, TextField } from '@mui/material';
+import { NumericInput, Spell, SpellTargetMode } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectSpellTargetMode from '../../shared/selects/SelectSpellTargetMode';
 import SelectSpellTargetType from '../../shared/selects/SelectSpellTargetType';
-import { useTranslation } from 'react-i18next';
-import { NumericInput, Spell, SpellTargetMode } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellFormTarget: FC<{
   formData: Spell;
@@ -22,7 +22,7 @@ const SpellFormTarget: FC<{
     <>
       <Grid size={{ xs: 12, md: 4 }}>
         <SelectSpellTargetMode
-          label={t('Target mode')}
+          label={t('target-mode')}
           name="spellTargetMode"
           value={formData.modifiers?.target?.mode || null}
           onChange={(value) => onSpellTargetModeChange(value)}
@@ -33,7 +33,7 @@ const SpellFormTarget: FC<{
       {formData.modifiers?.target?.mode !== 'target' && (
         <Grid size={{ xs: 12, md: 4 }}>
           <TextField
-            label={t('Modifier')}
+            label={t('modifier')}
             name="modifier"
             value={formData.modifiers?.target?.modifier || null}
             onChange={(e) =>
@@ -52,7 +52,7 @@ const SpellFormTarget: FC<{
       <Grid size={{ xs: 12, md: 4 }}>
         {formData.modifiers?.target?.mode === 'target' && (
           <NumericInput
-            label={t('Count')}
+            label={t('count')}
             name="count"
             value={formData.modifiers?.target?.count || null}
             onChange={(value) =>

@@ -1,8 +1,8 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useError } from '../../../ErrorContext';
-import { fetchSpellTargetTypes, Spell, SpellTargetType } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useAuth } from 'react-oidc-context';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { fetchSpellTargetTypes, Spell, SpellTargetType } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { useError } from '../../../ErrorContext';
 
 const SelectSpellTargetType: FC<{
   formData: Spell;
@@ -34,7 +34,6 @@ const SelectSpellTargetType: FC<{
       value={formData.modifiers?.target?.types || []}
       onChange={handleChange}
       aria-label="spell-target-types"
-      size="small"
     >
       {targetTypes.map((t) => (
         <ToggleButton key={t} value={t} aria-label={t}>

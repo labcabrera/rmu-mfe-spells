@@ -58,7 +58,7 @@ const SpellsListView: FC = () => {
                   value={t(spellList.name, spellList.name)}
                   subtitle={t('spell')}
                   image={spellList.imageUrl || ''}
-                  onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
+                  onClick={() => navigate(`/spells/spells/view/${spellList.id}`, { state: { spellList } })}
                 />
               </Grid>
             ))}

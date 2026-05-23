@@ -1,17 +1,18 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Grid, MenuItem, TextField } from '@mui/material';
+import { NumericInput, Spell, SpellDuration, SpellDurationType } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectSpellDurationScale from '../../shared/selects/SelectSpellDurationScale';
 import SelectSpellDurationType from '../../shared/selects/SelectSpellDurationType';
-import { useTranslation } from 'react-i18next';
-import { NumericInput, Spell, SpellDuration, SpellDurationType } from '@labcabrera-rmu/rmu-react-shared-lib';
+
+const gridSize = { xs: 12, md: 4 };
 
 const SpellFormDuration: FC<{
   formData: Spell;
   setFormData: Dispatch<SetStateAction<Spell>>;
 }> = ({ formData, setFormData }) => {
-  const { t} = useTranslation();
+  const { t } = useTranslation();
 
-  
   const requiresDurationScale = (): boolean => {
     return formData.modifiers?.duration?.type === 'lvl' || formData.modifiers?.duration?.type === 'rr-failure';
   };
@@ -29,7 +30,7 @@ const SpellFormDuration: FC<{
     if (value && duration) {
       duration.type = value;
     } else if (value) {
-      duration = { type: value, duration: null, durationScale: null };
+      duration = { type: value, duration: null, durationScale: null, failureScale: null, requiredConcentration: false };
     }
     setFormData({ ...formData, modifiers: { ...formData.modifiers, duration: duration } });
   };
@@ -38,9 +39,9 @@ const SpellFormDuration: FC<{
 
   return (
     <>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={gridSize}>
         <SelectSpellDurationType
-          label={t('Duration type')}
+          label={t('duration-type')}
           name="spellDurationType"
           value={formData.modifiers?.duration?.type || null}
           required={false}
@@ -48,11 +49,11 @@ const SpellFormDuration: FC<{
           onChange={(value) => onSpellDurationTypeChange(value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={gridSize}>
         {requiresDurationScale() && (
           <>
             <SelectSpellDurationScale
-              label={t('Duration scale')}
+              label={t('duration-scale')}
               name="spellDurationScale"
               value={formData.modifiers?.duration?.durationScale || null}
               onChange={(value) =>
@@ -60,7 +61,7 @@ const SpellFormDuration: FC<{
                   ...formData,
                   modifiers: {
                     ...formData.modifiers,
-                    duration: { ...formData.modifiers?.duration, durationScale: value },
+                    duration: { ...formData.modifiers?.duration!, durationScale: value },
                   },
                 })
               }
@@ -68,11 +69,11 @@ const SpellFormDuration: FC<{
           </>
         )}
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={gridSize}>
         {requiresDurationValue() && (
           <>
             <NumericInput
-              label={t('Duration')}
+              label={t('duration')}
               name="spellDuration"
               value={formData.modifiers?.duration?.duration || null}
               onChange={(value) =>
@@ -80,7 +81,7 @@ const SpellFormDuration: FC<{
                   ...formData,
                   modifiers: {
                     ...formData.modifiers,
-                    duration: { ...formData.modifiers?.duration, duration: value },
+                    duration: { ...formData.modifiers?.duration!, duration: value },
                   },
                 })
               }
@@ -89,7 +90,7 @@ const SpellFormDuration: FC<{
         )}
       </Grid>
       {requiresFailureRange() && (
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={gridSize}>
           <>
             <NumericInput
               label={t('Failure scale')}
@@ -100,7 +101,7 @@ const SpellFormDuration: FC<{
                   ...formData,
                   modifiers: {
                     ...formData.modifiers,
-                    duration: { ...formData.modifiers?.duration, failureScale: value },
+                    duration: { ...formData.modifiers?.duration!, failureScale: value },
                   },
                 })
               }
@@ -108,26 +109,26 @@ const SpellFormDuration: FC<{
           </>
         </Grid>
       )}
-      <Grid size={{ xs: 12, md: 4 }}>
-        <ToggleButtonGroup
-          color="primary"
-          value={formData.modifiers?.duration?.requiredConcentration || false}
-          exclusive
-          onChange={(e, value) =>
+      <Grid size={gridSize}>
+        <TextField
+          select
+          label={t('Required Concentration')}
+          name="requiredConcentration"
+          value={formData.modifiers?.duration?.requiredConcentration === true ? 'true' : 'false'}
+          fullWidth
+          onChange={(e) =>
             setFormData({
               ...formData,
               modifiers: {
                 ...formData.modifiers,
-                duration: { ...formData.modifiers?.duration, requiredConcentration: value },
+                duration: { ...formData.modifiers?.duration!, requiredConcentration: e.target.value === 'true' },
               },
             })
           }
-          size="small"
         >
-          <ToggleButton key="requiredConcentration" value={true} aria-label="requiredConcentration">
-            {t('Required Concentration')}
-          </ToggleButton>
-        </ToggleButtonGroup>
+          <MenuItem value="true">{t('yes')}</MenuItem>
+          <MenuItem value="false">{t('no')}</MenuItem>
+        </TextField>
       </Grid>
     </>
   );

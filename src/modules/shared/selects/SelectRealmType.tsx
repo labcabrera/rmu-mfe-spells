@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { MenuItem, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { MenuItem, TextField } from '@mui/material';
 import { REALM_TYPES, RealmType } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SelectRealmType: FC<{
@@ -12,7 +12,7 @@ const SelectRealmType: FC<{
   onChange: (realmType: RealmType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
   const { t } = useTranslation();
-  
+
   return (
     <TextField
       select
@@ -21,7 +21,6 @@ const SelectRealmType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      size='small'
       onChange={(event) => onChange(event.target.value as RealmType)}
       error={required && !value}
     >

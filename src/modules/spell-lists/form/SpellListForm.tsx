@@ -1,12 +1,12 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
 import { Grid, TextField } from '@mui/material';
+import { CategorySeparator, fetchProfessions, ListType, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useError } from '../../../ErrorContext';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
-import { CategorySeparator, fetchProfessions, ListType, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
-import { useAuth } from 'react-oidc-context';
-import { useTranslation } from 'react-i18next';
 
 const SpellListForm: FC<{
   formData: SpellList;
@@ -33,7 +33,7 @@ const SpellListForm: FC<{
   return (
     <>
       <CategorySeparator text={t('spell-list')} />
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         <Grid size={12}>
           <TextField
             label={t('name')}

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Grid, MenuItem, TextField } from '@mui/material';
 import { CategorySeparator, NumericInput, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectSpellSubtype from '../../shared/selects/SelectSpellSubtype';
 import SelectSpellType from '../../shared/selects/SelectSpellType';
@@ -47,17 +47,19 @@ export default function SpellForm({
           />
         </Grid>
         <Grid size={inputSize}>
-          <ToggleButtonGroup
-            color="primary"
-            value={formData.modifiers!.instant || false}
-            exclusive
-            onChange={(e, value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, instant: value } })}
-            aria-label="cast-type"
-            size="small"
+          <TextField
+            select
+            label={t('cast-type')}
+            name="cast-type"
+            value={formData.modifiers?.instant === true ? 'true' : 'false'}
+            onChange={(e) =>
+              setFormData({ ...formData, modifiers: { ...formData.modifiers, instant: e.target.value === 'true' } })
+            }
+            fullWidth
           >
-            <ToggleButton value={true}>{t('instant')}</ToggleButton>
-            <ToggleButton value={false}>{t('casted')}</ToggleButton>
-          </ToggleButtonGroup>
+            <MenuItem value="true">{t('instant')}</MenuItem>
+            <MenuItem value="false">{t('casted')}</MenuItem>
+          </TextField>
         </Grid>
         <Grid size={inputSize}>
           <SelectSpellType

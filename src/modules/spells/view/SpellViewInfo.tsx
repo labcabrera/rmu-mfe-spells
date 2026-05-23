@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Paper, Typography } from '@mui/material';
-import { CategorySeparator, imageBaseUrl, RmuTextCard, Spell, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { Grid, Stack, Typography } from '@mui/material';
+import { imageBaseUrl, RmuTextCard, Section, Spell, SpellList, StatRow } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 export const defaultImage = `${imageBaseUrl}images/generic/configuration.png`;
 
@@ -69,77 +69,39 @@ export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spel
   };
 
   return (
-    <>
-      <Grid container spacing={1}>
-        <Grid size={12}>
-          <Typography variant="h6" gutterBottom>
-            {t(spell.name)}
+    <Grid container spacing={1}>
+      <Grid size={12}>
+        <Typography variant="h6" gutterBottom>
+          {t(spell.name)}
+        </Typography>
+      </Grid>
+      <Grid size={{ xs: 12, lg: 4 }}>
+        <RmuTextCard
+          value={spellList.name}
+          subtitle={t('spell-list')}
+          onClick={() => onSpellListClick()}
+          image={spellList.imageUrl || defaultImage}
+        />
+      </Grid>
+      <Grid size={12}>
+        <Section title={t('information')}>
+          <Stack direction={'column'} spacing={1}>
+            <StatRow label={t('level')} value={`${spell.level}`} />
+            <StatRow label={t('instant')} value={t(spell.modifiers.instant ? 'yes' : 'no')} />
+            <StatRow label={t('duration')} value={getSpellDurationText(spell)} />
+            <StatRow label={t('range')} value={getSpellRangeText(spell)} />
+            <StatRow label={t('target')} value={getSpellTargetText(spell)} />
+            <StatRow label={t('type')} value={t(spell.modifiers.type || '')} />
+          </Stack>
+        </Section>
+      </Grid>
+      <Grid size={12}>
+        <Section title={t('description')}>
+          <Typography variant="body1" color="primary" gutterBottom>
+            {t(spell.description || '')}
           </Typography>
-        </Grid>
+        </Section>
       </Grid>
-
-      {/* <CategorySeparator text={t('spell-list')} /> */}
-
-      <Grid container spacing={1}>
-        <Grid size={12}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard
-                value={spellList.name}
-                subtitle={t('spell-list')}
-                onClick={() => onSpellListClick()}
-                image={spellList.imageUrl || defaultImage}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <CategorySeparator text={t('Spell information')} />
-
-      <Grid container spacing={1}>
-        <Grid size={12}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={spell.level} subtitle={t('Level')} image={defaultImage} />
-            </Grid>
-            {spell.modifiers.instant && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={t('Instant')} subtitle={t('Cast')} image={defaultImage} />
-              </Grid>
-            )}
-            {spell.modifiers.duration && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} image={defaultImage} />
-              </Grid>
-            )}
-            {spell.modifiers.range && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellRangeText(spell)} subtitle={t('Range')} image={defaultImage} />
-              </Grid>
-            )}
-            {spell.modifiers.target && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellTargetText(spell)} subtitle={t('Target')} image={defaultImage} />
-              </Grid>
-            )}
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} image={defaultImage} />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid size={12}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 12 }}>
-              <Paper sx={{ padding: 2 }}>
-                <Typography variant="body1" color="primary" gutterBottom>
-                  {t(spell.description || '')}
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </>
+    </Grid>
   );
 }

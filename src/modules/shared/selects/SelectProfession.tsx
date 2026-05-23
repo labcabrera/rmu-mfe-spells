@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { MenuItem, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { MenuItem, TextField } from '@mui/material';
 
 const SelectListType: FC<{
   label: string;
@@ -12,7 +12,7 @@ const SelectListType: FC<{
   onChange: (professionId: string) => void;
 }> = ({ label, value, name, professionIds, required = true, allowAll = false, onChange }) => {
   const { t } = useTranslation();
-  if(!professionIds || professionIds.length === 0) return <p>Loading...</p>;
+  if (!professionIds || professionIds.length === 0) return <p>Loading...</p>;
 
   return (
     <TextField
@@ -21,7 +21,6 @@ const SelectListType: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      size='small'
       onChange={(event) => onChange(event.target.value as string)}
       error={required && !value}
     >
