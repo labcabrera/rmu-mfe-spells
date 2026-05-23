@@ -84,23 +84,27 @@ export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spel
         />
       </Grid>
       <Grid size={12}>
-        <Section title={t('information')}>
-          <Stack direction={'column'} spacing={1}>
-            <StatRow label={t('level')} value={`${spell.level}`} />
-            <StatRow label={t('instant')} value={t(spell.modifiers.instant ? 'yes' : 'no')} />
-            <StatRow label={t('duration')} value={getSpellDurationText(spell)} />
-            <StatRow label={t('range')} value={getSpellRangeText(spell)} />
-            <StatRow label={t('target')} value={getSpellTargetText(spell)} />
-            <StatRow label={t('type')} value={t(spell.modifiers.type || '')} />
-          </Stack>
-        </Section>
-      </Grid>
-      <Grid size={12}>
-        <Section title={t('description')}>
-          <Typography variant="body1" color="primary" gutterBottom>
-            {t(spell.description || '')}
-          </Typography>
-        </Section>
+        <Grid container spacing={1}>
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Section title={t('information')}>
+              <Stack direction={'column'} spacing={1}>
+                <StatRow label={t('level')} value={`${spell.level}`} />
+                <StatRow label={t('instant')} value={t(spell.modifiers.instant ? 'yes' : 'no')} />
+                <StatRow label={t('duration')} value={getSpellDurationText(spell)} />
+                <StatRow label={t('range')} value={getSpellRangeText(spell)} />
+                <StatRow label={t('target')} value={getSpellTargetText(spell)} />
+                <StatRow label={t('type')} value={t(spell.modifiers.type || '')} />
+              </Stack>
+            </Section>
+          </Grid>
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <Section title={t('description')}>
+              <Typography variant="body1" color="primary" gutterBottom>
+                {t(spell.description || '')}
+              </Typography>
+            </Section>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
