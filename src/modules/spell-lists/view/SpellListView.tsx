@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Grid, Typography } from '@mui/material';
 import {
   AddButton,
   CategorySeparator,
@@ -14,6 +15,7 @@ import {
   fetchSpells,
   LayoutBase,
   RefreshButton,
+  Section,
   Spell,
   SpellList,
   TechnicalInfo,
@@ -93,13 +95,30 @@ export default function SpellListView() {
         <EditButton onClick={() => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: spellList })} />,
         <DeleteButton onClick={() => setDeleteDialogOpen(true)} />,
       ]}
-      leftPanel={<EditableAvatar imageUrl={spellList.imageUrl || ''} onImageChange={onImageUpdate} />}
+      leftPanel={
+        <>
+          <EditableAvatar imageUrl={spellList.imageUrl || ''} onImageChange={onImageUpdate} />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            {spellList.description}
+          </Typography>
+        </>
+      }
     >
-      <SpellListViewInfo spellList={spellList} />
-      <CategorySeparator text={t('spells')}>
-        <AddButton onClick={onAddSpell} />
-      </CategorySeparator>
-      <SpellTable spells={spells} />
+      <Grid container spacing={2}>
+        <Grid size={12}>
+          <Section>
+            <SpellListViewInfo spellList={spellList} />
+          </Section>
+        </Grid>
+        <Grid size={12}>
+          <Section>
+            <CategorySeparator text={t('spells')}>
+              <AddButton onClick={onAddSpell} />
+            </CategorySeparator>
+            <SpellTable spells={spells} />
+          </Section>
+        </Grid>
+      </Grid>
       <TechnicalInfo>
         <pre>{JSON.stringify(spellList, null, 2)}</pre>
       </TechnicalInfo>
