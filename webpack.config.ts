@@ -1,6 +1,5 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import dotenv from 'dotenv';
-import Dotenv from 'dotenv-webpack';
 import fs from 'fs';
 import HtmlWebPackPlugin from 'html-webpack-plugin';
 import path from 'path';
@@ -19,13 +18,28 @@ interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
 
+// Runtime configuration. The keys listed in public/env-config.template.js are not baked into the
+// bundle: every `process.env.<KEY>` (in src/ and in rmu-react-shared-lib) is rewritten to read
+// window.__RMU_CONFIG__, which env-config.js sets before the bundle runs. The Docker image renders
+// the template with envsubst; the dev server serves the same keys from .env.
+const envConfigTemplate = fs.readFileSync(path.resolve(__dirname, 'public/env-config.template.js'), 'utf8');
+const runtimeConfigKeys = Array.from(envConfigTemplate.matchAll(/\$\{([A-Z0-9_]+)\}/g), (match) => match[1]);
+const runtimeConfigDefines = Object.fromEntries(
+  runtimeConfigKeys.map((key) => [`process.env.${key}`, `(window.__RMU_CONFIG__ || {})[${JSON.stringify(key)}]`])
+);
+const renderEnvConfig = (): string =>
+  `window.__RMU_CONFIG__ = ${JSON.stringify(Object.fromEntries(runtimeConfigKeys.map((key) => [key, process.env[key] ?? ''])))};\n`;
+
 export default (_env: unknown, argv: { mode?: string }): Configuration => {
   const mode = argv.mode || 'development';
-  dotenv.config({ path: path.resolve(__dirname, `.env.${mode}`) });
-  const publicPath = process.env.RMU_MFE_SPELLS_PUBLIC_PATH;
+  // `.env.<mode>` overrides the shared `.env` (dotenv keeps the first value it finds).
+  dotenv.config({ path: [path.resolve(__dirname, `.env.${mode}`), path.resolve(__dirname, '.env')], quiet: true });
+  const port = process.env.PORT ? Number(process.env.PORT) : 8087;
   return {
     output: {
-      publicPath,
+      // Chunks load from wherever spells-app.js was loaded (gateway /mfe/spells/, dev server, CDN).
+      publicPath: 'auto',
+      devtoolNamespace: 'spells',
     },
 
     resolve: {
@@ -35,8 +49,18 @@ export default (_env: unknown, argv: { mode?: string }): Configuration => {
     devServer: {
       allowedHosts: 'all',
       host: '0.0.0.0',
-      port: 8087,
+      port,
       historyApiFallback: true,
+      // The page is served by the gateway (http://localhost), so HMR connects straight to the dev server.
+      client: {
+        webSocketURL: `ws://localhost:${port}/ws`,
+      },
+      setupMiddlewares: (middlewares, devServer) => {
+        devServer.app?.get('/env-config.js', (_req, res) => {
+          res.type('application/javascript').send(renderEnvConfig());
+        });
+        return middlewares;
+      },
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -130,17 +154,7 @@ export default (_env: unknown, argv: { mode?: string }): Configuration => {
       new HtmlWebPackPlugin({
         template: './src/index.html',
       }),
-      new Dotenv({
-        path: `./.env.${argv.mode || 'development'}`,
-        safe: false,
-        systemvars: true,
-        silent: false,
-        defaults: './.env',
-      }),
-      new webpack.DefinePlugin({
-        'process.env.RMU_MFE_ASSETS': JSON.stringify(process.env.RMU_MFE_ASSETS || ''),
-        'process.env.RMU_API_CORE_URL': JSON.stringify(process.env.RMU_API_CORE_URL || ''),
-      }),
+      new webpack.DefinePlugin(runtimeConfigDefines),
     ],
   };
 };

@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug spells in the shell (gateway)",
+      "detail": "Stop the container first: `make mfe-dev s=spells` in rmu-platform",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost/spells",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "start:live",
+      "sourceMapPathOverrides": {
+        "webpack://spells/./*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "name": "Debug spells standalone (:8087)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8087",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "start:live",
+      "sourceMapPathOverrides": {
+        "webpack://spells/./*": "${workspaceFolder}/*"
+      }
+    }
+  ]
+}
