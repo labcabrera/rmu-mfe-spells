@@ -1,14 +1,14 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { Grid } from '@mui/material';
-import SelectSpellRangeType from '../../shared/selects/SelectSpellRangeType';
 import { useTranslation } from 'react-i18next';
+import { Grid } from '@mui/material';
 import { NumericInput, Spell, SpellRange, SpellRangeType } from '@labcabrera-rmu/rmu-react-shared-lib';
+import SelectSpellRangeType from '../../shared/selects/SelectSpellRangeType';
 
 const SpellFormRange: FC<{
   formData: Spell;
   setFormData: Dispatch<SetStateAction<Spell>>;
 }> = ({ formData, setFormData }) => {
-  const { t} = useTranslation();
+  const { t } = useTranslation();
 
   const displayRangeValue = () => {
     const type = formData.modifiers?.range?.type;
@@ -25,13 +25,11 @@ const SpellFormRange: FC<{
     setFormData({ ...formData, modifiers: { ...formData.modifiers, range: range } });
   };
 
-  if (!formData || !setFormData) return <p>Loading...</p>;
-
   return (
     <>
       <Grid size={{ xs: 12, md: 4 }}>
         <SelectSpellRangeType
-          label={t('Range type')}
+          label={t('range-type')}
           name="spellRangeType"
           value={formData.modifiers?.range?.type || null}
           required={false}
@@ -42,7 +40,7 @@ const SpellFormRange: FC<{
       <Grid size={{ xs: 12, md: 4 }}>
         {displayRangeValue() && (
           <NumericInput
-            label={t('Range')}
+            label={t('range')}
             name="spellRange"
             value={formData.modifiers?.range?.value || null}
             onChange={(value) =>
@@ -50,7 +48,7 @@ const SpellFormRange: FC<{
                 ...formData,
                 modifiers: {
                   ...formData.modifiers,
-                  range: { ...formData.modifiers?.range, value: value },
+                  range: { ...formData.modifiers?.range, value: value } as SpellRange,
                 },
               })
             }

@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MenuItem, TextField } from '@mui/material';
+import { LoadingState } from '@labcabrera-rmu/rmu-react-shared-lib';
 
-const SelectListType: FC<{
+const SelectProfession: FC<{
   label: string;
   value: string | null;
   name: string;
@@ -12,7 +13,7 @@ const SelectListType: FC<{
   onChange: (professionId: string) => void;
 }> = ({ label, value, name, professionIds, required = true, allowAll = false, onChange }) => {
   const { t } = useTranslation();
-  if (!professionIds || professionIds.length === 0) return <p>Loading...</p>;
+  if (!professionIds) return <LoadingState />;
 
   return (
     <TextField
@@ -26,7 +27,7 @@ const SelectListType: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('All')}</em>
+          <em>{t('all')}</em>
         </MenuItem>
       )}
       {professionIds.map((option, index) => (
@@ -38,4 +39,4 @@ const SelectListType: FC<{
   );
 };
 
-export default SelectListType;
+export default SelectProfession;

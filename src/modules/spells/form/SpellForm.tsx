@@ -19,8 +19,6 @@ export default function SpellForm({
 }) {
   const { t } = useTranslation();
 
-  if (!formData || !setFormData) return <p>Loading...</p>;
-
   return (
     <>
       <CategorySeparator text={t('spell')} />

@@ -2,8 +2,14 @@ import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { Grid, TextField } from '@mui/material';
-import { CategorySeparator, fetchProfessions, ListType, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
-import { useError } from '../../../ErrorContext';
+import {
+  CategorySeparator,
+  fetchProfessions,
+  ListType,
+  LoadingState,
+  SpellList,
+  useNotify,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectProfession from '../../shared/selects/SelectProfession';
 import SelectRealmType from '../../shared/selects/SelectRealmType';
@@ -14,7 +20,7 @@ const SpellListForm: FC<{
 }> = ({ formData, setFormData }) => {
   const auth = useAuth();
   const { t } = useTranslation();
-  const { showError } = useError();
+  const notify = useNotify();
   const [professionIds, setProfessionIds] = useState<string[]>();
 
   const onTypeChange = (value: ListType | null) => {
@@ -25,10 +31,10 @@ const SpellListForm: FC<{
   useEffect(() => {
     fetchProfessions('archetype!=non-spellcaster', 0, 100, auth)
       .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
-      .catch((err: Error) => showError(err.message));
+      .catch((err: Error) => notify.error(err));
   }, []);
 
-  if (!formData || !setFormData || !professionIds) return <p>Loading...</p>;
+  if (!professionIds) return <LoadingState />;
 
   return (
     <>
@@ -64,7 +70,7 @@ const SpellListForm: FC<{
         {formData.type === 'base' && (
           <Grid size={12}>
             <SelectProfession
-              label={t('Profession')}
+              label={t('profession')}
               value={formData.professionId || null}
               name="profession"
               professionIds={professionIds}
@@ -74,7 +80,7 @@ const SpellListForm: FC<{
         )}
         <Grid size={12}>
           <TextField
-            label={t('Description')}
+            label={t('description')}
             name="description"
             value={formData.description || ''}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}

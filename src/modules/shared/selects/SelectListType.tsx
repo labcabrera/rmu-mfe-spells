@@ -26,7 +26,7 @@ const SelectListType: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('All')}</em>
+          <em>{t('all')}</em>
         </MenuItem>
       )}
       {SPELL_LIST_TYPES.map((option, index) => (

@@ -1,7 +1,7 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, TextField } from '@mui/material';
-import { NumericInput, Spell, SpellTargetMode } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { NumericInput, Spell, SpellTarget, SpellTargetMode } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectSpellTargetMode from '../../shared/selects/SelectSpellTargetMode';
 import SelectSpellTargetType from '../../shared/selects/SelectSpellTargetType';
 
@@ -11,10 +11,8 @@ const SpellFormTarget: FC<{
 }> = ({ formData, setFormData }) => {
   const { t } = useTranslation();
 
-  if (!formData || !setFormData) return <p>Loading...</p>;
-
   const onSpellTargetModeChange = (value: SpellTargetMode | null) => {
-    const target = value ? { ...formData.modifiers!.target, mode: value } : null;
+    const target = value ? ({ ...formData.modifiers!.target, mode: value } as SpellTarget) : null;
     setFormData({ ...formData, modifiers: { ...formData.modifiers, target: target } });
   };
 
@@ -41,7 +39,7 @@ const SpellFormTarget: FC<{
                 ...formData,
                 modifiers: {
                   ...formData.modifiers,
-                  target: { ...formData.modifiers!.target, modifier: e.target.value },
+                  target: { ...formData.modifiers!.target, modifier: e.target.value } as SpellTarget,
                 },
               })
             }
@@ -60,7 +58,7 @@ const SpellFormTarget: FC<{
                 ...formData,
                 modifiers: {
                   ...formData.modifiers,
-                  target: { ...formData.modifiers!.target, count: value },
+                  target: { ...formData.modifiers!.target, count: value } as SpellTarget,
                 },
               })
             }

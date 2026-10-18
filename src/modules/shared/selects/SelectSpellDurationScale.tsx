@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { MenuItem, TextField } from '@mui/material';
+import { SpellDurationScale } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { t } from 'i18next';
-import { SpellDurationScale } from '../../api/spell.dto';
 
 const SelectSpellDurationScale: FC<{
   label: string;
@@ -25,7 +25,7 @@ const SelectSpellDurationScale: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('None')}</em>
+          <em>{t('none')}</em>
         </MenuItem>
       )}
       {values.map((option, index) => (

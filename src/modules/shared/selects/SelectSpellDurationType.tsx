@@ -24,7 +24,7 @@ const SelectSpellDurationType: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('None')}</em>
+          <em>{t('none')}</em>
         </MenuItem>
       )}
       {SPELL_DURATION_TYPES.map((option, index) => (

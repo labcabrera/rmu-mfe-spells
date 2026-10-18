@@ -25,6 +25,16 @@ const SpellFormDuration: FC<{
     return formData.modifiers?.duration?.type === 'rr-failure';
   };
 
+  // Spreading an undefined duration keeps only the patched field (same runtime result as the old `duration!` spread).
+  const updateDuration = (patch: Partial<SpellDuration>) =>
+    setFormData({
+      ...formData,
+      modifiers: {
+        ...formData.modifiers,
+        duration: { ...formData.modifiers?.duration, ...patch } as SpellDuration,
+      },
+    });
+
   const onSpellDurationTypeChange = (value: SpellDurationType | null) => {
     let duration: SpellDuration | null = value ? formData.modifiers!.duration : null;
     if (value && duration) {
@@ -34,8 +44,6 @@ const SpellFormDuration: FC<{
     }
     setFormData({ ...formData, modifiers: { ...formData.modifiers, duration: duration } });
   };
-
-  if (!formData || !setFormData) return <p>Loading...</p>;
 
   return (
     <>
@@ -56,15 +64,7 @@ const SpellFormDuration: FC<{
               label={t('duration-scale')}
               name="spellDurationScale"
               value={formData.modifiers?.duration?.durationScale || null}
-              onChange={(value) =>
-                setFormData({
-                  ...formData,
-                  modifiers: {
-                    ...formData.modifiers,
-                    duration: { ...formData.modifiers?.duration!, durationScale: value },
-                  },
-                })
-              }
+              onChange={(value) => updateDuration({ durationScale: value })}
             />
           </>
         )}
@@ -76,15 +76,7 @@ const SpellFormDuration: FC<{
               label={t('duration')}
               name="spellDuration"
               value={formData.modifiers?.duration?.duration || null}
-              onChange={(value) =>
-                setFormData({
-                  ...formData,
-                  modifiers: {
-                    ...formData.modifiers,
-                    duration: { ...formData.modifiers?.duration!, duration: value },
-                  },
-                })
-              }
+              onChange={(value) => updateDuration({ duration: value })}
             />
           </>
         )}
@@ -93,18 +85,10 @@ const SpellFormDuration: FC<{
         <Grid size={gridSize}>
           <>
             <NumericInput
-              label={t('Failure scale')}
+              label={t('failure-scale')}
               name="failureScale"
               value={formData.modifiers?.duration?.failureScale || null}
-              onChange={(value) =>
-                setFormData({
-                  ...formData,
-                  modifiers: {
-                    ...formData.modifiers,
-                    duration: { ...formData.modifiers?.duration!, failureScale: value },
-                  },
-                })
-              }
+              onChange={(value) => updateDuration({ failureScale: value })}
             />
           </>
         </Grid>
@@ -112,19 +96,11 @@ const SpellFormDuration: FC<{
       <Grid size={gridSize}>
         <TextField
           select
-          label={t('Required Concentration')}
+          label={t('required-concentration')}
           name="requiredConcentration"
           value={formData.modifiers?.duration?.requiredConcentration === true ? 'true' : 'false'}
           fullWidth
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              modifiers: {
-                ...formData.modifiers,
-                duration: { ...formData.modifiers?.duration!, requiredConcentration: e.target.value === 'true' },
-              },
-            })
-          }
+          onChange={(e) => updateDuration({ requiredConcentration: e.target.value === 'true' })}
         >
           <MenuItem value="true">{t('yes')}</MenuItem>
           <MenuItem value="false">{t('no')}</MenuItem>

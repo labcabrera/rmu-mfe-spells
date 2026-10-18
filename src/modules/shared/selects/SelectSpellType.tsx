@@ -26,7 +26,7 @@ const SelectSpelltype: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('All')}</em>
+          <em>{t('all')}</em>
         </MenuItem>
       )}
       {values.map((option, index) => (

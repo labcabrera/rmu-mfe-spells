@@ -2,22 +2,21 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
-import { LayoutBase, RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
-import { imageBaseUrl } from './modules/services/config';
+import { imageBaseUrl, LayoutBase, RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const HomePage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const cards = [
     {
-      value: 'Spell lists',
-      subtitle: 'Manage spell lists',
+      value: t('spell-lists', 'Spell lists'),
+      subtitle: t('manage-spell-lists', 'Manage spell lists'),
       image: `${imageBaseUrl}images/generic/configuration.png`,
       to: '/spells/spell-lists',
     },
     {
-      value: 'Spells',
-      subtitle: 'Manage spells',
+      value: t('spells', 'Spells'),
+      subtitle: t('manage-spells', 'Manage spells'),
       image: `${imageBaseUrl}images/generic/configuration.png`,
       to: '/spells/spells',
     },

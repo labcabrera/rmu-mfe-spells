@@ -26,7 +26,7 @@ const SelectSpellRangeType: FC<{
     >
       {allowAll && (
         <MenuItem>
-          <em>{t('None')}</em>
+          <em>{t('none')}</em>
         </MenuItem>
       )}
       {values.map((option, index) => (

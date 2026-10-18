@@ -1,21 +1,28 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { fetchSpellTargetTypes, Spell, SpellTargetType } from '@labcabrera-rmu/rmu-react-shared-lib';
-import { useError } from '../../../ErrorContext';
+import {
+  fetchSpellTargetTypes,
+  Spell,
+  SpellTarget,
+  SpellTargetType,
+  useNotify,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SelectSpellTargetType: FC<{
   formData: Spell;
   setFormData: Dispatch<SetStateAction<Spell>>;
 }> = ({ formData, setFormData }) => {
   const auth = useAuth();
-  const { showError } = useError();
+  const { t } = useTranslation();
+  const notify = useNotify();
   const [targetTypes, setTargetTypes] = useState<string[]>([]);
 
   useEffect(() => {
     fetchSpellTargetTypes(auth)
       .then(setTargetTypes)
-      .catch((err: Error) => showError(err.message));
+      .catch((err: Error) => notify.error(err));
   }, []);
 
   const handleChange = (_: React.MouseEvent<HTMLElement>, newValue: SpellTargetType[] | null) => {
@@ -23,21 +30,20 @@ const SelectSpellTargetType: FC<{
       ...formData,
       modifiers: {
         ...formData.modifiers,
-        target: { ...formData.modifiers!.target, types: newValue && newValue.length ? newValue : null },
+        target: { ...formData.modifiers!.target, types: newValue && newValue.length ? newValue : null } as SpellTarget,
       },
     });
   };
-  if (!formData || !setFormData || !targetTypes) return <p>Loading...</p>;
 
   return (
     <ToggleButtonGroup
       value={formData.modifiers?.target?.types || []}
       onChange={handleChange}
-      aria-label="spell-target-types"
+      aria-label={t('target-types')}
     >
-      {targetTypes.map((t) => (
-        <ToggleButton key={t} value={t} aria-label={t}>
-          {t}
+      {targetTypes.map((targetType) => (
+        <ToggleButton key={targetType} value={targetType} aria-label={targetType}>
+          {targetType}
         </ToggleButton>
       ))}
     </ToggleButtonGroup>

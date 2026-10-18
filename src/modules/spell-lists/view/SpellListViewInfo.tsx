@@ -1,12 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Chip, CircularProgress, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Chip, Stack, Typography } from '@mui/material';
 import { SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 
-export default function SpellListViewInfo({ spellList }: { spellList?: SpellList }) {
+export default function SpellListViewInfo({ spellList }: { spellList: SpellList }) {
   const { t } = useTranslation();
-
-  if (!spellList) return <CircularProgress />;
 
   return (
     <Stack>
