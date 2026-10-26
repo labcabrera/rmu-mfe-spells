@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { EmptyState, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
-import { getSpellDurationText, getSpellRangeText, getSpellTargetText } from '../../spells/spell-format';
+import { getSpellAreaText, getSpellDurationText, getSpellMarkers, getSpellRangeText } from '../../spells/spell-format';
 
 type SortField = 'level' | 'name';
 type SortOrder = 'asc' | 'desc';
@@ -46,11 +46,15 @@ const SpellTable: FC<{
     navigate(`/spells/spells/view/${spell.id}`, { state: { spell } });
   };
 
+  // Name with the book markers: * instantaneous, • no power points, ‡ cast together with its set.
   const getSpellNameText = (spell: Spell) => {
-    return spell.modifiers.instant ? `${t(spell.name)} *` : t(spell.name);
+    const markers = getSpellMarkers(spell);
+    return markers ? `${t(spell.name)} ${markers}` : t(spell.name);
   };
 
+  // The type code of the book (Fm, Ed, U…), or one built from the type and subtype.
   const getSpellTypeText = (spell: Spell) => {
+    if (spell.modifiers?.typeCode) return spell.modifiers.typeCode;
     if (!spell.modifiers?.type) return '-';
     const type = spell.modifiers.type.charAt(0).toUpperCase();
     let subtype = '';
@@ -108,7 +112,7 @@ const SpellTable: FC<{
             </TableCell>
             <TableCell>
               <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {t('target')}
+                {t('area')}
               </Typography>
             </TableCell>
           </TableRow>
@@ -132,7 +136,7 @@ const SpellTable: FC<{
                 <Typography variant="body1">{getSpellDurationText(spell, t)}</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="body1">{getSpellTargetText(spell)}</Typography>
+                <Typography variant="body1">{getSpellAreaText(spell, t)}</Typography>
               </TableCell>
             </TableRow>
           ))}

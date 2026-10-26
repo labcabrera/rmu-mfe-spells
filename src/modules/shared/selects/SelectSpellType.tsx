@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { MenuItem, TextField } from '@mui/material';
-import { SpellType } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { useTranslation } from 'react-i18next';
+import { MenuItem, TextField } from '@mui/material';
+import { SPELL_TYPES, SpellType } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SelectSpelltype: FC<{
   label: string;
@@ -12,7 +12,6 @@ const SelectSpelltype: FC<{
   onChange: (spellType: SpellType) => void;
 }> = ({ label, value, name, required = true, allowAll = false, onChange }) => {
   const { t } = useTranslation();
-  const values = ['alchemical', 'elemental', 'force', 'informational', 'utility'];
 
   return (
     <TextField
@@ -29,7 +28,7 @@ const SelectSpelltype: FC<{
           <em>{t('all')}</em>
         </MenuItem>
       )}
-      {values.map((option, index) => (
+      {SPELL_TYPES.map((option, index) => (
         <MenuItem key={index} value={option}>
           {t(option)}
         </MenuItem>

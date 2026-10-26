@@ -7,7 +7,7 @@ const SelectSpellSubtype: FC<{
   label?: string;
   value: SpellSubtype | null;
   name: string;
-  onChange: (value: SpellSubtype) => void;
+  onChange: (value: SpellSubtype | null) => void;
 }> = ({ label, value, name, onChange }) => {
   const { t } = useTranslation();
 
@@ -18,11 +18,14 @@ const SelectSpellSubtype: FC<{
       name={name}
       value={value === undefined || value === null ? '' : value}
       fullWidth
-      onChange={(e) => onChange(e.target.value as SpellSubtype)}
+      onChange={(e) => onChange((e.target.value as SpellSubtype) || null)}
     >
+      <MenuItem value="">
+        <em>{t('none')}</em>
+      </MenuItem>
       {SPELL_SUBTYPES.map((opt) => (
         <MenuItem key={opt} value={opt}>
-          {t(opt)}
+          {t(`spell-subtype-${opt}`)}
         </MenuItem>
       ))}
     </TextField>

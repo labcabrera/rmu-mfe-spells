@@ -1,111 +1,131 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, MenuItem, TextField } from '@mui/material';
-import { NumericInput, Spell, SpellDuration, SpellDurationType } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectSpellDurationScale from '../../shared/selects/SelectSpellDurationScale';
-import SelectSpellDurationType from '../../shared/selects/SelectSpellDurationType';
+import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
+import {
+  NumericInput,
+  SPELL_DURATION_SCALES,
+  SPELL_DURATION_TYPES,
+  SpellDuration,
+  SpellDurationType,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
+import SelectSpellOption from '../../shared/selects/SelectSpellOption';
+import { gridSize, patchModifiers, SpellFormProps, textOrNull } from './spell-form-utils';
 
-const gridSize = { xs: 12, md: 4 };
+/** Types of duration measured in a number of rounds, minutes…: the ones that need a value and a scale. */
+const MEASURED: SpellDurationType[] = ['fixed', 'per-level', 'per-failure'];
 
-const SpellFormDuration: FC<{
-  formData: Spell;
-  setFormData: Dispatch<SetStateAction<Spell>>;
-}> = ({ formData, setFormData }) => {
+/** Duration of a spell (spec 028): its type, the amount and scale, the levels or RR failure per step. */
+const SpellFormDuration: FC<SpellFormProps> = ({ formData, setFormData }) => {
   const { t } = useTranslation();
+  const duration = formData.modifiers?.duration || null;
+  const measured = !!duration && MEASURED.includes(duration.type);
 
-  const requiresDurationScale = (): boolean => {
-    return formData.modifiers?.duration?.type === 'lvl' || formData.modifiers?.duration?.type === 'rr-failure';
-  };
+  const update = (patch: Partial<SpellDuration>) =>
+    patchModifiers(formData, setFormData, { duration: { ...(duration as SpellDuration), ...patch } });
 
-  const requiresDurationValue = (): boolean => {
-    return formData.modifiers?.duration?.type === 'lvl' || formData.modifiers?.duration?.type === 'rr-failure';
-  };
-
-  const requiresFailureRange = (): boolean => {
-    return formData.modifiers?.duration?.type === 'rr-failure';
-  };
-
-  // Spreading an undefined duration keeps only the patched field (same runtime result as the old `duration!` spread).
-  const updateDuration = (patch: Partial<SpellDuration>) =>
-    setFormData({
-      ...formData,
-      modifiers: {
-        ...formData.modifiers,
-        duration: { ...formData.modifiers?.duration, ...patch } as SpellDuration,
-      },
-    });
-
-  const onSpellDurationTypeChange = (value: SpellDurationType | null) => {
-    let duration: SpellDuration | null = value ? formData.modifiers!.duration : null;
-    if (value && duration) {
-      duration.type = value;
-    } else if (value) {
-      duration = { type: value, duration: null, durationScale: null, failureScale: null, requiredConcentration: false };
-    }
-    setFormData({ ...formData, modifiers: { ...formData.modifiers, duration: duration } });
+  const onTypeChange = (type: SpellDurationType | null) => {
+    if (!type) return patchModifiers(formData, setFormData, { duration: null });
+    const base: SpellDuration = {
+      value: null,
+      scale: null,
+      perLevel: null,
+      perFailure: null,
+      concentration: type === 'concentration',
+      raw: null,
+      ...duration,
+      type,
+    };
+    if (type === 'per-level' && !base.perLevel) base.perLevel = 1;
+    if (type === 'per-failure' && !base.perFailure) base.perFailure = 1;
+    patchModifiers(formData, setFormData, { duration: base });
   };
 
   return (
     <>
       <Grid size={gridSize}>
-        <SelectSpellDurationType
+        <SelectSpellOption
           label={t('duration-type')}
           name="spellDurationType"
-          value={formData.modifiers?.duration?.type || null}
-          required={false}
-          allowAll={true}
-          onChange={(value) => onSpellDurationTypeChange(value)}
+          value={duration?.type}
+          options={SPELL_DURATION_TYPES}
+          optionLabel={(option) => t(`spell-duration-type-${option}`)}
+          allowEmpty
+          onChange={onTypeChange}
         />
       </Grid>
-      <Grid size={gridSize}>
-        {requiresDurationScale() && (
-          <>
-            <SelectSpellDurationScale
-              label={t('duration-scale')}
-              name="spellDurationScale"
-              value={formData.modifiers?.duration?.durationScale || null}
-              onChange={(value) => updateDuration({ durationScale: value })}
-            />
-          </>
-        )}
-      </Grid>
-      <Grid size={gridSize}>
-        {requiresDurationValue() && (
-          <>
+      {duration && measured && (
+        <>
+          <Grid size={gridSize}>
             <NumericInput
               label={t('duration')}
               name="spellDuration"
-              value={formData.modifiers?.duration?.duration || null}
-              onChange={(value) => updateDuration({ duration: value })}
+              integer
+              min={0}
+              value={duration.value ?? null}
+              onChange={(value) => update({ value })}
             />
-          </>
-        )}
-      </Grid>
-      {requiresFailureRange() && (
+          </Grid>
+          <Grid size={gridSize}>
+            <SelectSpellOption
+              label={t('duration-scale')}
+              name="spellDurationScale"
+              value={duration.scale}
+              options={SPELL_DURATION_SCALES}
+              optionLabel={(option) => t(`spell-scale-${option}`, { count: 2 })}
+              allowEmpty
+              onChange={(scale) => update({ scale })}
+            />
+          </Grid>
+        </>
+      )}
+      {duration?.type === 'per-level' && (
         <Grid size={gridSize}>
-          <>
-            <NumericInput
-              label={t('failure-scale')}
-              name="failureScale"
-              value={formData.modifiers?.duration?.failureScale || null}
-              onChange={(value) => updateDuration({ failureScale: value })}
-            />
-          </>
+          <NumericInput
+            label={t('spell-duration-levels-per-step')}
+            name="spellDurationPerLevel"
+            integer
+            min={1}
+            value={duration.perLevel ?? null}
+            onChange={(perLevel) => update({ perLevel })}
+          />
         </Grid>
       )}
-      <Grid size={gridSize}>
-        <TextField
-          select
-          label={t('required-concentration')}
-          name="requiredConcentration"
-          value={formData.modifiers?.duration?.requiredConcentration === true ? 'true' : 'false'}
-          fullWidth
-          onChange={(e) => updateDuration({ requiredConcentration: e.target.value === 'true' })}
-        >
-          <MenuItem value="true">{t('yes')}</MenuItem>
-          <MenuItem value="false">{t('no')}</MenuItem>
-        </TextField>
-      </Grid>
+      {duration?.type === 'per-failure' && (
+        <Grid size={gridSize}>
+          <NumericInput
+            label={t('spell-duration-failure-per-step')}
+            name="spellDurationPerFailure"
+            integer
+            min={1}
+            value={duration.perFailure ?? null}
+            onChange={(perFailure) => update({ perFailure })}
+          />
+        </Grid>
+      )}
+      {duration && (
+        <>
+          <Grid size={gridSize}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!!duration.concentration}
+                  onChange={(e) => update({ concentration: e.target.checked })}
+                />
+              }
+              label={t('required-concentration')}
+            />
+          </Grid>
+          <Grid size={gridSize}>
+            <TextField
+              label={t('spell-raw-text')}
+              name="spellDurationRaw"
+              value={duration.raw || ''}
+              onChange={(e) => update({ raw: textOrNull(e.target.value) })}
+              fullWidth
+            />
+          </Grid>
+        </>
+      )}
     </>
   );
 };

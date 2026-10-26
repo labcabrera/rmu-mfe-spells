@@ -1,19 +1,16 @@
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import {
-  fetchSpellTargetTypes,
-  Spell,
-  SpellTarget,
-  SpellTargetType,
-  useNotify,
-} from '@labcabrera-rmu/rmu-react-shared-lib';
+import { Autocomplete, TextField } from '@mui/material';
+import { fetchSpellTargetTypes, useNotify } from '@labcabrera-rmu/rmu-react-shared-lib';
 
+/** Multi-select of the kinds of target of a spell area, from GET /v1/target-types. */
 const SelectSpellTargetType: FC<{
-  formData: Spell;
-  setFormData: Dispatch<SetStateAction<Spell>>;
-}> = ({ formData, setFormData }) => {
+  label: string;
+  value: string[];
+  onChange: (value: string[]) => void;
+}> = ({ label, value, onChange }) => {
   const auth = useAuth();
   const { t } = useTranslation();
   const notify = useNotify();
@@ -25,28 +22,16 @@ const SelectSpellTargetType: FC<{
       .catch((err: Error) => notify.error(err));
   }, []);
 
-  const handleChange = (_: React.MouseEvent<HTMLElement>, newValue: SpellTargetType[] | null) => {
-    setFormData({
-      ...formData,
-      modifiers: {
-        ...formData.modifiers,
-        target: { ...formData.modifiers!.target, types: newValue && newValue.length ? newValue : null } as SpellTarget,
-      },
-    });
-  };
-
   return (
-    <ToggleButtonGroup
-      value={formData.modifiers?.target?.types || []}
-      onChange={handleChange}
-      aria-label={t('target-types')}
-    >
-      {targetTypes.map((targetType) => (
-        <ToggleButton key={targetType} value={targetType} aria-label={targetType}>
-          {targetType}
-        </ToggleButton>
-      ))}
-    </ToggleButtonGroup>
+    <Autocomplete
+      multiple
+      options={targetTypes}
+      value={value}
+      onChange={(_, newValue) => onChange(newValue)}
+      getOptionLabel={(option) => t(`spell-target-type-${option}`, { defaultValue: option })}
+      filterSelectedOptions
+      renderInput={(params) => <TextField {...params} label={label} />}
+    />
   );
 };
 

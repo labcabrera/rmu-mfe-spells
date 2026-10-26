@@ -1,57 +1,38 @@
-import { Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
+import {
+  Spell,
+  spellAreaText,
+  spellDurationText,
+  spellRangeText,
+  SpellResistance,
+  SpellTranslate,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 
-type Translate = (key: string) => string;
+/** Short texts of a spell's duration, range, area and resistance, shared by the spell view and the spell table. */
+export const getSpellDurationText = (spell: Spell, t: SpellTranslate) =>
+  spellDurationText(spell.modifiers?.duration, t);
 
-/** Short texts of a spell's duration, range and target, shared by the spell view and the spell table. */
-export const getSpellDurationText = (spell: Spell, t: Translate) => {
-  if (!spell.modifiers?.duration) return '-';
-  if (!spell.modifiers.duration.type) {
-    return spell.modifiers?.duration?.requiredConcentration === true ? 'C' : '-';
-  }
-  const concentration = spell.modifiers?.duration?.requiredConcentration ? ` (C)` : '';
-  const duration = spell.modifiers.duration;
-  switch (duration.type) {
-    case 'concentration':
-    case 'permanent':
-      return `${t(duration.type)}${concentration}`;
-    case 'lvl':
-      return `${duration.duration} ${t(duration.durationScale || '')} / lvl${concentration}`;
-    case 'rr-failure': {
-      const scale: string = duration.failureScale ? `${duration.failureScale}` : '';
-      return `${duration.duration} ${t(duration.durationScale || '')} / ${scale} failure${concentration}`;
-    }
-    default:
-      return '-';
-  }
-};
+export const getSpellRangeText = (spell: Spell, t: SpellTranslate) => spellRangeText(spell.modifiers?.range, t);
 
-export const getSpellRangeText = (spell: Spell, t: Translate) => {
-  if (!spell.modifiers?.range) return '-';
-  const range = spell.modifiers.range;
-  switch (range.type) {
-    case 'distance':
-      return `${range.value}'`;
-    case 'distance-level':
-      return `${range.value}' / lvl`;
-    case 'touch':
-    case 'self':
-      return t(range.type);
-    default:
-      return '-';
-  }
-};
+export const getSpellAreaText = (spell: Spell, t: SpellTranslate) => spellAreaText(spell.modifiers?.area, t);
 
-export const getSpellTargetText = (spell: Spell) => {
-  if (!spell.modifiers?.target) return '-';
-  switch (spell.modifiers.target.mode) {
-    case 'area':
-      return `${spell.modifiers.target.modifier || ''}`;
-    case 'target': {
-      const count = spell.modifiers.target.count ? `${spell.modifiers.target.count} ` : '';
-      const types = spell.modifiers.target.types ? spell.modifiers.target.types.join(', ') : '';
-      return `${count}${types}`;
-    }
-    default:
-      return '-';
-  }
+/** Power points a spell costs: its level unless it says otherwise (0 for the spells marked `•`). */
+export const getSpellPowerPoints = (spell: Spell): number => spell.modifiers?.powerPoints ?? spell.level;
+
+/** Book markers of a spell: `*` instantaneous, `•` no power points, `‡` cast together with others of its set. */
+export const getSpellMarkers = (spell: Spell): string =>
+  [
+    spell.modifiers?.instant ? '*' : '',
+    spell.modifiers?.powerPoints === 0 ? '•' : '',
+    spell.modifiers?.setGroup ? '‡' : '',
+  ].join('');
+
+const signed = (value: number) => (value > 0 ? `+${value}` : `${value}`);
+
+/** Resistance of a spell: its kind, the RR modifier and how the failure scales. */
+export const getSpellResistanceText = (resistance: SpellResistance | null | undefined, t: SpellTranslate): string => {
+  if (!resistance) return '-';
+  const parts = [t(`spell-resistance-${resistance.kind}`)];
+  if (resistance.modifier) parts.push(t('spell-rr-modifier-value', { value: signed(resistance.modifier) }));
+  if (resistance.kind !== 'none' && resistance.scaling) parts.push(t(`spell-resistance-scaling-${resistance.scaling}`));
+  return parts.join(', ');
 };

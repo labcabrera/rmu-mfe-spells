@@ -35,10 +35,11 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
   useEffect(() => {
     if (formData) return;
     let data: SpellList | undefined;
-    if (mode === 'create') data = {} as SpellList;
+    if (mode === 'create') data = { realms: [] } as unknown as SpellList;
     else if (existing.entity) {
+      // `realm` is deprecated (spec 028): the form edits `realms`.
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-      const { id, ...rest } = existing.entity;
+      const { id, realm, ...rest } = existing.entity;
       data = rest as SpellList;
     }
     if (data) {
@@ -47,7 +48,13 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
     }
   }, [existing.entity]);
 
-  const isValid = !!formData?.name && !!formData.realm && !!formData.type;
+  const realmCount = formData?.realms?.length ?? 0;
+  const isValid =
+    !!formData?.name &&
+    realmCount >= 1 &&
+    realmCount <= 2 &&
+    !!formData.type &&
+    (formData.type !== 'base' || !!formData.professionId);
 
   const onSave = () => {
     if (!formData) return;

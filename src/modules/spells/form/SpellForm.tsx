@@ -4,20 +4,30 @@ import { Grid, MenuItem, TextField } from '@mui/material';
 import { CategorySeparator, NumericInput, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectSpellSubtype from '../../shared/selects/SelectSpellSubtype';
 import SelectSpellType from '../../shared/selects/SelectSpellType';
+import SpellFormArea from './SpellFormArea';
 import SpellFormDuration from './SpellFormDuration';
+import SpellFormEffects from './SpellFormEffects';
 import SpellFormRange from './SpellFormRange';
-import SpellFormTarget from './SpellFormTarget';
+import SpellFormResistance from './SpellFormResistance';
+import { patchModifiers, textOrNull } from './spell-form-utils';
 
 const inputSize = { xs: 12, md: 4 };
 
 export default function SpellForm({
   formData,
   setFormData,
+  effectsText,
+  effectsError,
+  onEffectsTextChange,
 }: {
   formData: Spell;
   setFormData: Dispatch<SetStateAction<Spell>>;
+  effectsText: string;
+  effectsError: boolean;
+  onEffectsTextChange: (text: string) => void;
 }) {
   const { t } = useTranslation();
+  const setModifiers = (patch: Partial<Spell['modifiers']>) => patchModifiers(formData, setFormData, patch);
 
   return (
     <>
@@ -50,9 +60,7 @@ export default function SpellForm({
             label={t('cast-type')}
             name="cast-type"
             value={formData.modifiers?.instant === true ? 'true' : 'false'}
-            onChange={(e) =>
-              setFormData({ ...formData, modifiers: { ...formData.modifiers, instant: e.target.value === 'true' } })
-            }
+            onChange={(e) => setModifiers({ instant: e.target.value === 'true' })}
             fullWidth
           >
             <MenuItem value="true">{t('instant')}</MenuItem>
@@ -60,11 +68,20 @@ export default function SpellForm({
           </TextField>
         </Grid>
         <Grid size={inputSize}>
+          <TextField
+            label={t('spell-type-code')}
+            name="typeCode"
+            value={formData.modifiers?.typeCode || ''}
+            onChange={(e) => setModifiers({ typeCode: textOrNull(e.target.value) })}
+            fullWidth
+          />
+        </Grid>
+        <Grid size={inputSize}>
           <SelectSpellType
             label={t('type')}
             name="spellType"
             value={formData.modifiers?.type || null}
-            onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, type: value } })}
+            onChange={(value) => setModifiers({ type: value })}
           />
         </Grid>
         <Grid size={inputSize}>
@@ -72,7 +89,27 @@ export default function SpellForm({
             label={t('subtype')}
             name="spellSubtype"
             value={formData.modifiers?.subtype || null}
-            onChange={(value) => setFormData({ ...formData, modifiers: { ...formData.modifiers, subtype: value } })}
+            onChange={(value) => setModifiers({ subtype: value })}
+          />
+        </Grid>
+        <Grid size={inputSize}>
+          <NumericInput
+            label={t('power-points')}
+            name="powerPoints"
+            min={0}
+            integer
+            placeholder={t('spell-power-points-default')}
+            value={formData.modifiers?.powerPoints ?? null}
+            onChange={(value) => setModifiers({ powerPoints: value })}
+          />
+        </Grid>
+        <Grid size={inputSize}>
+          <TextField
+            label={t('spell-set-group')}
+            name="setGroup"
+            value={formData.modifiers?.setGroup || ''}
+            onChange={(e) => setModifiers({ setGroup: textOrNull(e.target.value) })}
+            fullWidth
           />
         </Grid>
       </Grid>
@@ -80,13 +117,22 @@ export default function SpellForm({
       <Grid container spacing={1}>
         <SpellFormRange formData={formData} setFormData={setFormData} />
       </Grid>
+      <CategorySeparator text={t('area')} />
+      <Grid container spacing={1}>
+        <SpellFormArea formData={formData} setFormData={setFormData} />
+      </Grid>
       <CategorySeparator text={t('duration')} />
       <Grid container spacing={1}>
         <SpellFormDuration formData={formData} setFormData={setFormData} />
       </Grid>
-      <CategorySeparator text={t('target')} />
+      <CategorySeparator text={t('resistance')} />
       <Grid container spacing={1}>
-        <SpellFormTarget formData={formData} setFormData={setFormData} />
+        <SpellFormResistance formData={formData} setFormData={setFormData} />
+      </Grid>
+      <CategorySeparator text={t('effects')} />
+      <SpellFormEffects text={effectsText} error={effectsError} onChange={onEffectsTextChange} />
+      <CategorySeparator text={t('description')} />
+      <Grid container spacing={1}>
         <Grid size={12}>
           <TextField
             label={t('description')}
