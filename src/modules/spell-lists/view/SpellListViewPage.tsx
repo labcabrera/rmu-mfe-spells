@@ -19,6 +19,7 @@ import {
   useEntity,
   useNotify,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { canChangeSpellList } from '../../shared/permissions';
 import SpellListViewInfo from './SpellListViewInfo';
 import SpellTable from './SpellTable';
 
@@ -88,7 +89,7 @@ export default function SpellListViewPage() {
           <Grid size={12}>
             <Section>
               <CategorySeparator text={t('spells')}>
-                <AddButton onClick={() => onAddSpell(spellList)} />
+                {canChangeSpellList(auth, spellList) && <AddButton onClick={() => onAddSpell(spellList)} />}
               </CategorySeparator>
               <SpellTable spells={spells} />
             </Section>

@@ -12,7 +12,7 @@ import {
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SelectListType from '../../shared/selects/SelectListType';
 import SelectProfession from '../../shared/selects/SelectProfession';
-import SelectRealmType from '../../shared/selects/SelectRealmType';
+import SelectRealmTypes from '../../shared/selects/SelectRealmTypes';
 
 const SpellListForm: FC<{
   formData: SpellList;
@@ -52,11 +52,10 @@ const SpellListForm: FC<{
           />
         </Grid>
         <Grid size={12}>
-          <SelectRealmType
-            label={t('spell-realm')}
-            value={formData.realm || null}
-            name="realm"
-            onChange={(value) => setFormData({ ...formData, realm: value! })}
+          <SelectRealmTypes
+            label={t('realms')}
+            value={formData.realms || []}
+            onChange={(realms) => setFormData({ ...formData, realms })}
           />
         </Grid>
         <Grid size={12}>
@@ -65,6 +64,24 @@ const SpellListForm: FC<{
             value={formData.type || null}
             name="type"
             onChange={(value) => onTypeChange(value)}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <TextField
+            label={t('code')}
+            name="code"
+            value={formData.code || ''}
+            onChange={(e) => setFormData({ ...formData, code: e.target.value.trim() ? e.target.value : null })}
+            fullWidth
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <TextField
+            label={t('book-section')}
+            name="bookSection"
+            value={formData.bookSection || ''}
+            onChange={(e) => setFormData({ ...formData, bookSection: e.target.value.trim() ? e.target.value : null })}
+            fullWidth
           />
         </Grid>
         {formData.type === 'base' && (

@@ -16,6 +16,7 @@ import {
   useNotify,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SpellForm from './SpellForm';
+import { formatSpellEffects, parseSpellEffects } from './SpellFormEffects';
 
 /** Create and edit page of a spell. Creation takes the spell list from `?spellListId=` or the navigation state. */
 export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
@@ -32,13 +33,16 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
   });
   const [formData, setFormData] = useState<Spell>();
   const [initialData, setInitialData] = useState<string>();
+  // The effects are edited as JSON text: the form data takes them each time the text is a valid array.
+  const [effectsText, setEffectsText] = useState('[]');
+  const [effectsError, setEffectsError] = useState(false);
 
   useEffect(() => {
     if (formData) return;
     let data: Spell | undefined;
     if (mode === 'create') {
       const spellListId = location.state?.spellList?.id || searchParams.get('spellListId');
-      data = { modifiers: {}, ...(spellListId ? { spellListId } : {}) } as Spell;
+      data = { modifiers: {}, effects: [], ...(spellListId ? { spellListId } : {}) } as unknown as Spell;
     } else if (existing.entity) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
       const { id, ...rest } = existing.entity;
@@ -46,13 +50,29 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
     }
     if (data) {
       setFormData(data);
+      setEffectsText(formatSpellEffects(data.effects));
       setInitialData(JSON.stringify(data));
     }
   }, [existing.entity]);
 
+  const onEffectsTextChange = (text: string) => {
+    setEffectsText(text);
+    const effects = parseSpellEffects(text);
+    setEffectsError(effects === null);
+    if (effects && formData) setFormData({ ...formData, effects });
+  };
+
   const onSave = () => {
     if (!formData) return;
-    const request = mode === 'create' ? createSpell(formData, auth) : updateSpell(spellId!, formData, auth);
+    const effects = parseSpellEffects(effectsText);
+    if (effects === null) {
+      setEffectsError(true);
+      notify.error(t('spell-effects-invalid-json'));
+      return;
+    }
+    const dto = { ...formData, effects };
+    // The API errors (invalid-effect, unknown-effect-status…) carry their message, shown by notify.error.
+    const request = mode === 'create' ? createSpell(dto, auth) : updateSpell(spellId!, dto, auth);
     request.then((spell) => navigate(`/spells/spells/view/${spell.id}`, { state: { spell } })).catch(notify.error);
   };
 
@@ -68,7 +88,8 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
       ]}
       onSave={onSave}
       onCancel={onCancel}
-      saveDisabled={!formData?.name}
+      // The type is required (F-spells-29): tactical reads it to resolve the spell.
+      saveDisabled={!formData?.name || !formData.modifiers?.type || effectsError}
       dirty={!!formData && JSON.stringify(formData) !== initialData}
       leftPanel={
         formData && (
@@ -81,7 +102,13 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
     >
       {formData ? (
         <>
-          <SpellForm formData={formData} setFormData={setFormData as Dispatch<SetStateAction<Spell>>} />
+          <SpellForm
+            formData={formData}
+            setFormData={setFormData as Dispatch<SetStateAction<Spell>>}
+            effectsText={effectsText}
+            effectsError={effectsError}
+            onEffectsTextChange={onEffectsTextChange}
+          />
           <TechnicalInfo>
             <pre>{JSON.stringify(formData, null, 2)}</pre>
           </TechnicalInfo>

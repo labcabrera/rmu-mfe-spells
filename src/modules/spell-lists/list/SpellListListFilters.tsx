@@ -31,7 +31,7 @@ export default function SpellListListFilters({ onChange }: { onChange: (rsql: st
       rsqlAnd([
         ['name=re=', name],
         ['type==', listType],
-        ['realm==', realmType],
+        ['realms==', realmType],
         ['professionId==', professionId],
       ])
     );

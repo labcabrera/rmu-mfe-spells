@@ -37,7 +37,7 @@ export default function SpellListListPage() {
       renderItem={(spellList) => (
         <RmuTextCard
           value={t(spellList.name, spellList.name)}
-          subtitle={t(spellList.type)}
+          subtitle={[t(spellList.type), ...(spellList.realms || []).map((realm) => t(realm))].join(' · ')}
           image={spellList.imageUrl || ''}
           onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
         />
