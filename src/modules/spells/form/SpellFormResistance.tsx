@@ -2,13 +2,14 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import {
+  EnumPicker,
   NumericInput,
   SPELL_RESISTANCE_KINDS,
   SPELL_RESISTANCE_SCALINGS,
   SpellResistance,
   SpellResistanceKind,
+  SpellResistanceScaling,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectSpellOption from '../../shared/selects/SelectSpellOption';
 import { gridSize, patchModifiers, SpellFormProps } from './spell-form-utils';
 
 /** Resistance roll a spell asks of its target: which one, its modifier and how the failure scales. */
@@ -27,14 +28,16 @@ const SpellFormResistance: FC<SpellFormProps> = ({ formData, setFormData }) => {
   return (
     <>
       <Grid size={gridSize}>
-        <SelectSpellOption
+        <EnumPicker
+          variant="select"
           label={t('spell-resistance-kind')}
           name="spellResistanceKind"
           value={resistance?.kind}
-          options={SPELL_RESISTANCE_KINDS}
-          optionLabel={(option) => t(`spell-resistance-${option}`)}
-          allowEmpty
-          onChange={onKindChange}
+          values={SPELL_RESISTANCE_KINDS}
+          labelPrefix="spell-resistance-"
+          allowAll
+          allLabel={t('none')}
+          onChange={(value) => onKindChange(value as SpellResistanceKind | null)}
         />
       </Grid>
       {resistance && resistance.kind !== 'none' && (
@@ -50,13 +53,14 @@ const SpellFormResistance: FC<SpellFormProps> = ({ formData, setFormData }) => {
             />
           </Grid>
           <Grid size={gridSize}>
-            <SelectSpellOption
+            <EnumPicker
+              variant="select"
               label={t('spell-resistance-scaling')}
               name="spellResistanceScaling"
               value={resistance.scaling}
-              options={SPELL_RESISTANCE_SCALINGS}
-              optionLabel={(option) => t(`spell-resistance-scaling-${option}`)}
-              onChange={(scaling) => update({ scaling: scaling || 'all-or-nothing' })}
+              values={SPELL_RESISTANCE_SCALINGS}
+              labelPrefix="spell-resistance-scaling-"
+              onChange={(scaling) => update({ scaling: (scaling as SpellResistanceScaling) || 'all-or-nothing' })}
             />
           </Grid>
         </>

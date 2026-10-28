@@ -2,13 +2,15 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import {
+  EntityPicker,
+  EnumPicker,
   NumericInput,
   SPELL_DURATION_SCALES,
   SPELL_DURATION_TYPES,
   SpellDuration,
+  SpellDurationScale,
   SpellDurationType,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectSpellOption from '../../shared/selects/SelectSpellOption';
 import { gridSize, patchModifiers, SpellFormProps, textOrNull } from './spell-form-utils';
 
 /** Types of duration measured in a number of rounds, minutes…: the ones that need a value and a scale. */
@@ -43,14 +45,16 @@ const SpellFormDuration: FC<SpellFormProps> = ({ formData, setFormData }) => {
   return (
     <>
       <Grid size={gridSize}>
-        <SelectSpellOption
+        <EnumPicker
+          variant="select"
           label={t('duration-type')}
           name="spellDurationType"
           value={duration?.type}
-          options={SPELL_DURATION_TYPES}
-          optionLabel={(option) => t(`spell-duration-type-${option}`)}
-          allowEmpty
-          onChange={onTypeChange}
+          values={SPELL_DURATION_TYPES}
+          labelPrefix="spell-duration-type-"
+          allowAll
+          allLabel={t('none')}
+          onChange={(value) => onTypeChange(value as SpellDurationType | null)}
         />
       </Grid>
       {duration && measured && (
@@ -66,14 +70,19 @@ const SpellFormDuration: FC<SpellFormProps> = ({ formData, setFormData }) => {
             />
           </Grid>
           <Grid size={gridSize}>
-            <SelectSpellOption
+            <EntityPicker<string>
+              variant="select"
+              hideImages
               label={t('duration-scale')}
               name="spellDurationScale"
               value={duration.scale}
-              options={SPELL_DURATION_SCALES}
-              optionLabel={(option) => t(`spell-scale-${option}`, { count: 2 })}
-              allowEmpty
-              onChange={(scale) => update({ scale })}
+              options={SPELL_DURATION_SCALES.map((scale) => ({
+                id: scale,
+                label: t(`spell-scale-${scale}`, { count: 2 }),
+              }))}
+              allowAll
+              allLabel={t('none')}
+              onChange={(scale) => update({ scale: scale as SpellDurationScale | null })}
             />
           </Grid>
         </>

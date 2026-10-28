@@ -1,15 +1,34 @@
-import React, { FC } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
 import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
-import { NumericInput, SPELL_AREA_KINDS, SpellArea, SpellAreaKind } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectSpellOption from '../../shared/selects/SelectSpellOption';
-import SelectSpellTargetType from '../../shared/selects/SelectSpellTargetType';
+import {
+  EntityPicker,
+  EnumPicker,
+  fetchSpellTargetTypes,
+  NumericInput,
+  SPELL_AREA_KINDS,
+  SpellArea,
+  SpellAreaKind,
+  useNotify,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 import { gridSize, patchModifiers, SpellFormProps, textOrNull } from './spell-form-utils';
 
 /** Area of a spell (spec 028): its kind, how many targets or how big, the kinds of target and the book text. */
 const SpellFormArea: FC<SpellFormProps> = ({ formData, setFormData }) => {
+  const auth = useAuth();
   const { t } = useTranslation();
+  const notify = useNotify();
   const area = formData.modifiers?.area || null;
+  // Kinds of target of an area, from GET /v1/target-types.
+  const [targetTypes, setTargetTypes] = useState<string[]>();
+
+  useEffect(() => {
+    fetchSpellTargetTypes(auth)
+      .then(setTargetTypes)
+      .catch((err: Error) => notify.error(err));
+  }, []);
 
   const update = (patch: Partial<SpellArea>) =>
     patchModifiers(formData, setFormData, { area: { ...(area as SpellArea), ...patch } });
@@ -24,14 +43,16 @@ const SpellFormArea: FC<SpellFormProps> = ({ formData, setFormData }) => {
   return (
     <>
       <Grid size={gridSize}>
-        <SelectSpellOption
+        <EnumPicker
+          variant="select"
           label={t('spell-area-kind')}
           name="spellAreaKind"
           value={area?.kind}
-          options={SPELL_AREA_KINDS}
-          optionLabel={(option) => t(`spell-area-kind-${option}`)}
-          allowEmpty
-          onChange={onKindChange}
+          values={SPELL_AREA_KINDS}
+          labelPrefix="spell-area-kind-"
+          allowAll
+          allLabel={t('none')}
+          onChange={(value) => onKindChange(value as SpellAreaKind | null)}
         />
       </Grid>
       {area && (
@@ -78,10 +99,18 @@ const SpellFormArea: FC<SpellFormProps> = ({ formData, setFormData }) => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <SelectSpellTargetType
+            <EntityPicker<string>
+              mode="multiple"
+              variant="select"
+              hideImages
               label={t('target-types')}
+              name="spellAreaTargetTypes"
+              options={targetTypes?.map((type) => ({
+                id: type,
+                label: t(`spell-target-type-${type}`, { defaultValue: type }),
+              }))}
               value={area.targetTypes || []}
-              onChange={(targetTypes) => update({ targetTypes })}
+              onChange={(ids) => update({ targetTypes: ids })}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>

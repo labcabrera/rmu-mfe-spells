@@ -4,15 +4,17 @@ import { useAuth } from 'react-oidc-context';
 import { Grid, TextField } from '@mui/material';
 import {
   CategorySeparator,
+  EnumPicker,
   fetchProfessions,
   ListType,
   LoadingState,
+  ProfessionPicker,
+  RealmType,
+  RealmTypePicker,
+  SPELL_LIST_TYPES,
   SpellList,
   useNotify,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectListType from '../../shared/selects/SelectListType';
-import SelectProfession from '../../shared/selects/SelectProfession';
-import SelectRealmTypes from '../../shared/selects/SelectRealmTypes';
 
 const SpellListForm: FC<{
   formData: SpellList;
@@ -52,18 +54,26 @@ const SpellListForm: FC<{
           />
         </Grid>
         <Grid size={12}>
-          <SelectRealmTypes
+          {/* One realm, or two for the base lists of a hybrid profession (spec 028). */}
+          <RealmTypePicker
+            mode="multiple"
+            max={2}
             label={t('realms')}
+            name="realms"
             value={formData.realms || []}
-            onChange={(realms) => setFormData({ ...formData, realms })}
+            onChange={(realms) => setFormData({ ...formData, realms: realms as RealmType[] })}
+            error={!formData.realms?.length}
+            helperText={t('spell-list-realms-help')}
           />
         </Grid>
         <Grid size={12}>
-          <SelectListType
+          <EnumPicker
             label={t('list-type')}
+            values={SPELL_LIST_TYPES}
             value={formData.type || null}
             name="type"
-            onChange={(value) => onTypeChange(value)}
+            required
+            onChange={(value) => onTypeChange(value as ListType | null)}
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -86,11 +96,12 @@ const SpellListForm: FC<{
         </Grid>
         {formData.type === 'base' && (
           <Grid size={12}>
-            <SelectProfession
+            <ProfessionPicker
               label={t('profession')}
               value={formData.professionId || null}
               name="profession"
-              professionIds={professionIds}
+              professions={professionIds}
+              required
               onChange={(value) => setFormData({ ...formData, professionId: value })}
             />
           </Grid>

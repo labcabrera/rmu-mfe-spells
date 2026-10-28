@@ -1,9 +1,16 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, MenuItem, TextField } from '@mui/material';
-import { CategorySeparator, NumericInput, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectSpellSubtype from '../../shared/selects/SelectSpellSubtype';
-import SelectSpellType from '../../shared/selects/SelectSpellType';
+import {
+  CategorySeparator,
+  EnumPicker,
+  NumericInput,
+  Spell,
+  SPELL_SUBTYPES,
+  SPELL_TYPES,
+  SpellSubtype,
+  SpellType,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 import SpellFormArea from './SpellFormArea';
 import SpellFormDuration from './SpellFormDuration';
 import SpellFormEffects from './SpellFormEffects';
@@ -77,19 +84,27 @@ export default function SpellForm({
           />
         </Grid>
         <Grid size={inputSize}>
-          <SelectSpellType
+          <EnumPicker
+            variant="select"
             label={t('type')}
             name="spellType"
+            values={SPELL_TYPES}
             value={formData.modifiers?.type || null}
-            onChange={(value) => setModifiers({ type: value })}
+            required
+            onChange={(value) => setModifiers({ type: value as SpellType | null })}
           />
         </Grid>
         <Grid size={inputSize}>
-          <SelectSpellSubtype
+          <EnumPicker
+            variant="select"
             label={t('subtype')}
             name="spellSubtype"
+            values={SPELL_SUBTYPES}
+            labelPrefix="spell-subtype-"
             value={formData.modifiers?.subtype || null}
-            onChange={(value) => setModifiers({ subtype: value })}
+            allowAll
+            allLabel={t('none')}
+            onChange={(value) => setModifiers({ subtype: value as SpellSubtype | null })}
           />
         </Grid>
         <Grid size={inputSize}>

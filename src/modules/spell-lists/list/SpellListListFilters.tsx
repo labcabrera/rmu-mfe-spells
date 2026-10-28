@@ -1,78 +1,82 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from 'react-oidc-context';
 import {
-  FilterBar,
-  fetchProfessions,
-  ListType,
-  RealmType,
-  rsqlAnd,
-  SearchField,
-  useNotify,
+  ClearableTextField,
+  EnumPicker,
+  FilterSchema,
+  FilterSection,
+  ListFilters,
+  ProfessionPicker,
+  REALM_TYPES,
+  RealmTypePicker,
+  SPELL_LIST_TYPES,
+  SpellList,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectListType from '../../shared/selects/SelectListType';
-import SelectProfession from '../../shared/selects/SelectProfession';
-import SelectRealmType from '../../shared/selects/SelectRealmType';
+import { TFunction } from 'i18next';
 
-/** Filters of the spell list list, reported as an RSQL query. */
-export default function SpellListListFilters({ onChange }: { onChange: (rsql: string) => void }) {
-  const auth = useAuth();
+/** Filters of the spell list list (spec 046): name, realm, list type and profession, kept in the URL. */
+export const spellListFilters = (t: TFunction): FilterSchema<SpellList> => ({
+  q: { kind: 'text', label: t('name'), toRsql: (value) => `name=re=${value}` },
+  realm: {
+    kind: 'single',
+    label: t('realm'),
+    options: REALM_TYPES,
+    format: (value) => t(value),
+    toRsql: (value) => `realms==${value}`,
+  },
+  type: {
+    kind: 'single',
+    label: t('type'),
+    options: SPELL_LIST_TYPES,
+    format: (value) => t(value),
+    toRsql: (value) => `type==${value}`,
+  },
+  profession: {
+    kind: 'single',
+    label: t('profession'),
+    format: (value) => t(value),
+    toRsql: (value) => `professionId==${value}`,
+  },
+});
+
+/** Sections of the side panel of the spell list list. */
+export default function SpellListListFilters({
+  filters,
+  professionIds,
+}: {
+  filters: ListFilters<SpellList>;
+  professionIds: string[] | undefined;
+}) {
   const { t } = useTranslation();
-  const notify = useNotify();
-  const [professionIds, setProfessionIds] = useState<string[]>();
-  const [name, setName] = useState('');
-  const [realmType, setRealmType] = useState<RealmType | null>(null);
-  const [listType, setListType] = useState<ListType | null>(null);
-  const [professionId, setProfessionId] = useState<string | null>(null);
-
-  useEffect(() => {
-    onChange(
-      rsqlAnd([
-        ['name=re=', name],
-        ['type==', listType],
-        ['realms==', realmType],
-        ['professionId==', professionId],
-      ])
-    );
-  }, [name, realmType, listType, professionId]);
-
-  useEffect(() => {
-    fetchProfessions('archetype!=non-spellcaster', 0, 100, auth)
-      .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
-      .catch(notify.error);
-  }, []);
+  const single = (key: string) => ({
+    value: filters.get(key) || null,
+    onChange: (id: string | null) => filters.set(key, id),
+    allowAll: true,
+  });
+  // Built outside the JSX: the i18n lint reads string arguments there as visible text.
+  const bind = { realm: single('realm'), type: single('type'), profession: single('profession') };
 
   return (
-    <FilterBar>
-      <SearchField value={name} onChange={setName} />
-      <SelectRealmType
-        name="realm"
-        label={t('realm')}
-        value={realmType}
-        onChange={(value) => setRealmType(value || null)}
-        required={false}
-        allowAll
-      />
-      <SelectListType
-        name="type"
-        label={t('type')}
-        value={listType}
-        onChange={(value) => setListType(value || null)}
-        required={false}
-        allowAll
-      />
-      {professionIds && (
-        <SelectProfession
-          name="professionId"
-          label={t('profession')}
-          value={professionId}
-          professionIds={professionIds}
-          onChange={(value) => setProfessionId(value || null)}
-          required={false}
-          allowAll
+    <>
+      <FilterSection title={t('search')} collapsible={false}>
+        <ClearableTextField
+          label={t('name')}
+          name="q"
+          value={filters.get('q')}
+          onChange={(value) => filters.set('q', value ?? '')}
         />
+      </FilterSection>
+      <FilterSection title={t('realm')}>
+        <RealmTypePicker {...bind.realm} />
+      </FilterSection>
+      <FilterSection title={t('type')}>
+        <EnumPicker {...bind.type} label={t('type')} values={SPELL_LIST_TYPES} />
+      </FilterSection>
+      {professionIds && (
+        <FilterSection title={t('profession')}>
+          <ProfessionPicker {...bind.profession} professions={professionIds} />
+        </FilterSection>
       )}
-    </FilterBar>
+    </>
   );
 }

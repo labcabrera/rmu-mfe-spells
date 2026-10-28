@@ -1,78 +1,88 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from 'react-oidc-context';
-import { Autocomplete, MenuItem, TextField } from '@mui/material';
 import {
-  fetchSpellLists,
-  FilterBar,
-  rsqlAnd,
-  SearchField,
+  ClearableTextField,
+  EntityPicker,
+  EnumPicker,
+  FilterSchema,
+  FilterSection,
+  ListFilters,
+  Spell,
   SPELL_TYPES,
   SpellList,
-  SpellType,
-  useNotify,
+  SpellListPicker,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { TFunction } from 'i18next';
 
-/** Filters of the spell list, reported as an RSQL query. */
-export default function SpellListFilters({ onChange }: { onChange: (rsql: string) => void }) {
+const CAST_TYPES = ['true', 'false'];
+
+const castTypeLabel = (value: string, t: TFunction) => t(value === 'true' ? 'instant' : 'casted');
+
+/** Filters of the spell list (spec 046): name, spell list, type and cast type, kept in the URL. */
+export const spellFilters = (t: TFunction, spellLists: SpellList[]): FilterSchema<Spell> => ({
+  q: { kind: 'text', label: t('name'), toRsql: (value) => `name=re=${value}` },
+  list: {
+    kind: 'single',
+    label: t('spell-list'),
+    format: (id) => {
+      const list = spellLists.find((each) => each.id === id);
+      return list ? t(list.name, { defaultValue: list.name }) : id;
+    },
+    toRsql: (value) => `spellListId==${value}`,
+  },
+  type: {
+    kind: 'single',
+    label: t('type'),
+    options: SPELL_TYPES,
+    format: (value) => t(value),
+    toRsql: (value) => `modifiers.type==${value}`,
+  },
+  instant: {
+    kind: 'single',
+    label: t('cast-type'),
+    options: CAST_TYPES,
+    format: (value) => castTypeLabel(value, t),
+    toRsql: (value) => `modifiers.instant==${value}`,
+  },
+});
+
+/** Sections of the side panel of the spell list. */
+export default function SpellListFilters({
+  filters,
+  spellLists,
+}: {
+  filters: ListFilters<Spell>;
+  spellLists: SpellList[] | undefined;
+}) {
   const { t } = useTranslation();
-  const auth = useAuth();
-  const notify = useNotify();
-  const [name, setName] = useState('');
-  const [spellLists, setSpellLists] = useState<SpellList[]>([]);
-  const [selectedSpellList, setSelectedSpellList] = useState<SpellList | null>(null);
-  const [instant, setInstant] = useState<string>('');
-  const [spellType, setSpellType] = useState<SpellType | null>(null);
-
-  useEffect(() => {
-    fetchSpellLists('', 0, 100, auth)
-      .then((response) => setSpellLists(response.content))
-      .catch(notify.error);
-  }, []);
-
-  useEffect(() => {
-    onChange(
-      rsqlAnd([
-        ['name=re=', name],
-        ['spellListId==', selectedSpellList?.id],
-        ['modifiers.instant==', instant],
-        ['modifiers.type==', spellType],
-      ])
-    );
-  }, [name, selectedSpellList, instant, spellType]);
+  const single = (key: string) => ({
+    value: filters.get(key) || null,
+    onChange: (id: string | null) => filters.set(key, id),
+    allowAll: true,
+  });
+  // Built outside the JSX: the i18n lint reads string arguments there as visible text.
+  const bind = { list: single('list'), type: single('type'), instant: single('instant') };
 
   return (
-    <FilterBar>
-      <SearchField value={name} onChange={setName} />
-      <Autocomplete
-        options={spellLists}
-        getOptionLabel={(option) => option.name}
-        value={selectedSpellList}
-        onChange={(_, newValue) => setSelectedSpellList(newValue)}
-        fullWidth
-        renderInput={(params) => <TextField {...params} label={t('spell-list')} />}
-      />
-      <Autocomplete
-        options={SPELL_TYPES}
-        getOptionLabel={(option) => t(option)}
-        value={spellType}
-        onChange={(_, newValue) => setSpellType(newValue)}
-        fullWidth
-        renderInput={(params) => <TextField {...params} label={t('type')} />}
-      />
-      <TextField
-        select
-        label={t('cast-type')}
-        name="cast-type"
-        value={instant}
-        fullWidth
-        onChange={(e) => setInstant(e.target.value)}
-      >
-        <MenuItem value="">{t('all')}</MenuItem>
-        <MenuItem value="true">{t('instant')}</MenuItem>
-        <MenuItem value="false">{t('casted')}</MenuItem>
-      </TextField>
-    </FilterBar>
+    <>
+      <FilterSection title={t('search')} collapsible={false}>
+        <ClearableTextField
+          label={t('name')}
+          name="q"
+          value={filters.get('q')}
+          onChange={(value) => filters.set('q', value ?? '')}
+        />
+        <SpellListPicker {...bind.list} spellLists={spellLists} />
+      </FilterSection>
+      <FilterSection title={t('type')}>
+        <EnumPicker {...bind.type} label={t('type')} values={SPELL_TYPES} />
+        <EntityPicker<string>
+          {...bind.instant}
+          label={t('cast-type')}
+          hideImages
+          options={CAST_TYPES.map((value) => ({ id: value, label: castTypeLabel(value, t) }))}
+        />
+      </FilterSection>
+    </>
   );
 }
