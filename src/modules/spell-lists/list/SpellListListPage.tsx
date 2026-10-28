@@ -1,28 +1,40 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
 import {
+  defaultImages,
+  EntityCard,
+  fetchProfessions,
   fetchSpellLists,
+  gridSizeShowcase,
   ListPage,
-  RmuTextCard,
   SpellList,
+  useListFilters,
   useNotify,
   usePagedQuery,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SpellListListFilters from './SpellListListFilters';
+import SpellListListFilters, { spellListFilters } from './SpellListListFilters';
 
 export default function SpellListListPage() {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotify();
-  const [rsql, setRsql] = useState('');
+  const [professionIds, setProfessionIds] = useState<string[]>();
+  const filters = useListFilters(spellListFilters(t));
   const query = usePagedQuery<SpellList>({
     fetcher: (q, page, size) => fetchSpellLists(q, page, size, auth),
-    rsql,
+    rsql: filters.rsql,
     onError: notify.error,
   });
+
+  useEffect(() => {
+    fetchProfessions('archetype!=non-spellcaster', 0, 100, auth)
+      .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
+      .catch(notify.error);
+  }, []);
 
   return (
     <ListPage
@@ -33,12 +45,17 @@ export default function SpellListListPage() {
       ]}
       query={query}
       onAdd={() => navigate('/spells/spell-lists/create')}
-      filters={<SpellListListFilters onChange={setRsql} />}
+      filtersLayout="side"
+      filterState={filters}
+      filtersStorageKey="spells.spell-lists"
+      filters={<SpellListListFilters filters={filters} professionIds={professionIds} />}
+      collection={{ modes: ['cards'], storageKey: 'spells.spell-lists', cardSize: gridSizeShowcase }}
       renderItem={(spellList) => (
-        <RmuTextCard
-          value={t(spellList.name, spellList.name)}
+        <EntityCard
+          title={t(spellList.name, spellList.name)}
           subtitle={[t(spellList.type), ...(spellList.realms || []).map((realm) => t(realm))].join(' · ')}
-          image={spellList.imageUrl || ''}
+          image={spellList.imageUrl || defaultImages['spell-list']}
+          fallbackImages={[defaultImages['spell-list']]}
           onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
         />
       )}

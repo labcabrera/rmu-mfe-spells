@@ -1,28 +1,46 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
 import {
+  defaultImages,
+  EntityCard,
+  fetchSpellLists,
   fetchSpells,
+  gridSizeShowcase,
   ListPage,
-  RmuTextCard,
   Spell,
+  SpellList,
+  useListFilters,
   useNotify,
   usePagedQuery,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SpellListFilters from './SpellListFilters';
+import SpellListFilters, { spellFilters } from './SpellListFilters';
 
 export default function SpellListPage() {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotify();
-  const [rsql, setRsql] = useState('');
+  const [spellLists, setSpellLists] = useState<SpellList[]>();
+  const filters = useListFilters(spellFilters(t, spellLists ?? []));
   const query = usePagedQuery<Spell>({
     fetcher: (q, page, size) => fetchSpells(q, page, size, auth),
-    rsql,
+    rsql: filters.rsql,
     onError: notify.error,
   });
+
+  useEffect(() => {
+    fetchSpellLists('', 0, 100, auth)
+      .then((response) => setSpellLists(response.content))
+      .catch(notify.error);
+  }, []);
+
+  const listName = (id: string) => {
+    const list = spellLists?.find((each) => each.id === id);
+    return list ? t(list.name, { defaultValue: list.name }) : undefined;
+  };
 
   return (
     <ListPage
@@ -32,12 +50,21 @@ export default function SpellListPage() {
         { name: t('spells') },
       ]}
       query={query}
-      filters={<SpellListFilters onChange={setRsql} />}
+      filtersLayout="side"
+      filterState={filters}
+      filtersStorageKey="spells.spells"
+      filters={<SpellListFilters filters={filters} spellLists={spellLists} />}
+      collection={{ modes: ['cards'], storageKey: 'spells.spells', cardSize: gridSizeShowcase }}
       renderItem={(spell) => (
-        <RmuTextCard
-          value={t(spell.name, spell.name)}
-          subtitle={t('spell')}
-          image={spell.imageUrl || ''}
+        <EntityCard
+          title={t(spell.name, spell.name)}
+          subtitle={listName(spell.spellListId) ?? t('spell')}
+          image={spell.imageUrl || defaultImages.spell}
+          fallbackImages={[defaultImages.spell]}
+          metrics={[
+            { label: t('level'), value: spell.level },
+            ...(spell.modifiers?.type ? [{ label: t('type'), value: t(spell.modifiers.type) }] : []),
+          ]}
           onClick={() => navigate(`/spells/spells/view/${spell.id}`, { state: { spell } })}
         />
       )}

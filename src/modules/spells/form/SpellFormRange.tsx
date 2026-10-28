@@ -1,8 +1,13 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
-import { NumericInput, SPELL_RANGE_TYPES, SpellRange, SpellRangeType } from '@labcabrera-rmu/rmu-react-shared-lib';
-import SelectSpellOption from '../../shared/selects/SelectSpellOption';
+import {
+  EnumPicker,
+  NumericInput,
+  SPELL_RANGE_TYPES,
+  SpellRange,
+  SpellRangeType,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
 import { gridSize, patchModifiers, SpellFormProps, textOrNull } from './spell-form-utils';
 
 /** Range of a spell: its type and, for a distance, the feet, whether it grows per level and the step. */
@@ -21,14 +26,16 @@ const SpellFormRange: FC<SpellFormProps> = ({ formData, setFormData }) => {
   return (
     <>
       <Grid size={gridSize}>
-        <SelectSpellOption
+        <EnumPicker
+          variant="select"
           label={t('range-type')}
           name="spellRangeType"
           value={range?.type}
-          options={SPELL_RANGE_TYPES}
-          optionLabel={(option) => t(`spell-range-type-${option}`)}
-          allowEmpty
-          onChange={onTypeChange}
+          values={SPELL_RANGE_TYPES}
+          labelPrefix="spell-range-type-"
+          allowAll
+          allLabel={t('none')}
+          onChange={(value) => onTypeChange(value as SpellRangeType | null)}
         />
       </Grid>
       {range?.type === 'distance' && (
