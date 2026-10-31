@@ -8,7 +8,6 @@ import {
   EntityCard,
   fetchSpellLists,
   fetchSpells,
-  gridSizeShowcase,
   ListPage,
   Spell,
   SpellList,
@@ -57,7 +56,7 @@ export default function SpellListPage() {
       filterState={filters}
       filtersStorageKey="spells.spells"
       filters={<SpellListFilters filters={filters} spellLists={spellLists} />}
-      collection={{ modes: ['cards'], storageKey: 'spells.spells', cardSize: gridSizeShowcase }}
+      collection={{ modes: ['cards'], storageKey: 'spells.spells' }}
       renderItem={(spell) => (
         <EntityCard
           title={t(spell.name, spell.name)}

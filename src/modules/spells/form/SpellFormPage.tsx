@@ -5,7 +5,7 @@ import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   createSpell,
-  EditableAvatar,
+  EntityImage,
   fetchSpell,
   FormPage,
   LoadingState,
@@ -93,8 +93,8 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
       dirty={!!formData && JSON.stringify(formData) !== initialData}
       leftPanel={
         formData && (
-          <EditableAvatar
-            imageUrl={formData.imageUrl || ''}
+          <EntityImage
+            image={formData.imageUrl || ''}
             onImageChange={(imageUrl) => setFormData({ ...formData, imageUrl })}
           />
         )

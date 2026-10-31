@@ -6,7 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   deleteSpell,
   DetailPage,
-  EditableAvatar,
+  EntityImage,
   fetchSpell,
   fetchSpellList,
   Spell,
@@ -68,7 +68,7 @@ export default function SpellViewPage() {
       onEdit={(spell) => navigate(`/spells/spells/edit/${spell.id}`, { state: { spell } })}
       onDelete={onDelete}
       leftPanel={(spell) => (
-        <EditableAvatar imageUrl={spell.imageUrl || ''} onImageChange={(imageUrl) => updateImage(spell, imageUrl)} />
+        <EntityImage image={spell.imageUrl || ''} onImageChange={(imageUrl) => updateImage(spell, imageUrl)} />
       )}
     >
       {(spell) => <SpellViewInfo spell={spell} spellList={spellList ?? null} />}

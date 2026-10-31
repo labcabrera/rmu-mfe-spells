@@ -8,7 +8,6 @@ import {
   EntityCard,
   fetchProfessions,
   fetchSpellLists,
-  gridSizeShowcase,
   ListPage,
   SpellList,
   useListFilters,
@@ -49,7 +48,7 @@ export default function SpellListListPage() {
       filterState={filters}
       filtersStorageKey="spells.spell-lists"
       filters={<SpellListListFilters filters={filters} professionIds={professionIds} />}
-      collection={{ modes: ['cards'], storageKey: 'spells.spell-lists', cardSize: gridSizeShowcase }}
+      collection={{ modes: ['cards'], storageKey: 'spells.spell-lists' }}
       renderItem={(spellList) => (
         <EntityCard
           title={t(spellList.name, spellList.name)}

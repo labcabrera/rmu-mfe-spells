@@ -9,7 +9,7 @@ import {
   CategorySeparator,
   deleteSpellList,
   DetailPage,
-  EditableAvatar,
+  EntityImage,
   fetchSpellList,
   fetchSpells,
   Section,
@@ -69,8 +69,8 @@ export default function SpellListViewPage() {
       onDelete={onDelete}
       leftPanel={(spellList) => (
         <>
-          <EditableAvatar
-            imageUrl={spellList.imageUrl || ''}
+          <EntityImage
+            image={spellList.imageUrl || ''}
             onImageChange={(imageUrl) => onImageUpdate(spellList, imageUrl)}
           />
           <Typography variant="body1" sx={{ mt: 2 }}>
