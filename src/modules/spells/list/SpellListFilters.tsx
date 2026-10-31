@@ -72,14 +72,15 @@ export default function SpellListFilters({
           value={filters.get('q')}
           onChange={(value) => filters.set('q', value ?? '')}
         />
-        <SpellListPicker {...bind.list} spellLists={spellLists} />
+        <SpellListPicker {...bind.list} spellLists={spellLists} variant="select" />
       </FilterSection>
       <FilterSection title={t('type')}>
-        <EnumPicker {...bind.type} label={t('type')} values={SPELL_TYPES} />
+        <EnumPicker {...bind.type} label={t('type')} values={SPELL_TYPES} variant="select" />
         <EntityPicker<string>
           {...bind.instant}
           label={t('cast-type')}
           hideImages
+          variant="select"
           options={CAST_TYPES.map((value) => ({ id: value, label: castTypeLabel(value, t) }))}
         />
       </FilterSection>
