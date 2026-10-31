@@ -18,6 +18,9 @@ import {
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SpellListFilters, { spellFilters } from './SpellListFilters';
 
+// The filter needs every list (171 in the books): the API serves the lists as a catalog of up to 1000.
+const SPELL_LIST_CATALOG_MAX = 1000;
+
 export default function SpellListPage() {
   const auth = useAuth();
   const { t } = useTranslation();
@@ -32,7 +35,7 @@ export default function SpellListPage() {
   });
 
   useEffect(() => {
-    fetchSpellLists('', 0, 100, auth)
+    fetchSpellLists('', 0, SPELL_LIST_CATALOG_MAX, auth)
       .then((response) => setSpellLists(response.content))
       .catch(notify.error);
   }, []);
