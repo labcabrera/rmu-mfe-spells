@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
-import { imageBaseUrl, LayoutBase, RmuTextCard } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { CardGrid, EntityCard, LayoutBase } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const HomePage: FC = () => {
   const { t } = useTranslation();
@@ -11,26 +10,26 @@ const HomePage: FC = () => {
     {
       value: t('spell-lists', 'Spell lists'),
       subtitle: t('manage-spell-lists', 'Manage spell lists'),
-      image: `${imageBaseUrl}images/generic/configuration.png`,
+      image: 'images/generic/spells.png',
       to: '/spells/spell-lists',
     },
     {
       value: t('spells', 'Spells'),
       subtitle: t('manage-spells', 'Manage spells'),
-      image: `${imageBaseUrl}images/generic/configuration.png`,
+      image: 'images/generic/spells.png',
       to: '/spells/spells',
     },
   ];
 
   return (
     <LayoutBase breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spell-module') }]}>
-      <Grid container spacing={1}>
-        {cards.map((c) => (
-          <Grid size={{ xs: 12, md: 3 }} key={c.value}>
-            <RmuTextCard value={c.value} subtitle={c.subtitle} image={c.image} onClick={() => navigate(c.to)} />
-          </Grid>
-        ))}
-      </Grid>
+      <CardGrid
+        items={cards}
+        getKey={(c) => c.to}
+        renderItem={(c) => (
+          <EntityCard title={c.value} description={c.subtitle} image={c.image} onClick={() => navigate(c.to)} />
+        )}
+      />
     </LayoutBase>
   );
 };
