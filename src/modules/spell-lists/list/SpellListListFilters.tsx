@@ -67,14 +67,14 @@ export default function SpellListListFilters({
         />
       </FilterSection>
       <FilterSection title={t('realm')}>
-        <RealmTypePicker {...bind.realm} />
+        <RealmTypePicker {...bind.realm} variant="select" />
       </FilterSection>
       <FilterSection title={t('type')}>
-        <EnumPicker {...bind.type} label={t('type')} values={SPELL_LIST_TYPES} />
+        <EnumPicker {...bind.type} label={t('type')} values={SPELL_LIST_TYPES} variant="select" />
       </FilterSection>
       {professionIds && (
         <FilterSection title={t('profession')}>
-          <ProfessionPicker {...bind.profession} professions={professionIds} />
+          <ProfessionPicker {...bind.profession} professions={professionIds} variant="select" />
         </FilterSection>
       )}
     </>
