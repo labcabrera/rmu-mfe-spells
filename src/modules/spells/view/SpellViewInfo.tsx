@@ -10,6 +10,7 @@ import {
   RmuTextCard,
   Section,
   Spell,
+  SpellAlchemyInfo,
   SpellEffectList,
   SpellList,
   StatRow,
@@ -112,6 +113,13 @@ export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spel
               <SpellEffectList effects={spell.effects} />
             </Section>
           </Grid>
+          {spell.alchemy && (
+            <Grid size={{ xs: 12, lg: 4 }}>
+              <Section title={t('spell-alchemy')}>
+                <SpellAlchemyInfo spell={spell} bare />
+              </Section>
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Grid>
