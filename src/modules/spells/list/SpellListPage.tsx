@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   defaultImages,
   EntityCard,
+  EntitySourceChip,
   fetchSpellLists,
   fetchSpells,
   ListPage,
@@ -63,6 +64,7 @@ export default function SpellListPage() {
           subtitle={listName(spell.spellListId) ?? t('spell')}
           image={spell.imageUrl || defaultImages.spell}
           fallbackImages={[defaultImages.spell]}
+          chips={<EntitySourceChip entity={spell} />}
           metrics={[
             { label: t('level'), value: spell.level },
             ...(spell.modifiers?.type ? [{ label: t('type'), value: t(spell.modifiers.type) }] : []),

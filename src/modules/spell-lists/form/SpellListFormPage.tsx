@@ -3,9 +3,12 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import {
   createSpellList,
   EntityImage,
+  EntitySourceField,
+  EntityType,
   fetchSpellList,
   FormPage,
   LoadingState,
@@ -31,15 +34,18 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
   });
   const [formData, setFormData] = useState<SpellList>();
   const [initialData, setInitialData] = useState<string>();
+  // Spec 063: set only by an admin through the source field; otherwise not sent.
+  const [entitySource, setEntitySource] = useState<EntityType>();
 
   useEffect(() => {
     if (formData) return;
     let data: SpellList | undefined;
     if (mode === 'create') data = { realms: [] } as unknown as SpellList;
     else if (existing.entity) {
-      // `realm` is deprecated (spec 028): the form edits `realms`.
+      // `realm` is deprecated (spec 028): the form edits `realms`. The owner never changes, and the source is sent
+      // only when the admin changes it (spec 063).
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-      const { id, realm, ...rest } = existing.entity;
+      const { id, realm, owner, entitySource, ...rest } = existing.entity;
       data = rest as SpellList;
     }
     if (data) {
@@ -58,7 +64,8 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
 
   const onSave = () => {
     if (!formData) return;
-    const request = mode === 'create' ? createSpellList(formData, auth) : updateSpellList(spellListId!, formData, auth);
+    const dto = { ...formData, ...(entitySource ? { entitySource } : {}) };
+    const request = mode === 'create' ? createSpellList(dto, auth) : updateSpellList(spellListId!, dto, auth);
     request
       .then((spellList) => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } }))
       .catch(notify.error);
@@ -78,7 +85,7 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
       onSave={onSave}
       onCancel={onCancel}
       saveDisabled={!isValid}
-      dirty={!!formData && JSON.stringify(formData) !== initialData}
+      dirty={!!formData && (JSON.stringify(formData) !== initialData || !!entitySource)}
       leftPanel={
         formData && (
           <EntityImage
@@ -91,6 +98,9 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
       {formData ? (
         <>
           <SpellListForm formData={formData} setFormData={setFormData as Dispatch<SetStateAction<SpellList>>} />
+          <Box sx={{ mt: 2 }}>
+            <EntitySourceField value={entitySource ?? existing.entity?.entitySource} onChange={setEntitySource} />
+          </Box>
           <TechnicalInfo>
             <pre>{JSON.stringify(formData, null, 2)}</pre>
           </TechnicalInfo>

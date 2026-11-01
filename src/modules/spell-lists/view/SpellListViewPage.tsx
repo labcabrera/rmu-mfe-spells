@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import {
   AddButton,
   CategorySeparator,
   deleteSpellList,
   DetailPage,
   EntityImage,
+  EntitySourceChip,
   fetchSpellList,
   fetchSpells,
   Section,
@@ -36,6 +37,7 @@ export default function SpellListViewPage() {
   });
   const spellList = state.entity;
   const [spells, setSpells] = useState<Spell[]>([]);
+  const editable = canChangeSpellList(auth, spellList);
 
   useEffect(() => {
     if (!spellList) return;
@@ -65,14 +67,21 @@ export default function SpellListViewPage() {
       ]}
       entity={state}
       summaryTitle={(entity) => t(entity.name)}
-      onEdit={(spellList) => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: { spellList } })}
-      onDelete={onDelete}
+      onEdit={
+        editable
+          ? (spellList) => navigate(`/spells/spell-lists/edit/${spellList.id}`, { state: { spellList } })
+          : undefined
+      }
+      onDelete={editable ? onDelete : undefined}
       leftPanel={(spellList) => (
         <>
           <EntityImage
             image={spellList.imageUrl || ''}
-            onImageChange={(imageUrl) => onImageUpdate(spellList, imageUrl)}
+            onImageChange={editable ? (imageUrl) => onImageUpdate(spellList, imageUrl) : undefined}
           />
+          <Box sx={{ mt: 2 }}>
+            <EntitySourceChip entity={spellList} />
+          </Box>
           <Typography variant="body1" sx={{ mt: 2 }}>
             {spellList.description}
           </Typography>
@@ -89,7 +98,7 @@ export default function SpellListViewPage() {
           <Grid size={12}>
             <Section>
               <CategorySeparator text={t('spells')}>
-                {canChangeSpellList(auth, spellList) && <AddButton onClick={() => onAddSpell(spellList)} />}
+                {editable && <AddButton onClick={() => onAddSpell(spellList)} />}
               </CategorySeparator>
               <SpellTable spells={spells} />
             </Section>

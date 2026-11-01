@@ -3,9 +3,12 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import {
   createSpell,
   EntityImage,
+  EntitySourceField,
+  EntityType,
   fetchSpell,
   FormPage,
   LoadingState,
@@ -36,6 +39,8 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
   // The effects are edited as JSON text: the form data takes them each time the text is a valid array.
   const [effectsText, setEffectsText] = useState('[]');
   const [effectsError, setEffectsError] = useState(false);
+  // Spec 063: only a standalone spell has its own source, set only by an admin through the field.
+  const [entitySource, setEntitySource] = useState<EntityType>();
 
   useEffect(() => {
     if (formData) return;
@@ -44,8 +49,10 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
       const spellListId = location.state?.spellList?.id || searchParams.get('spellListId');
       data = { modifiers: {}, effects: [], ...(spellListId ? { spellListId } : {}) } as unknown as Spell;
     } else if (existing.entity) {
+      // The owner never changes; the source of a spell of a list follows the list, and a PATCH that sends it is
+      // refused (spec 063).
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-      const { id, ...rest } = existing.entity;
+      const { id, owner, entitySource, ...rest } = existing.entity;
       data = rest as Spell;
     }
     if (data) {
@@ -70,7 +77,8 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
       notify.error(t('spell-effects-invalid-json'));
       return;
     }
-    const dto = { ...formData, effects };
+    const standalone = !formData.spellListId;
+    const dto = { ...formData, effects, ...(standalone && entitySource ? { entitySource } : {}) };
     // The API errors (invalid-effect, unknown-effect-status…) carry their message, shown by notify.error.
     const request = mode === 'create' ? createSpell(dto, auth) : updateSpell(spellId!, dto, auth);
     request.then((spell) => navigate(`/spells/spells/view/${spell.id}`, { state: { spell } })).catch(notify.error);
@@ -90,7 +98,7 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
       onCancel={onCancel}
       // The type is required (F-spells-29): tactical reads it to resolve the spell.
       saveDisabled={!formData?.name || !formData.modifiers?.type || effectsError}
-      dirty={!!formData && JSON.stringify(formData) !== initialData}
+      dirty={!!formData && (JSON.stringify(formData) !== initialData || !!entitySource)}
       leftPanel={
         formData && (
           <EntityImage
@@ -109,6 +117,11 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
             effectsError={effectsError}
             onEffectsTextChange={onEffectsTextChange}
           />
+          {!formData.spellListId && (
+            <Box sx={{ mt: 2 }}>
+              <EntitySourceField value={entitySource ?? existing.entity?.entitySource} onChange={setEntitySource} />
+            </Box>
+          )}
           <TechnicalInfo>
             <pre>{JSON.stringify(formData, null, 2)}</pre>
           </TechnicalInfo>
