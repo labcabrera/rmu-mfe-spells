@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import {
   ClearableTextField,
   EntityPicker,
+  ENTITY_SOURCES,
+  entitySourceFilter,
   EnumPicker,
   FilterSchema,
   FilterSection,
@@ -18,7 +20,7 @@ const CAST_TYPES = ['true', 'false'];
 
 const castTypeLabel = (value: string, t: TFunction) => t(value === 'true' ? 'instant' : 'casted');
 
-/** Filters of the spell list (spec 046): name, spell list, type and cast type, kept in the URL. */
+/** Filters of the spell list (spec 046): name, spell list, type, cast type and source (spec 063), kept in the URL. */
 export const spellFilters = (t: TFunction, spellLists: SpellList[]): FilterSchema<Spell> => ({
   q: { kind: 'text', label: t('name'), toRsql: (value) => `name=re=${value}` },
   list: {
@@ -44,6 +46,7 @@ export const spellFilters = (t: TFunction, spellLists: SpellList[]): FilterSchem
     format: (value) => castTypeLabel(value, t),
     toRsql: (value) => `modifiers.instant==${value}`,
   },
+  source: entitySourceFilter<Spell>(t),
 });
 
 /** Sections of the side panel of the spell list. */
@@ -61,7 +64,7 @@ export default function SpellListFilters({
     allowAll: true,
   });
   // Built outside the JSX: the i18n lint reads string arguments there as visible text.
-  const bind = { list: single('list'), type: single('type'), instant: single('instant') };
+  const bind = { list: single('list'), type: single('type'), instant: single('instant'), source: single('source') };
 
   return (
     <>
@@ -83,6 +86,9 @@ export default function SpellListFilters({
           variant="select"
           options={CAST_TYPES.map((value) => ({ id: value, label: castTypeLabel(value, t) }))}
         />
+      </FilterSection>
+      <FilterSection title={t('entity-source')}>
+        <EnumPicker {...bind.source} label={t('entity-source')} values={ENTITY_SOURCES} labelPrefix="entity-source-" />
       </FilterSection>
     </>
   );

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   defaultImages,
   EntityCard,
+  EntitySourceChip,
   fetchProfessions,
   fetchSpellLists,
   ListPage,
@@ -55,6 +56,7 @@ export default function SpellListListPage() {
           subtitle={[t(spellList.type), ...(spellList.realms || []).map((realm) => t(realm))].join(' · ')}
           image={spellList.imageUrl || defaultImages['spell-list']}
           fallbackImages={[defaultImages['spell-list']]}
+          chips={<EntitySourceChip entity={spellList} />}
           onClick={() => navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } })}
         />
       )}

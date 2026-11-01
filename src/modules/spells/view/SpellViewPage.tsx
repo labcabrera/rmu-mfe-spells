@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import {
   deleteSpell,
   DetailPage,
   EntityImage,
+  EntitySourceChip,
   fetchSpell,
   fetchSpellList,
   Spell,
@@ -15,6 +17,7 @@ import {
   useEntity,
   useNotify,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { canChangeSpell } from '../../shared/permissions';
 import SpellViewInfo from './SpellViewInfo';
 
 export default function SpellViewPage() {
@@ -31,6 +34,8 @@ export default function SpellViewPage() {
   const spell = state.entity;
   // The spell list is optional: the page still renders when it is missing (null).
   const [spellList, setSpellList] = useState<SpellList | null>();
+  // Spec 063: a spell of a list follows the list's permission; a standalone spell, its own.
+  const editable = canChangeSpell(auth, spell, spell?.spellListId ? spellList : null);
 
   useEffect(() => {
     if (!spell) return;
@@ -65,10 +70,18 @@ export default function SpellViewPage() {
       // Wait for the spell list (or its failure) before rendering, as the page did before.
       entity={{ ...state, entity: spellList === undefined ? undefined : spell }}
       summaryTitle={(entity) => t(entity.name)}
-      onEdit={(spell) => navigate(`/spells/spells/edit/${spell.id}`, { state: { spell } })}
-      onDelete={onDelete}
+      onEdit={editable ? (spell) => navigate(`/spells/spells/edit/${spell.id}`, { state: { spell } }) : undefined}
+      onDelete={editable ? onDelete : undefined}
       leftPanel={(spell) => (
-        <EntityImage image={spell.imageUrl || ''} onImageChange={(imageUrl) => updateImage(spell, imageUrl)} />
+        <>
+          <EntityImage
+            image={spell.imageUrl || ''}
+            onImageChange={editable ? (imageUrl) => updateImage(spell, imageUrl) : undefined}
+          />
+          <Box sx={{ mt: 2 }}>
+            <EntitySourceChip entity={spell} />
+          </Box>
+        </>
       )}
     >
       {(spell) => <SpellViewInfo spell={spell} spellList={spellList ?? null} />}
