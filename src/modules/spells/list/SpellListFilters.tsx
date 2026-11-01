@@ -1,14 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ClearableTextField,
+  bindSingle,
   EntityPicker,
   ENTITY_SOURCES,
   entitySourceFilter,
   EnumPicker,
   FilterSchema,
+  FilterSearchField,
   FilterSection,
   ListFilters,
+  regexFilter,
   Spell,
   SPELL_TYPES,
   SpellList,
@@ -22,7 +24,7 @@ const castTypeLabel = (value: string, t: TFunction) => t(value === 'true' ? 'ins
 
 /** Filters of the spell list (spec 046): name, spell list, type, cast type and source (spec 063), kept in the URL. */
 export const spellFilters = (t: TFunction, spellLists: SpellList[]): FilterSchema<Spell> => ({
-  q: { kind: 'text', label: t('name'), toRsql: (value) => `name=re=${value}` },
+  q: regexFilter<Spell>(t('name'), 'name'),
   list: {
     kind: 'single',
     label: t('spell-list'),
@@ -58,23 +60,14 @@ export default function SpellListFilters({
   spellLists: SpellList[] | undefined;
 }) {
   const { t } = useTranslation();
-  const single = (key: string) => ({
-    value: filters.get(key) || null,
-    onChange: (id: string | null) => filters.set(key, id),
-    allowAll: true,
-  });
+  const single = (key: string) => bindSingle(filters, key);
   // Built outside the JSX: the i18n lint reads string arguments there as visible text.
   const bind = { list: single('list'), type: single('type'), instant: single('instant'), source: single('source') };
 
   return (
     <>
       <FilterSection title={t('search')} collapsible={false}>
-        <ClearableTextField
-          label={t('name')}
-          name="q"
-          value={filters.get('q')}
-          onChange={(value) => filters.set('q', value ?? '')}
-        />
+        <FilterSearchField filters={filters} filter="q" label={t('name')} />
         <SpellListPicker {...bind.list} spellLists={spellLists} variant="select" />
       </FilterSection>
       <FilterSection title={t('type')}>

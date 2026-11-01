@@ -1,18 +1,8 @@
 import React, { FC, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TableSortLabel,
-  Typography,
-} from '@mui/material';
-import { EmptyState, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { TableSortLabel } from '@mui/material';
+import { DataTable, DataTableColumn, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { getSpellAreaText, getSpellDurationText, getSpellMarkers, getSpellRangeText } from '../../spells/spell-format';
 
 type SortField = 'level' | 'name';
@@ -64,85 +54,36 @@ const SpellTable: FC<{
     return `${t(type)}${t(subtype)}`;
   };
 
-  if (spells.length === 0) return <EmptyState />;
+  const sortHeader = (field: SortField, label: string) => (
+    <TableSortLabel
+      active={sortField === field}
+      direction={sortField === field ? sortOrder : 'asc'}
+      onClick={() => handleSort(field)}
+      sx={{ '& .MuiTableSortLabel-icon': { opacity: 1 } }}
+    >
+      {label}
+    </TableSortLabel>
+  );
+
+  const columns: DataTableColumn<Spell>[] = [
+    { key: 'level', header: sortHeader('level', t('level')), render: (spell) => spell.level },
+    { key: 'name', header: sortHeader('name', t('name')), render: getSpellNameText },
+    { key: 'type', header: t('type'), render: getSpellTypeText },
+    { key: 'range', header: t('range'), render: (spell) => getSpellRangeText(spell, t) },
+    { key: 'duration', header: t('duration'), render: (spell) => getSpellDurationText(spell, t) },
+    { key: 'area', header: t('area'), render: (spell) => getSpellAreaText(spell, t) },
+  ];
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell sortDirection={sortField === 'level' ? sortOrder : false}>
-              <TableSortLabel
-                active={sortField === 'level'}
-                direction={sortField === 'level' ? sortOrder : 'asc'}
-                onClick={() => handleSort('level')}
-                sx={{ '& .MuiTableSortLabel-icon': { opacity: 1 } }}
-              >
-                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  {t('level')}
-                </Typography>
-              </TableSortLabel>
-            </TableCell>
-            <TableCell sortDirection={sortField === 'name' ? sortOrder : false}>
-              <TableSortLabel
-                active={sortField === 'name'}
-                direction={sortField === 'name' ? sortOrder : 'asc'}
-                onClick={() => handleSort('name')}
-                sx={{ '& .MuiTableSortLabel-icon': { opacity: 1 } }}
-              >
-                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  {t('name')}
-                </Typography>
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {t('type')}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {t('range')}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {t('duration')}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {t('area')}
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedSpells.map((spell) => (
-            <TableRow key={spell.id} hover onClick={() => handleSpellClick(spell)} sx={{ cursor: 'pointer' }}>
-              <TableCell>
-                <Typography variant="body1">{spell.level}</Typography>{' '}
-              </TableCell>
-              <TableCell>
-                <Typography variant="body1">{getSpellNameText(spell)}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="body1">{getSpellTypeText(spell)}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="body1">{getSpellRangeText(spell, t)}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="body1">{getSpellDurationText(spell, t)}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="body1">{getSpellAreaText(spell, t)}</Typography>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <DataTable
+      columns={columns}
+      rows={sortedSpells}
+      getKey={(spell) => spell.id}
+      onRowClick={handleSpellClick}
+      emptyTitle={t('no-results')}
+      // The sort labels live in the header: phones keep the scrollable table instead of one card per spell.
+      cardsOnMobile={false}
+    />
   );
 };
 
