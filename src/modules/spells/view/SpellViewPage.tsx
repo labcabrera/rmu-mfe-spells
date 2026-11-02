@@ -3,22 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Chip } from '@mui/material';
 import {
   deleteSpell,
   DetailPage,
-  EntityImage,
   EntitySourceChip,
   fetchSpell,
   fetchSpellList,
+  ImageSelectorDialog,
   Spell,
   SpellList,
+  StatPill,
   updateSpell,
   useEntity,
   useNotify,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { canChangeSpell } from '../../shared/permissions';
-import SpellViewInfo from './SpellViewInfo';
+import { getSpellPowerPoints } from '../spell-format';
+import SpellViewInfo, { spellTypeText } from './SpellViewInfo';
 
 export default function SpellViewPage() {
   const auth = useAuth();
@@ -34,6 +36,7 @@ export default function SpellViewPage() {
   const spell = state.entity;
   // The spell list is optional: the page still renders when it is missing (null).
   const [spellList, setSpellList] = useState<SpellList | null>();
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
   // Spec 063: a spell of a list follows the list's permission; a standalone spell, its own.
   const editable = canChangeSpell(auth, spell, spell?.spellListId ? spellList : null);
 
@@ -69,22 +72,37 @@ export default function SpellViewPage() {
       ]}
       // Wait for the spell list (or its failure) before rendering, as the page did before.
       entity={{ ...state, entity: spellList === undefined ? undefined : spell }}
-      summaryTitle={(entity) => t(entity.name)}
       onEdit={editable ? (spell) => navigate(`/spells/spells/edit/${spell.id}`, { state: { spell } }) : undefined}
       onDelete={editable ? onDelete : undefined}
-      leftPanel={(spell) => (
+      hero={(spell) => {
+        const type = spellTypeText(spell, t);
+        return {
+          title: t(spell.name),
+          overline: [t('spell'), spellList ? t(spellList.name) : undefined].filter(Boolean).join(' · '),
+          image: spell.imageUrl,
+          ...(editable ? { onImageClick: () => setImageDialogOpen(true), imageActionLabel: t('change-image') } : {}),
+          chips: [
+            ...(type ? [<Chip key="type" size="small" label={type} />] : []),
+            <EntitySourceChip key="source" entity={spell} />,
+          ],
+          pills: [
+            <StatPill key="level" label={t('level')} value={spell.level} />,
+            <StatPill key="pp" label={t('power-points')} value={getSpellPowerPoints(spell)} />,
+          ],
+        };
+      }}
+    >
+      {(spell) => (
         <>
-          <EntityImage
-            image={spell.imageUrl || ''}
-            onImageChange={editable ? (imageUrl) => updateImage(spell, imageUrl) : undefined}
+          <SpellViewInfo spell={spell} spellList={spellList ?? null} />
+          <ImageSelectorDialog
+            value={spell.imageUrl || undefined}
+            open={imageDialogOpen}
+            onClose={() => setImageDialogOpen(false)}
+            onSelect={(imageUrl) => updateImage(spell, imageUrl)}
           />
-          <Box sx={{ mt: 2 }}>
-            <EntitySourceChip entity={spell} />
-          </Box>
         </>
       )}
-    >
-      {(spell) => <SpellViewInfo spell={spell} spellList={spellList ?? null} />}
     </DetailPage>
   );
 }

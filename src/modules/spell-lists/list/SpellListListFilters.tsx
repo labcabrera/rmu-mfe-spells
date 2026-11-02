@@ -1,11 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ClearableTextField,
+  bindSingle,
   EnumPicker,
   FilterSchema,
+  FilterSearchField,
   FilterSection,
   ListFilters,
+  regexFilter,
   ProfessionPicker,
   REALM_TYPES,
   RealmTypePicker,
@@ -16,7 +18,7 @@ import { TFunction } from 'i18next';
 
 /** Filters of the spell list list (spec 046): name, realm, list type and profession, kept in the URL. */
 export const spellListFilters = (t: TFunction): FilterSchema<SpellList> => ({
-  q: { kind: 'text', label: t('name'), toRsql: (value) => `name=re=${value}` },
+  q: regexFilter<SpellList>(t('name'), 'name'),
   realm: {
     kind: 'single',
     label: t('realm'),
@@ -48,23 +50,14 @@ export default function SpellListListFilters({
   professionIds: string[] | undefined;
 }) {
   const { t } = useTranslation();
-  const single = (key: string) => ({
-    value: filters.get(key) || null,
-    onChange: (id: string | null) => filters.set(key, id),
-    allowAll: true,
-  });
+  const single = (key: string) => bindSingle(filters, key);
   // Built outside the JSX: the i18n lint reads string arguments there as visible text.
   const bind = { realm: single('realm'), type: single('type'), profession: single('profession') };
 
   return (
     <>
       <FilterSection title={t('search')} collapsible={false}>
-        <ClearableTextField
-          label={t('name')}
-          name="q"
-          value={filters.get('q')}
-          onChange={(value) => filters.set('q', value ?? '')}
-        />
+        <FilterSearchField filters={filters} filter="q" label={t('name')} />
       </FilterSection>
       <FilterSection title={t('realm')}>
         <RealmTypePicker {...bind.realm} variant="select" />

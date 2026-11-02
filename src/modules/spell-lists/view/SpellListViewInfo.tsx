@@ -1,26 +1,30 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Chip, Stack, Typography } from '@mui/material';
-import { SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import React, { ReactNode } from 'react';
+import { Chip } from '@mui/material';
+import { EntitySourceChip, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { TFunction } from 'i18next';
 
-export default function SpellListViewInfo({ spellList }: { spellList: SpellList }) {
-  const { t } = useTranslation();
+/** Chips of the spell list header: realms, type, profession, code, book section and source. */
+export const spellListChips = (spellList: SpellList, t: TFunction): ReactNode[] => {
   const realms = spellList.realms?.length ? spellList.realms : spellList.realm ? [spellList.realm] : [];
-
-  return (
-    <Stack>
-      <Typography variant="h6" gutterBottom>
-        {t(spellList.name)}
-      </Typography>
-      <Stack direction="row" useFlexGap sx={{ flexWrap: 'wrap', gap: 1 }}>
-        {realms.map((realm) => (
-          <Chip key={realm} label={t(realm)} color="primary" />
-        ))}
-        <Chip label={t(spellList.type)} color={spellList.type === 'evil' ? 'error' : 'primary'} />
-        {spellList.professionId && <Chip label={t(spellList.professionId)} variant="outlined" />}
-        {spellList.code && <Chip label={`${t('code')}: ${spellList.code}`} variant="outlined" />}
-        {spellList.bookSection && <Chip label={`${t('book-section')}: ${spellList.bookSection}`} variant="outlined" />}
-      </Stack>
-    </Stack>
-  );
-}
+  return [
+    ...realms.map((realm) => <Chip key={`realm-${realm}`} size="small" label={t(realm)} color="primary" />),
+    <Chip key="type" size="small" label={t(spellList.type)} color={spellList.type === 'evil' ? 'error' : 'primary'} />,
+    ...(spellList.professionId
+      ? [<Chip key="profession" size="small" label={t(spellList.professionId)} variant="outlined" />]
+      : []),
+    ...(spellList.code
+      ? [<Chip key="code" size="small" label={`${t('code')}: ${spellList.code}`} variant="outlined" />]
+      : []),
+    ...(spellList.bookSection
+      ? [
+          <Chip
+            key="book-section"
+            size="small"
+            label={`${t('book-section')}: ${spellList.bookSection}`}
+            variant="outlined"
+          />,
+        ]
+      : []),
+    <EntitySourceChip key="source" entity={spellList} />,
+  ];
+};
