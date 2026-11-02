@@ -1,5 +1,5 @@
 REMOTE          ?= origin
-MASTER_BRANCH   ?= main
+MASTER_BRANCH   ?= master
 DEVELOP_BRANCH  ?= develop
 RELEASE_BUMP    ?=
 SHARED_LIB_DIR  ?= ../rmu-react-shared-lib
