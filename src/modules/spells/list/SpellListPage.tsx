@@ -15,6 +15,8 @@ import {
   useListFilters,
   useNotify,
   usePagedQuery,
+  useSpellName,
+  useSpellNameMatches,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SpellListFilters, { spellFilters } from './SpellListFilters';
 
@@ -24,10 +26,12 @@ const SPELL_LIST_CATALOG_MAX = 1000;
 export default function SpellListPage() {
   const auth = useAuth();
   const { t } = useTranslation();
+  const spellName = useSpellName();
+  const spellNameMatches = useSpellNameMatches();
   const navigate = useNavigate();
   const notify = useNotify();
   const [spellLists, setSpellLists] = useState<SpellList[]>();
-  const filters = useListFilters(spellFilters(t, spellLists ?? []));
+  const filters = useListFilters(spellFilters(t, spellLists ?? [], spellName, spellNameMatches));
   const query = usePagedQuery<Spell>({
     fetcher: (q, page, size) => fetchSpells(q, page, size, auth),
     rsql: filters.rsql,
@@ -42,7 +46,7 @@ export default function SpellListPage() {
 
   const listName = (id: string) => {
     const list = spellLists?.find((each) => each.id === id);
-    return list ? t(list.name, { defaultValue: list.name }) : undefined;
+    return list ? spellName(list.name) : undefined;
   };
 
   return (
@@ -60,7 +64,7 @@ export default function SpellListPage() {
       collection={{ modes: ['cards'], storageKey: 'spells.spells' }}
       renderItem={(spell) => (
         <EntityCard
-          title={t(spell.name, spell.name)}
+          title={spellName(spell.name)}
           subtitle={listName(spell.spellListId) ?? t('spell')}
           image={spell.imageUrl || defaultImages.spell}
           fallbackImages={[defaultImages.spell]}

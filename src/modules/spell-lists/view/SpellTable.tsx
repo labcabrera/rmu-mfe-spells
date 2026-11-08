@@ -2,7 +2,7 @@ import React, { FC, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { TableSortLabel } from '@mui/material';
-import { DataTable, DataTableColumn, Spell } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { DataTable, DataTableColumn, Spell, useSpellName } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { getSpellAreaText, getSpellDurationText, getSpellMarkers, getSpellRangeText } from '../../spells/spell-format';
 
 type SortField = 'level' | 'name';
@@ -12,6 +12,7 @@ const SpellTable: FC<{
   spells: Spell[];
 }> = ({ spells }) => {
   const { t } = useTranslation();
+  const spellName = useSpellName();
   const navigate = useNavigate();
   const [sortField, setSortField] = useState<SortField>('level');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -27,10 +28,11 @@ const SpellTable: FC<{
 
   const sortedSpells = useMemo(() => {
     return [...spells].sort((a, b) => {
-      const cmp = sortField === 'level' ? (a.level ?? 0) - (b.level ?? 0) : (a.name ?? '').localeCompare(b.name ?? '');
+      const cmp =
+        sortField === 'level' ? (a.level ?? 0) - (b.level ?? 0) : spellName(a.name).localeCompare(spellName(b.name));
       return sortOrder === 'asc' ? cmp : -cmp;
     });
-  }, [spells, sortField, sortOrder]);
+  }, [spells, sortField, sortOrder, spellName]);
 
   const handleSpellClick = (spell: Spell) => {
     navigate(`/spells/spells/view/${spell.id}`, { state: { spell } });
@@ -39,7 +41,7 @@ const SpellTable: FC<{
   // Name with the book markers: * instantaneous, • no power points, ‡ cast together with its set.
   const getSpellNameText = (spell: Spell) => {
     const markers = getSpellMarkers(spell);
-    return markers ? `${t(spell.name)} ${markers}` : t(spell.name);
+    return markers ? `${spellName(spell.name)} ${markers}` : spellName(spell.name);
   };
 
   // The type code of the book (Fm, Ed, U…), or one built from the type and subtype.

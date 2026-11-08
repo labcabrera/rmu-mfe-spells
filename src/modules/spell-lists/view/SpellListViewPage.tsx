@@ -18,6 +18,8 @@ import {
   updateSpellList,
   useEntity,
   useNotify,
+  useSpellName,
+  useSpellText,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { canChangeSpellList } from '../../shared/permissions';
 import { spellListChips } from './SpellListViewInfo';
@@ -27,6 +29,7 @@ export default function SpellListViewPage() {
   const auth = useAuth();
   const location = useLocation();
   const { t } = useTranslation();
+  const spellName = useSpellName();
   const navigate = useNavigate();
   const notify = useNotify();
   const { spellListId } = useParams<{ spellListId?: string }>();
@@ -35,6 +38,7 @@ export default function SpellListViewPage() {
     onError: notify.error,
   });
   const spellList = state.entity;
+  const spellText = useSpellText(spellList?.code);
   const [spells, setSpells] = useState<Spell[]>([]);
   const editable = canChangeSpellList(auth, spellList);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
@@ -73,7 +77,7 @@ export default function SpellListViewPage() {
       }
       onDelete={editable ? onDelete : undefined}
       hero={(spellList) => ({
-        title: t(spellList.name),
+        title: spellName(spellList.name),
         overline: t('spell-list'),
         image: spellList.imageUrl,
         ...(editable ? { onImageClick: () => setImageDialogOpen(true), imageActionLabel: t('change-image') } : {}),
@@ -86,7 +90,7 @@ export default function SpellListViewPage() {
             <Section title={t('description')}>
               {spellList.description ? (
                 <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
-                  {spellList.description}
+                  {spellText.list(spellList.description)}
                 </Typography>
               ) : (
                 <EmptyState dense title={t('no-description')} />

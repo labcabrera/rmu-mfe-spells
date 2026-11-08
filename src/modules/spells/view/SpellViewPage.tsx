@@ -17,6 +17,7 @@ import {
   updateSpell,
   useEntity,
   useNotify,
+  useSpellName,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { canChangeSpell } from '../../shared/permissions';
 import { getSpellPowerPoints } from '../spell-format';
@@ -25,6 +26,7 @@ import SpellViewInfo, { spellTypeText } from './SpellViewInfo';
 export default function SpellViewPage() {
   const auth = useAuth();
   const { t } = useTranslation();
+  const spellName = useSpellName();
   const location = useLocation();
   const navigate = useNavigate();
   const notify = useNotify();
@@ -77,8 +79,8 @@ export default function SpellViewPage() {
       hero={(spell) => {
         const type = spellTypeText(spell, t);
         return {
-          title: t(spell.name),
-          overline: [t('spell'), spellList ? t(spellList.name) : undefined].filter(Boolean).join(' · '),
+          title: spellName(spell.name),
+          overline: [t('spell'), spellList ? spellName(spellList.name) : undefined].filter(Boolean).join(' · '),
           image: spell.imageUrl,
           ...(editable ? { onImageClick: () => setImageDialogOpen(true), imageActionLabel: t('change-image') } : {}),
           chips: [

@@ -14,6 +14,8 @@ import {
   SpellAlchemyInfo,
   SpellEffectList,
   SpellList,
+  useSpellName,
+  useSpellText,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { TFunction } from 'i18next';
 import {
@@ -36,6 +38,8 @@ export const spellTypeText = (spell: Spell, t: TFunction) =>
 export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spellList: SpellList | null }) {
   const auth = useAuth();
   const { t } = useTranslation();
+  const spellName = useSpellName();
+  const spellText = useSpellText(spellList?.code);
   // The spell this one is a variant of: its name, or null when it cannot be read.
   const [baseSpell, setBaseSpell] = useState<Spell | null>(null);
   const modifiers = spell.modifiers || ({} as Spell['modifiers']);
@@ -53,7 +57,7 @@ export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spel
       label: t('spell-list'),
       value: spellList ? (
         <Link component={RouterLink} to={`/spells/spell-lists/view/${spellList.id}`} state={{ spellList }}>
-          {t(spellList.name)}
+          {spellName(spellList.name)}
         </Link>
       ) : (
         t('not-found')
@@ -79,7 +83,7 @@ export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spel
                 to={`/spells/spells/view/${spell.basedOn}`}
                 state={baseSpell ? { spell: baseSpell } : undefined}
               >
-                {baseSpell ? t(baseSpell.name) : spell.basedOn}
+                {baseSpell ? spellName(baseSpell.name) : spell.basedOn}
               </Link>
             ),
           },
@@ -98,7 +102,7 @@ export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spel
         <Section title={t('description')}>
           {spell.description ? (
             <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
-              {t(spell.description)}
+              {spellText.spell(spell.level, spell.description)}
             </Typography>
           ) : (
             <EmptyState dense title={t('no-description')} />
