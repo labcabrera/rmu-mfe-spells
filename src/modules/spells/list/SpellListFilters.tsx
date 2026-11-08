@@ -2,19 +2,19 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   bindSingle,
-  EntityPicker,
   ENTITY_SOURCES,
+  EntityPicker,
   entitySourceFilter,
   EnumPicker,
   FilterSchema,
   FilterSearchField,
   FilterSection,
   ListFilters,
-  regexFilter,
   Spell,
   SPELL_TYPES,
   SpellList,
   SpellListPicker,
+  spellNameRsql,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { TFunction } from 'i18next';
 
@@ -23,14 +23,24 @@ const CAST_TYPES = ['true', 'false'];
 const castTypeLabel = (value: string, t: TFunction) => t(value === 'true' ? 'instant' : 'casted');
 
 /** Filters of the spell list (spec 046): name, spell list, type, cast type and source (spec 063), kept in the URL. */
-export const spellFilters = (t: TFunction, spellLists: SpellList[]): FilterSchema<Spell> => ({
-  q: regexFilter<Spell>(t('name'), 'name'),
+export const spellFilters = (
+  t: TFunction,
+  spellLists: SpellList[],
+  spellName: (name: string) => string,
+  spellNameMatches: (text: string) => string[]
+): FilterSchema<Spell> => ({
+  // Workspace spec 088: also by the translated name, which the API does not know
+  q: {
+    kind: 'text',
+    label: t('name'),
+    toRsql: (value) => (value ? spellNameRsql(String(value), spellNameMatches(String(value))) : undefined),
+  },
   list: {
     kind: 'single',
     label: t('spell-list'),
     format: (id) => {
       const list = spellLists.find((each) => each.id === id);
-      return list ? t(list.name, { defaultValue: list.name }) : id;
+      return list ? spellName(list.name) : id;
     },
     toRsql: (value) => `spellListId==${value}`,
   },

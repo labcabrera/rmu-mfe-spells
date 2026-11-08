@@ -7,7 +7,7 @@ import {
   FilterSearchField,
   FilterSection,
   ListFilters,
-  regexFilter,
+  normalizeText,
   ProfessionPicker,
   REALM_TYPES,
   RealmTypePicker,
@@ -17,8 +17,13 @@ import {
 import { TFunction } from 'i18next';
 
 /** Filters of the spell list list (spec 046): name, realm, list type and profession, kept in the URL. */
-export const spellListFilters = (t: TFunction): FilterSchema<SpellList> => ({
-  q: regexFilter<SpellList>(t('name'), 'name'),
+export const spellListFilters = (t: TFunction, spellName: (name: string) => string): FilterSchema<SpellList> => ({
+  // Workspace spec 088: on the client, by the translated name
+  q: {
+    kind: 'text',
+    label: t('name'),
+    match: (list, value) => normalizeText(spellName(list.name)).includes(normalizeText(String(value).trim())),
+  },
   realm: {
     kind: 'single',
     label: t('realm'),
