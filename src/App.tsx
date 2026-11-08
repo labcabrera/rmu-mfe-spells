@@ -10,7 +10,7 @@ import SpellListPage from './modules/spells/list/SpellListPage';
 import SpellViewPage from './modules/spells/view/SpellViewPage';
 
 const App = () => (
-  <MfeRoot>
+  <MfeRoot namespace="spells">
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/spell-lists" element={<SpellListListPage />} />
