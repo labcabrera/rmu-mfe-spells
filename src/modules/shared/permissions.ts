@@ -1,7 +1,6 @@
 import type { AuthContextProps } from 'react-oidc-context';
-import { canEditEntity, isAdmin, type Spell, type SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { canEditEntity,type Spell, type SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 
-export { isAdmin };
 
 /**
  * Who can change a spell list and add or remove its spells (spec 063): an admin, or the owner of a user list. Rulebook

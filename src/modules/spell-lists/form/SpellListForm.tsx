@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { Grid, TextField } from '@mui/material';
@@ -14,6 +14,7 @@ import {
   SPELL_LIST_TYPES,
   SpellList,
   useNotify,
+  fetchFullPage,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const SpellListForm: FC<{
@@ -31,7 +32,7 @@ const SpellListForm: FC<{
   };
 
   useEffect(() => {
-    fetchProfessions('archetype!=non-spellcaster', 0, 100, auth)
+    fetchFullPage((rsql, page, size) => fetchProfessions(rsql, page, size, auth), 'archetype!=non-spellcaster')
       .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
       .catch((err: Error) => notify.error(err));
   }, []);

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, TextField, Typography } from '@mui/material';
 import { SpellEffect, SpellEffectList } from '@labcabrera-rmu/rmu-react-shared-lib';

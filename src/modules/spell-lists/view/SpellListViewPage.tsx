@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -20,6 +20,7 @@ import {
   useNotify,
   useSpellName,
   useSpellText,
+  fetchFullPage,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { canChangeSpellList } from '../../shared/permissions';
 import { spellListChips } from './SpellListViewInfo';
@@ -45,7 +46,7 @@ export default function SpellListViewPage() {
 
   useEffect(() => {
     if (!spellList) return;
-    fetchSpells(`spellListId==${spellList.id}`, 0, 100, auth)
+    fetchFullPage((rsql, page, size) => fetchSpells(rsql, page, size, auth), `spellListId==${spellList.id}`)
       .then((response) => setSpells(response.content))
       .catch(notify.error);
   }, [spellList]);

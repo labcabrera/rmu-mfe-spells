@@ -1,5 +1,6 @@
 import {
   defaultImages,
+  signed,
   Spell,
   spellAreaText,
   spellDurationText,
@@ -27,8 +28,6 @@ export const getSpellMarkers = (spell: Spell): string =>
     spell.modifiers?.powerPoints === 0 ? '•' : '',
     spell.modifiers?.setGroup ? '‡' : '',
   ].join('');
-
-const signed = (value: number) => (value > 0 ? `+${value}` : `${value}`);
 
 /** Resistance of a spell: its kind, the RR modifier and how the failure scales. */
 export const getSpellResistanceText = (resistance: SpellResistance | null | undefined, t: SpellTranslate): string => {
