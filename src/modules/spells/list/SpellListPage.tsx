@@ -18,6 +18,7 @@ import {
   useSpellName,
   useSpellNameMatches,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
+import { spellImage } from '../spell-format';
 import SpellListFilters, { spellFilters } from './SpellListFilters';
 
 // The filter needs every list (171 in the books): the API serves the lists as a catalog of up to 1000.
@@ -66,7 +67,10 @@ export default function SpellListPage() {
         <EntityCard
           title={spellName(spell.name)}
           subtitle={listName(spell.spellListId) ?? t('spell')}
-          image={spell.imageUrl || defaultImages.spell}
+          image={spellImage(
+            spell,
+            spellLists?.find((each) => each.id === spell.spellListId)
+          )}
           fallbackImages={[defaultImages.spell]}
           chips={<EntitySourceChip entity={spell} />}
           metrics={[

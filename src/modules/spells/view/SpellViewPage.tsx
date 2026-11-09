@@ -20,7 +20,7 @@ import {
   useSpellName,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { canChangeSpell } from '../../shared/permissions';
-import { getSpellPowerPoints } from '../spell-format';
+import { getSpellPowerPoints, spellImage } from '../spell-format';
 import SpellViewInfo, { spellTypeText } from './SpellViewInfo';
 
 export default function SpellViewPage() {
@@ -81,7 +81,7 @@ export default function SpellViewPage() {
         return {
           title: spellName(spell.name),
           overline: [t('spell'), spellList ? spellName(spellList.name) : undefined].filter(Boolean).join(' · '),
-          image: spell.imageUrl,
+          image: spellImage(spell, spellList),
           ...(editable ? { onImageClick: () => setImageDialogOpen(true), imageActionLabel: t('change-image') } : {}),
           chips: [
             ...(type ? [<Chip key="type" size="small" label={type} />] : []),

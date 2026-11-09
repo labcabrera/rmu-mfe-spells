@@ -1,7 +1,9 @@
 import {
+  defaultImages,
   Spell,
   spellAreaText,
   spellDurationText,
+  SpellList,
   spellRangeText,
   SpellResistance,
   SpellTranslate,
@@ -36,3 +38,7 @@ export const getSpellResistanceText = (resistance: SpellResistance | null | unde
   if (resistance.kind !== 'none' && resistance.scaling) parts.push(t(`spell-resistance-scaling-${resistance.scaling}`));
   return parts.join(', ');
 };
+
+/** The image of a spell: its own, or the one of its list, or the generic one. */
+export const spellImage = (spell: Spell, spellList: SpellList | null | undefined): string =>
+  spell.imageUrl || spellList?.imageUrl || defaultImages.spell;
