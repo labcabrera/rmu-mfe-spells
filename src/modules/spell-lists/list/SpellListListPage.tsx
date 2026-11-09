@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ import {
   useListFilters,
   useNotify,
   useSpellName,
+  fetchFullPage,
 } from '@labcabrera-rmu/rmu-react-shared-lib';
 import SpellListListFilters, { spellListFilters } from './SpellListListFilters';
 
@@ -37,7 +38,7 @@ export default function SpellListListPage() {
   });
 
   useEffect(() => {
-    fetchProfessions('archetype!=non-spellcaster', 0, 100, auth)
+    fetchFullPage((rsql, page, size) => fetchProfessions(rsql, page, size, auth), 'archetype!=non-spellcaster')
       .then((response) => setProfessionIds(response.content.map((profession) => profession.id)))
       .catch(notify.error);
   }, []);

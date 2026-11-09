@@ -1,13 +1,15 @@
-import React from 'react';
+import { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MfeRoot, NotFound } from '@labcabrera-rmu/rmu-react-shared-lib';
-import HomePage from './HomePage';
-import SpellListFormPage from './modules/spell-lists/form/SpellListFormPage';
-import SpellListListPage from './modules/spell-lists/list/SpellListListPage';
-import SpellListViewPage from './modules/spell-lists/view/SpellListViewPage';
-import SpellFormPage from './modules/spells/form/SpellFormPage';
-import SpellListPage from './modules/spells/list/SpellListPage';
-import SpellViewPage from './modules/spells/view/SpellViewPage';
+
+// Workspace spec 091, E1: every page is its own chunk; the Suspense is in MfeRoot / the shell layout.
+const HomePage = lazy(() => import('./HomePage'));
+const SpellListFormPage = lazy(() => import('./modules/spell-lists/form/SpellListFormPage'));
+const SpellListListPage = lazy(() => import('./modules/spell-lists/list/SpellListListPage'));
+const SpellListViewPage = lazy(() => import('./modules/spell-lists/view/SpellListViewPage'));
+const SpellFormPage = lazy(() => import('./modules/spells/form/SpellFormPage'));
+const SpellListPage = lazy(() => import('./modules/spells/list/SpellListPage'));
+const SpellViewPage = lazy(() => import('./modules/spells/view/SpellViewPage'));
 
 const App = () => (
   <MfeRoot namespace="spells">

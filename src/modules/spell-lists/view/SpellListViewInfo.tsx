@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Chip } from '@mui/material';
 import { EntitySourceChip, SpellList } from '@labcabrera-rmu/rmu-react-shared-lib';
 import { TFunction } from 'i18next';

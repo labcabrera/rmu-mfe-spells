@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -51,7 +51,7 @@ export default function SpellFormPage({ mode }: { mode: 'create' | 'edit' }) {
     } else if (existing.entity) {
       // The owner never changes; the source of a spell of a list follows the list, and a PATCH that sends it is
       // refused (spec 063).
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, owner, entitySource, ...rest } = existing.entity;
       data = rest as Spell;
     }

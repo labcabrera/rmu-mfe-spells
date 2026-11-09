@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -44,7 +44,7 @@ export default function SpellListFormPage({ mode }: { mode: 'create' | 'edit' })
     else if (existing.entity) {
       // `realm` is deprecated (spec 028): the form edits `realms`. The owner never changes, and the source is sent
       // only when the admin changes it (spec 063).
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, realm, owner, entitySource, ...rest } = existing.entity;
       data = rest as SpellList;
     }
