@@ -1,6 +1,6 @@
 {
   "name": "rmu-mfe-spells",
-  "version": "0.2.0",
+  "version": "0.2.1-SNAPSHOT",
   "scripts": {
     "build": "rm -rf dist && webpack --mode production",
     "build:dev": "webpack --mode development",
