@@ -1,93 +1,126 @@
-import React, { FC } from 'react';
-import { useNavigate } from 'react-router';
-import { Grid, Paper, Typography } from '@mui/material';
-import { t } from 'i18next';
-import { SpellList } from '../../api/spell-list.dto';
-import { getSpellDurationText, getSpellRangeText, getSpellTargetText, Spell } from '../../api/spell.dto';
-import RmuTextCard from '../../shared/cards/RmuTextCard';
-import CategorySeparator from '../../shared/display/CategorySeparator';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
+import { Link as RouterLink } from 'react-router-dom';
+import { Grid, Link, Typography } from '@mui/material';
+import {
+  EmptyState,
+  fetchSpell,
+  KeyValueList,
+  KeyValueRow,
+  Section,
+  Spell,
+  SpellAlchemyInfo,
+  SpellEffectList,
+  SpellList,
+  useSpellName,
+  useSpellText,
+} from '@labcabrera-rmu/rmu-react-shared-lib';
+import { TFunction } from 'i18next';
+import {
+  getSpellAreaText,
+  getSpellDurationText,
+  getSpellPowerPoints,
+  getSpellRangeText,
+  getSpellResistanceText,
+} from '../spell-format';
 
-const SpellViewInfo: FC<{
-  spell: Spell;
-  spellList: SpellList;
-}> = ({ spell, spellList }) => {
-  const navigate = useNavigate();
+/** Type and subtype of a spell ("Elemental · Ball"), empty when it has none. */
+export const spellTypeText = (spell: Spell, t: TFunction) =>
+  [
+    spell.modifiers?.type ? t(spell.modifiers.type) : '',
+    spell.modifiers?.subtype ? t(`spell-subtype-${spell.modifiers.subtype}`) : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
-  if (!spell) return <p>Loading...</p>;
+export default function SpellViewInfo({ spell, spellList }: { spell: Spell; spellList: SpellList | null }) {
+  const auth = useAuth();
+  const { t } = useTranslation();
+  const spellName = useSpellName();
+  const spellText = useSpellText(spellList?.code);
+  // The spell this one is a variant of: its name, or null when it cannot be read.
+  const [baseSpell, setBaseSpell] = useState<Spell | null>(null);
+  const modifiers = spell.modifiers || ({} as Spell['modifiers']);
 
-  const onSpellListClick = () => {
-    navigate(`/spells/spell-lists/view/${spellList.id}`, { state: { spellList } });
-  };
+  useEffect(() => {
+    setBaseSpell(null);
+    if (!spell.basedOn) return;
+    fetchSpell(spell.basedOn, auth)
+      .then(setBaseSpell)
+      .catch(() => setBaseSpell(null));
+  }, [spell.basedOn]);
+
+  const rows: KeyValueRow[] = [
+    {
+      label: t('spell-list'),
+      value: spellList ? (
+        <Link component={RouterLink} to={`/spells/spell-lists/view/${spellList.id}`} state={{ spellList }}>
+          {spellName(spellList.name)}
+        </Link>
+      ) : (
+        t('not-found')
+      ),
+    },
+    { label: t('level'), value: `${spell.level}` },
+    { label: t('spell-type-code'), value: modifiers.typeCode || '-' },
+    { label: t('type'), value: spellTypeText(spell, t) || '-' },
+    { label: t('power-points'), value: getSpellPowerPoints(spell) },
+    { label: t('instant'), value: t(modifiers.instant ? 'yes' : 'no') },
+    ...(modifiers.setGroup ? [{ label: t('spell-set-group'), value: modifiers.setGroup }] : []),
+    { label: t('range'), value: getSpellRangeText(spell, t) },
+    { label: t('area'), value: getSpellAreaText(spell, t) },
+    { label: t('duration'), value: getSpellDurationText(spell, t) },
+    { label: t('resistance'), value: getSpellResistanceText(modifiers.resistance, t) },
+    ...(spell.basedOn
+      ? [
+          {
+            label: t('spell-based-on'),
+            value: (
+              <Link
+                component={RouterLink}
+                to={`/spells/spells/view/${spell.basedOn}`}
+                state={baseSpell ? { spell: baseSpell } : undefined}
+              >
+                {baseSpell ? spellName(baseSpell.name) : spell.basedOn}
+              </Link>
+            ),
+          },
+        ]
+      : []),
+  ];
 
   return (
-    <>
-      <Grid container spacing={1}>
-        <Grid size={12}>
-          <Typography variant="h6" gutterBottom>
-            {t(spell.name)}
-          </Typography>
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid size={{ xs: 12, lg: 4 }}>
+        <Section title={t('information')}>
+          <KeyValueList rows={rows} />
+        </Section>
       </Grid>
-
-      <CategorySeparator text={t('Spell list')} />
-
-      <Grid container spacing={1}>
-        <Grid size={12}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={spellList.name} subtitle={t('Spell list')} onClick={() => onSpellListClick()} />
-            </Grid>
-          </Grid>
-        </Grid>
+      <Grid size={{ xs: 12, lg: 8 }}>
+        <Section title={t('description')}>
+          {spell.description ? (
+            <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
+              {spellText.spell(spell.level, spell.description)}
+            </Typography>
+          ) : (
+            <EmptyState dense title={t('no-description')} />
+          )}
+        </Section>
       </Grid>
-
-      <CategorySeparator text={t('Spell information')} />
-
-      <Grid container spacing={1}>
-        <Grid size={12}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={spell.level} subtitle={t('Level')} />
-            </Grid>
-            {spell.modifiers.instant && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={t('Instant')} subtitle={t('Cast')} />
-              </Grid>
-            )}
-            {spell.modifiers.duration && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellDurationText(spell)} subtitle={t('Duration')} />
-              </Grid>
-            )}
-            {spell.modifiers.range && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellRangeText(spell)} subtitle={t('Range')} />
-              </Grid>
-            )}
-            {spell.modifiers.target && (
-              <Grid size={{ xs: 12, md: 3 }}>
-                <RmuTextCard value={getSpellTargetText(spell)} subtitle={t('Target')} />
-              </Grid>
-            )}
-            <Grid size={{ xs: 12, md: 3 }}>
-              <RmuTextCard value={t(spell.modifiers.type || '')} subtitle={t('Spell type')} />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid size={12}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 12, md: 12 }}>
-              <Paper sx={{ padding: 2 }}>
-                <Typography variant="body1" color="primary" gutterBottom>
-                  {t(spell.description || '')}
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Grid>
+      <Grid size={12}>
+        <Section title={t('effects')}>
+          <SpellEffectList effects={spell.effects} />
+        </Section>
       </Grid>
-    </>
+      {spell.alchemy && (
+        <Grid size={{ xs: 12, lg: 4 }}>
+          <Section title={t('spell-alchemy')}>
+            <SpellAlchemyInfo spell={spell} bare />
+          </Section>
+        </Grid>
+      )}
+    </Grid>
   );
-};
-
-export default SpellViewInfo;
+}

@@ -1,43 +1,36 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
-import { imageBaseUrl } from './modules/services/config';
-import RmuBreadcrumbs from './modules/shared/breadcrumbs/RmuBreadcrumbs';
-import RmuTextCard from './modules/shared/cards/RmuTextCard';
+import { CardGrid, EntityCard, LayoutBase } from '@labcabrera-rmu/rmu-react-shared-lib';
 
 const HomePage: FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const cards = [
     {
-      value: 'Spell lists',
-      subtitle: 'Manage spell lists',
-      image: `${imageBaseUrl}images/generic/configuration.png`,
+      value: t('spell-lists', 'Spell lists'),
+      subtitle: t('manage-spell-lists', 'Manage spell lists'),
+      image: 'images/generic/spells.png',
       to: '/spells/spell-lists',
     },
     {
-      value: 'Spells',
-      subtitle: 'Manage spells',
-      image: `${imageBaseUrl}images/generic/configuration.png`,
+      value: t('spells', 'Spells'),
+      subtitle: t('manage-spells', 'Manage spells'),
+      image: 'images/generic/spells.png',
       to: '/spells/spells',
     },
   ];
 
   return (
-    <>
-      <RmuBreadcrumbs items={[{ name: 'Spells' }]} />
-      <Grid container spacing={1}>
-        <Grid size={{ xs: 12, md: 2 }}></Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Grid container spacing={1}>
-            {cards.map((c) => (
-              <Grid size={{ xs: 12, md: 3 }} key={c.value}>
-                <RmuTextCard value={c.value} subtitle={c.subtitle} image={c.image} onClick={() => navigate(c.to)} />
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
-    </>
+    <LayoutBase breadcrumbs={[{ name: t('home'), link: '/' }, { name: t('spell-module') }]}>
+      <CardGrid
+        items={cards}
+        getKey={(c) => c.to}
+        renderItem={(c) => (
+          <EntityCard title={c.value} description={c.subtitle} image={c.image} onClick={() => navigate(c.to)} />
+        )}
+      />
+    </LayoutBase>
   );
 };
 

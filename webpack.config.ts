@@ -1,8 +1,6 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import dotenv from 'dotenv';
-import Dotenv from 'dotenv-webpack';
 import fs from 'fs';
-import HtmlWebPackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import type { Configuration as WebpackConfiguration } from 'webpack';
@@ -19,24 +17,55 @@ interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
 
+// Runtime configuration. The keys listed in public/env-config.template.js are not baked into the
+// bundle: every `process.env.<KEY>` (in src/ and in rmu-react-shared-lib) is rewritten to read
+// window.__RMU_CONFIG__, which env-config.js sets before the bundle runs. The Docker image renders
+// the template with envsubst; the dev server serves the same keys from .env.
+const envConfigTemplate = fs.readFileSync(path.resolve(__dirname, 'public/env-config.template.js'), 'utf8');
+const runtimeConfigKeys = Array.from(envConfigTemplate.matchAll(/\$\{([A-Z0-9_]+)\}/g), (match) => match[1]);
+const runtimeConfigDefines = Object.fromEntries(
+  runtimeConfigKeys.map((key) => [`process.env.${key}`, `(window.__RMU_CONFIG__ || {})[${JSON.stringify(key)}]`])
+);
+const renderEnvConfig = (): string =>
+  `window.__RMU_CONFIG__ = ${JSON.stringify(Object.fromEntries(runtimeConfigKeys.map((key) => [key, process.env[key] ?? ''])))};\n`;
+
 export default (_env: unknown, argv: { mode?: string }): Configuration => {
   const mode = argv.mode || 'development';
-  dotenv.config({ path: path.resolve(__dirname, `.env.${mode}`) });
-  const publicPath = process.env.RMU_MFE_SPELLS_PUBLIC_PATH;
+  // `.env.<mode>` overrides the shared `.env` (dotenv keeps the first value it finds).
+  dotenv.config({ path: [path.resolve(__dirname, `.env.${mode}`), path.resolve(__dirname, '.env')], quiet: true });
+  const port = process.env.PORT ? Number(process.env.PORT) : 8087;
   return {
     output: {
-      publicPath,
+      // Workspace spec 091, E5: what changes gets a new name, so nginx can cache it for good.
+      filename: mode === 'production' ? '[name].[contenthash].js' : '[name].js',
+      chunkFilename: mode === 'production' ? '[name].[contenthash].js' : '[name].js',
+      // Chunks load from wherever spells-app.js was loaded (gateway /mfe/spells/, dev server, CDN).
+      publicPath: 'auto',
+      devtoolNamespace: 'spells',
     },
 
     resolve: {
       extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+      // rmu-react-shared-lib is a link: dependency outside this folder: resolve its peer dependencies (react,
+      // MUI…) from this app first so the bundle has a single copy of each.
+      modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     },
 
     devServer: {
       allowedHosts: 'all',
       host: '0.0.0.0',
-      port: 8087,
+      port,
       historyApiFallback: true,
+      // The page is served by the gateway (http://localhost), so HMR connects straight to the dev server.
+      client: {
+        webSocketURL: `ws://localhost:${port}/ws`,
+      },
+      setupMiddlewares: (middlewares, devServer) => {
+        devServer.app?.get('/env-config.js', (_req, res) => {
+          res.type('application/javascript').send(renderEnvConfig());
+        });
+        return middlewares;
+      },
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -78,23 +107,25 @@ export default (_env: unknown, argv: { mode?: string }): Configuration => {
         },
         {
           test: /\.(css|s[ac]ss)$/i,
-          use: ['style-loader', 'css-loader', 'postcss-loader'],
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.(ts|tsx|js|jsx)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'babel-loader',
+            loader: 'swc-loader',
+            options: {
+              jsc: {
+                parser: { syntax: 'typescript', tsx: true },
+                transform: { react: { runtime: 'automatic' } },
+                target: 'es2020',
+              },
+            },
           },
         },
         {
           test: /\.(ico|jpg|jpeg|png|gif|jfif)$/i,
           use: ['file-loader'],
-        },
-        {
-          test: /\.json$/,
-          type: 'javascript/auto',
-          use: 'json-loader',
         },
       ],
     },
@@ -119,25 +150,16 @@ export default (_env: unknown, argv: { mode?: string }): Configuration => {
           'react-dom': { singleton: true, requiredVersion: deps['react-dom'] },
           'react-router-dom': { singleton: true, requiredVersion: deps['react-router-dom'] },
           '@mui/material': { singleton: true, requiredVersion: deps['@mui/material'] },
-          '@mui/icons-material': { singleton: true, requiredVersion: deps['@mui/icons-material'] },
           '@emotion/react': { singleton: true, requiredVersion: deps['@emotion/react'] },
           '@emotion/styled': { singleton: true, requiredVersion: deps['@emotion/styled'] },
+          'react-oidc-context': { singleton: true, requiredVersion: deps['react-oidc-context'] },
+          'oidc-client-ts': { singleton: true, requiredVersion: deps['oidc-client-ts'] },
+          i18next: { singleton: true, requiredVersion: deps.i18next },
+          'react-i18next': { singleton: true, requiredVersion: deps['react-i18next'] },
+          '@tanstack/react-query': { singleton: true, requiredVersion: deps['@tanstack/react-query'] },
         },
       }),
-      new HtmlWebPackPlugin({
-        template: './src/index.html',
-      }),
-      new Dotenv({
-        path: `./.env.${argv.mode || 'development'}`,
-        safe: false,
-        systemvars: true,
-        silent: false,
-        defaults: './.env',
-      }),
-      new webpack.DefinePlugin({
-        'process.env.RMU_MFE_ASSETS': JSON.stringify(process.env.RMU_MFE_ASSETS || ''),
-        'process.env.RMU_API_CORE_URL': JSON.stringify(process.env.RMU_API_CORE_URL || ''),
-      }),
+      new webpack.DefinePlugin(runtimeConfigDefines),
     ],
   };
 };

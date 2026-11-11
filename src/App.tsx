@@ -1,47 +1,31 @@
-import React, { FC } from 'react';
+import { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Box, ThemeProvider } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { ErrorProvider } from './ErrorContext';
-import HomePage from './HomePage';
-import './i18n';
-import SpellListCreation from './modules/spell-lists/create/SpellListCreation';
-import SpellListEdit from './modules/spell-lists/edit/SpellListEdit';
-import SpellListList from './modules/spell-lists/list/SpellListList';
-import SpellCreation from './modules/spells/create/SpellCreation';
-import SpellEdit from './modules/spells/edit/SpellEdit';
-import SpellView from './modules/spells/view/SpellView';
-import SpellsView from './modules/spells/list/SpellsView';
-import SpellListView from './modules/spell-lists/view/SpellListView';
+import { MfeRoot, NotFound } from '@labcabrera-rmu/rmu-react-shared-lib';
 
-const NotFound: FC = () => (
-  <div>
-    <h2>Not found</h2>
-    <p>The requested route does not exist.</p>
-  </div>
+// Workspace spec 091, E1: every page is its own chunk; the Suspense is in MfeRoot / the shell layout.
+const HomePage = lazy(() => import('./HomePage'));
+const SpellListFormPage = lazy(() => import('./modules/spell-lists/form/SpellListFormPage'));
+const SpellListListPage = lazy(() => import('./modules/spell-lists/list/SpellListListPage'));
+const SpellListViewPage = lazy(() => import('./modules/spell-lists/view/SpellListViewPage'));
+const SpellFormPage = lazy(() => import('./modules/spells/form/SpellFormPage'));
+const SpellListPage = lazy(() => import('./modules/spells/list/SpellListPage'));
+const SpellViewPage = lazy(() => import('./modules/spells/view/SpellViewPage'));
+
+const App = () => (
+  <MfeRoot namespace="spells">
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/spell-lists" element={<SpellListListPage />} />
+      <Route path="/spell-lists/create" element={<SpellListFormPage mode="create" />} />
+      <Route path="/spell-lists/view/:spellListId" element={<SpellListViewPage />} />
+      <Route path="/spell-lists/edit/:spellListId" element={<SpellListFormPage mode="edit" />} />
+      <Route path="/spells" element={<SpellListPage />} />
+      <Route path="/spells/create" element={<SpellFormPage mode="create" />} />
+      <Route path="/spells/view/:spellId" element={<SpellViewPage />} />
+      <Route path="/spells/edit/:spellId" element={<SpellFormPage mode="edit" />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </MfeRoot>
 );
-
-const App = () => {
-  return (
-    <ThemeProvider theme={useTheme()}>
-      <ErrorProvider>
-        <Box padding={2}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/spell-lists" element={<SpellListList />} />
-            <Route path="/spell-lists/create" element={<SpellListCreation />} />
-            <Route path="/spell-lists/view/:spellListId" element={<SpellListView />} />
-            <Route path="/spell-lists/edit/:spellListId" element={<SpellListEdit />} />
-            <Route path="/spells/view/:spellId" element={<SpellView />} />
-            <Route path="/spells" element={<SpellsView />} />
-            <Route path="/spells/create" element={<SpellCreation />} />
-            <Route path="/spells/edit/:spellId" element={<SpellEdit />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Box>
-      </ErrorProvider>
-    </ThemeProvider>
-  );
-};
 
 export default App;
